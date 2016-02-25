@@ -1,7 +1,7 @@
 {
   "name": "computed-validator",
   "version": "0.0.1",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Create a validator that tracks validation state of an object",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -39,9 +39,7 @@
     "ember-try": "^0.1.2",
     "loader.js": "^4.0.0"
   },
-  "keywords": [
-    "ember-addon"
-  ],
+  "keywords": [],
   "dependencies": {
     "ember-cli-babel": "^5.1.5"
   },
