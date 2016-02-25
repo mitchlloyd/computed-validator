@@ -1,4 +1,4 @@
-# Ember Validator
+# Computed Validator
 
 Validate objects.
 
@@ -60,7 +60,7 @@ validator in.
 
 ## Composing Validations
 
-Ember Validator uses functions to define which validation rules to run
+Computed Validator uses functions to define which validation rules to run
 and how to run them so composing complex validation rules is fun.
 
 ```javascript
@@ -96,7 +96,7 @@ export default Ember.Component.extend({
 
 ## The `validate` primitive
 
-The core of Ember Validator is the `validate` function. You can use this to
+The core of Computed Validator is the `validate` function. You can use this to
 write one off validations for a single use case or write abstract, reusable
 validation rules.
 
