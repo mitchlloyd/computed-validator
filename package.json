@@ -39,7 +39,9 @@
     "ember-try": "^0.1.2",
     "loader.js": "^4.0.0"
   },
-  "keywords": [],
+  "keywords": [
+    "ember-addon"
+  ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5"
   },
