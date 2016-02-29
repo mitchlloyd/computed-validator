@@ -10,7 +10,8 @@ import between from 'computed-validator/validation-rules/between';
 import exclusion from 'computed-validator/validation-rules/exclusion';
 
 import computedValidator from 'computed-validator/computed-macros/computed-validator';
-import onProperty from 'computed-validator/meta/use-property';
+import onProperty from 'computed-validator/meta/on-property';
+import all from 'computed-validator/meta/all';
 
 export default defineValidator;
 export {
@@ -22,6 +23,7 @@ export {
   exclusion,
   computedValidator,
   onProperty,
+  all,
   createValidator,
   SUBJECT_KEY
 };

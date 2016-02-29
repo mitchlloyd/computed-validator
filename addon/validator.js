@@ -1,22 +1,24 @@
 import Ember from 'ember';
 import { every } from 'computed-validator/utils';
-const { computed } = Ember;
+const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
 export const SUBJECT_KEY = '_computed-validator-subject';
 
 export default function defineValidator(rules) {
   let properties = {};
-  let dependentKeys = [];
+  let isValidDependentKeys = [];
 
   for (let ruleKey in rules) {
-    properties[ruleKey] = rules[ruleKey](ruleKey);
-    dependentKeys.push(ruleKey);
+    let { dependentKeys, fn } = rules[ruleKey](ruleKey);
+    properties[ruleKey] = computed(...dependentKeys, fn);
+
+    isValidDependentKeys.push(ruleKey);
   }
 
-  properties.isValid = computed(...dependentKeys, function() {
+  properties.isValid = computed(...isValidDependentKeys, function() {
     let validator = this;
 
-    return every(dependentKeys, function(dk) {
+    return every(isValidDependentKeys, function(dk) {
       return validator.get(dk).isValid;
     });
   });
@@ -48,17 +50,32 @@ export function validate(...params) {
 
     let dependentKeys = dependentKeyParams.map((key) => `${SUBJECT_KEY}.${key}`);
 
-    return computed(...dependentKeys, function() {
-      return validationResult(fn(this.get(SUBJECT_KEY), ...dependentKeyParams));
-    });
+    // Returning a blueprint for a CP to allow composing without using cp._dependentKeys
+    return {
+      dependentKeys,
+      fn: function() {
+        return validationResult(fn(get(this, SUBJECT_KEY), ...dependentKeyParams));
+      }
+    };
   };
 }
 
-function validationResult(ruleResult) {
-  if (ruleResult) {
+export function validationResult(incomingErrors) {
+  let errors;
+
+  // Transform single string errors into an array.
+  if (typeof incomingErrors === 'string') {
+    errors = [incomingErrors];
+  } else if (!incomingErrors) {
+    errors = [];
+  } else {
+    errors = incomingErrors;
+  }
+
+  if (errors.length) {
     return {
       isValid: false,
-      errors: [ruleResult]
+      errors: errors
     };
   } else {
     return {
