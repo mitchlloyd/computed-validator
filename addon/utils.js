@@ -15,3 +15,9 @@ export function wrap(fnToWrap, fnWrapper) {
     return fnWrapper(fnToWrap.apply(this, arguments));
   }
 }
+
+export function flatMap(array, callback) {
+  return array.reduce((accum, item) => {
+    return accum.concat(callback(item));
+  }, []);
+}

@@ -1,17 +1,19 @@
 import { SUBJECT_KEY } from 'computed-validator/validator';
+import { flatMap } from 'computed-validator/utils';
 
 export default function metaAll(...validationRules) {
   return function metaAll_getBlueprint(key) {
-    let validationBlueprints = validationRules.map((rule) => rule(key));
+    let dependentKeys = [];
+    let fns = [];
 
-    let dependentKeys = validationBlueprints.reduce((accum, blueprint) => {
-      return accum.concat(blueprint.dependentKeys);
-    }, []);
+    validationRules.forEach((rule) => {
+      let { dependentKeys, fn } = rule(key);
+      dependentKeys.push(...dependentKeys);
+      fns.push(fn);
+    });
 
     let fn = function() {
-      return validationBlueprints.reduce((accum, blueprint) => {
-        return accum.concat(blueprint.fn.apply(this, this.get(SUBJECT_KEY)));
-      }, []);
+      return flatMap(fns, (fn) => fn.apply(this, this.get(SUBJECT_KEY)));
     };
 
     return { dependentKeys, fn };
