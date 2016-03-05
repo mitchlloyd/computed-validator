@@ -9,3 +9,9 @@ export function every(array, predicate) {
   }
   return true;
 }
+
+export function wrap(fnToWrap, fnWrapper) {
+  return function() {
+    return fnWrapper(fnToWrap.apply(this, arguments));
+  }
+}

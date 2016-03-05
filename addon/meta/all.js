@@ -1,4 +1,4 @@
-import { validationResult, SUBJECT_KEY } from 'computed-validator/validator';
+import { SUBJECT_KEY } from 'computed-validator/validator';
 
 export default function metaAll(...validationRules) {
   return function metaAll_getBlueprint(key) {
@@ -9,14 +9,9 @@ export default function metaAll(...validationRules) {
     }, []);
 
     let fn = function() {
-      let allErrors = validationBlueprints.reduce((accum, blueprint) => {
-        let validationResult = blueprint.fn.apply(this, this.get(SUBJECT_KEY));
-        // TODO: Unwrapping validationResult only to make a new one is silly.
-        // Move this validationResult wrapping out of validate.
-        return accum.concat(validationResult.errors);
+      return validationBlueprints.reduce((accum, blueprint) => {
+        return accum.concat(blueprint.fn.apply(this, this.get(SUBJECT_KEY)));
       }, []);
-
-      return validationResult(allErrors);
     };
 
     return { dependentKeys, fn };
