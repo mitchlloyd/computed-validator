@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { createValidator, validate } from 'computed-validator/validator';
+import { createValidator, validate } from 'computed-validator';
 const { get } = Ember;
 
 module("Unit | validate");

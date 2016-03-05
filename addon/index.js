@@ -1,8 +1,8 @@
 import defineValidator, {
-  validate,
   createValidator,
   SUBJECT_KEY
 } from 'computed-validator/validator';
+import validate from 'computed-validator/validate';
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
