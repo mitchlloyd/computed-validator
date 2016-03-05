@@ -14,6 +14,7 @@ import computedValidator from 'computed-validator/computed-macros/computed-valid
 import onProperty from 'computed-validator/meta/on-property';
 import all from 'computed-validator/meta/all';
 import sequence from 'computed-validator/meta/sequence';
+import when from 'computed-validator/meta/when';
 
 export default defineValidator;
 export {
@@ -27,6 +28,7 @@ export {
   onProperty,
   all,
   sequence,
+  when,
   createValidator,
   SUBJECT_KEY
 };
