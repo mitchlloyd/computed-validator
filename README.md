@@ -188,6 +188,6 @@ The first dependent key arguments of `validate` can be:
 ## Roadmap
 
 * More validation rules
-* More meta validation functions (`when`, `all`, `sequence`)
+* More meta validation functions (`when`)
 * Handling dynamic messages
 * Handling async (e.g. ajax) validations

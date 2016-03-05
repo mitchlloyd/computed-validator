@@ -10,7 +10,8 @@ export default function validate(...args) {
     return {
       dependentKeys: validatorKeys,
       fn: function() {
-        return fn(get(this, SUBJECT_KEY), ...subjectKeys);
+        let result = fn(get(this, SUBJECT_KEY), ...subjectKeys);
+        return normalizeErrorsResult(result)
       }
     };
   };
@@ -34,4 +35,16 @@ function normalizeArguments(args, defaultKey) {
   }
 
   return [keys, fn];
+}
+
+function normalizeErrorsResult(errorOrErrors) {
+  if (!errorOrErrors) {
+    return [];
+  } else if (typeof errorOrErrors === 'string') {
+    return [errorOrErrors];
+  } else if (Array.isArray(errorOrErrors)) {
+    return [errorOrErrors];
+  } else {
+    throw new Error(`invalid return value from validate: ${errorOrErrors}`);
+  }
 }

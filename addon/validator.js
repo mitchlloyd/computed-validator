@@ -30,18 +30,7 @@ export function createValidator(subject, rules) {
   return defineValidator(rules).create({ [SUBJECT_KEY]: subject });
 }
 
-export function validationResult(incomingErrors) {
-  let errors;
-
-  // Transform single string errors into an array.
-  if (typeof incomingErrors === 'string') {
-    errors = [incomingErrors];
-  } else if (!incomingErrors) {
-    errors = [];
-  } else {
-    errors = incomingErrors;
-  }
-
+export function validationResult(errors) {
   if (errors.length) {
     return {
       isValid: false,
