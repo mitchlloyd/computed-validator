@@ -2,23 +2,23 @@ import Ember from 'ember';
 import { every, wrap } from 'computed-validator/utils';
 const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
+
 export const SUBJECT_KEY = '_computed-validator-subject';
 
 export default function defineValidator(rules) {
   let properties = {};
-  let isValidDependentKeys = [];
+  let dependentKeysForIsValid = [];
 
   for (let ruleKey in rules) {
     let { dependentKeys, fn } = rules[ruleKey](ruleKey);
     properties[ruleKey] = computed(...dependentKeys, wrap(fn, validationResult));
-
-    isValidDependentKeys.push(ruleKey);
+    dependentKeysForIsValid.push(ruleKey);
   }
 
-  properties.isValid = computed(...isValidDependentKeys, function() {
+  properties.isValid = computed(...dependentKeysForIsValid, function() {
     let validator = this;
 
-    return every(isValidDependentKeys, function(dk) {
+    return every(dependentKeysForIsValid, function(dk) {
       return validator.get(dk).isValid;
     });
   });
