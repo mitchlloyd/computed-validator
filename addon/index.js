@@ -8,6 +8,7 @@ import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
 import between from 'computed-validator/validation-rules/between';
 import exclusion from 'computed-validator/validation-rules/exclusion';
+import lengthBetween from 'computed-validator/validation-rules/length-between';
 
 import computedValidator from 'computed-validator/computed-macros/computed-validator';
 
@@ -24,6 +25,7 @@ export {
   validate,
   confirmed,
   exclusion,
+  lengthBetween,
   computedValidator,
   onProperty,
   all,

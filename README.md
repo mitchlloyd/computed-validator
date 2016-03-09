@@ -69,7 +69,7 @@ and how to run them so composing complex validation rules is fun.
 import {
   computedValidator,
   required,
-  minLength,
+  lengthBetween,
   noMatch,
   when,
   confirmed,
@@ -80,7 +80,7 @@ import {
 
 export default Ember.Component.extend({
   validator: computedValidator('user', {
-    name: all(required(), minLength(3), noMatch(/mitch/)),
+    name: all(required(), lengthBetween(3, Infinity), noMatch(/mitch/)),
     dogName: when('hasDog', required({
       message: "If you have a dog please tell us its name!"
     })),
