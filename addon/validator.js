@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import { every, wrap } from 'computed-validator/utils';
+import { every } from 'computed-validator/utils';
+import ValidationState from 'computed-validator/validation-state';
 const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
 
@@ -11,7 +12,7 @@ export default function defineValidator(rules) {
 
   for (let ruleKey in rules) {
     let { dependentKeys, fn } = rules[ruleKey](ruleKey);
-    properties[ruleKey] = computed(...dependentKeys, wrap(fn, validationResult));
+    properties[ruleKey] = computedValidation(dependentKeys, fn);
     dependentKeysForIsValid.push(ruleKey);
   }
 
@@ -30,16 +31,10 @@ export function createValidator(subject, rules) {
   return defineValidator(rules).create({ [SUBJECT_KEY]: subject });
 }
 
-export function validationResult(errors) {
-  if (errors.length) {
-    return {
-      isValid: false,
-      errors: errors
-    };
-  } else {
-    return {
-      isValid: true,
-      errors: []
-    };
-  }
+// Executed in the context of the validator.
+function computedValidation(dependentKeys, fn) {
+  return computed(...dependentKeys, function() {
+    return new ValidationState(fn.apply(this));
+  });
 }
+

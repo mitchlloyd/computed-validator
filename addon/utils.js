@@ -10,12 +10,6 @@ export function every(array, predicate) {
   return true;
 }
 
-export function wrap(fnToWrap, fnWrapper) {
-  return function(...args) {
-    return fnWrapper(fnToWrap.apply(this, args));
-  }
-}
-
 export function flatMap(array, callback) {
   return array.reduce((accum, item) => {
     return accum.concat(callback(item));
