@@ -4,8 +4,8 @@ Validate objects.
 
 [![Circle CI](https://circleci.com/gh/mitchlloyd/computed-validator.svg?style=shield)](https://circleci.com/gh/mitchlloyd/computed-validator)
 
-**Notice: This Addon is using readme driven development and many of the features
-described below are not implemented.**
+**Notice: This Addon isn't ready for use until it handles configurable
+messages**
 
 ## Installation
 
@@ -75,7 +75,7 @@ import {
   confirmed,
   sequence,
   all,
-  useProperty
+  onProperty
 } from 'computed-validator'
 
 export default Ember.Component.extend({
@@ -189,6 +189,5 @@ The first dependent key arguments of `validate` can be:
 
 ## Roadmap
 
-* More validation rules
 * Handling dynamic messages
 * Handling async (e.g. ajax) validations
