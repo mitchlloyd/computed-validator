@@ -9,6 +9,7 @@ import confirmed from 'computed-validator/validation-rules/confirmed';
 import between from 'computed-validator/validation-rules/between';
 import exclusion from 'computed-validator/validation-rules/exclusion';
 import lengthBetween from 'computed-validator/validation-rules/length-between';
+import match from 'computed-validator/validation-rules/match';
 
 import computedValidator from 'computed-validator/computed-macros/computed-validator';
 
@@ -26,6 +27,7 @@ export {
   confirmed,
   exclusion,
   lengthBetween,
+  match,
   computedValidator,
   onProperty,
   all,
