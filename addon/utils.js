@@ -11,8 +11,8 @@ export function every(array, predicate) {
 }
 
 export function wrap(fnToWrap, fnWrapper) {
-  return function() {
-    return fnWrapper(fnToWrap.apply(this, arguments));
+  return function(...args) {
+    return fnWrapper(fnToWrap.apply(this, args));
   }
 }
 

@@ -1,0 +1,9 @@
+machine:
+  node:
+    version: v4.3.2
+
+dependencies:
+  override:
+    - npm install
+    - npm install bower
+    - node_modules/.bin/bower install
