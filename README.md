@@ -2,7 +2,7 @@
 
 Validate objects.
 
-[![Circle CI](https://circleci.com/gh/mitchlloyd/computed-validator.svg?style=svg)](https://circleci.com/gh/mitchlloyd/computed-validator)
+[![Circle CI](https://circleci.com/gh/mitchlloyd/computed-validator.svg?style=shield)](https://circleci.com/gh/mitchlloyd/computed-validator)
 
 **Notice: This Addon is using readme driven development and many of the features
 described below are not implemented.**
