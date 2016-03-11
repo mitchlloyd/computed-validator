@@ -15,3 +15,16 @@ export function flatMap(array, callback) {
     return accum.concat(callback(item));
   }, []);
 }
+
+export function firstResult(array, fn) {
+  let index = -1;
+  let length = array.length;
+
+  while (++index < length) {
+    let result = fn(array[index]);
+
+    if (result) {
+      return result;
+    }
+  }
+}

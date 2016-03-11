@@ -4,7 +4,7 @@ import { computedValidator, required } from 'computed-validator';
 
 module("Unit | computed-validator");
 
-test('using validatorFor', function(assert) {
+test('using computedValidator', function(assert) {
   let myObject = Ember.Object.extend({
     validator: computedValidator('attrs.user', {
       name: required()

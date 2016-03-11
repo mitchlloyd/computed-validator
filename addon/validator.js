@@ -1,10 +1,16 @@
 import Ember from 'ember';
 import { every } from 'computed-validator/utils';
 import ValidationState from 'computed-validator/validation-state';
+import defaultTranslator from 'computed-validator/translators/default';
+import emberI18nTranslator from 'computed-validator/translators/ember-i18n';
+import { firstResult } from 'computed-validator/utils';
 const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
+const translators = [emberI18nTranslator, defaultTranslator]
 
 export const SUBJECT_KEY = '_computed-validator-subject';
+export const OWNER_KEY = '_computed-validator-owner';
+export const TRANSLATE_KEY = '_computed-validator-translate';
 
 export default function defineValidator(rules) {
   let properties = {};
@@ -24,7 +30,12 @@ export default function defineValidator(rules) {
     });
   });
 
-  return Validator.extend(properties);
+  return Validator.extend(properties, {
+    init() {
+      this._super(...arguments);
+      this[TRANSLATE_KEY] = lookupTranslateFunction(this[OWNER_KEY]);
+    }
+  });
 }
 
 export function createValidator(subject, rules) {
@@ -38,3 +49,24 @@ function computedValidation(dependentKeys, fn) {
   });
 }
 
+// There are three ways to get a translate function:
+//
+// 1. If there is no owner, we'll use the default translator.
+// 2. We'll look for a user-defined service and use the `translate` method.
+// 3. Finally we'll loop through all magic translator adapters to get a translate
+//    function given the owner.
+//
+function lookupTranslateFunction(owner) {
+  // No owner, do the best we can
+  if (!owner) {
+    return defaultTranslator();
+  }
+
+  let customUserService = owner.lookup('service:computed-validator-translation');
+
+  if (customUserService) {
+    return customUserService.translate.bind(service);
+  } else {
+    return firstResult(translators, (translator) => translator(owner));
+  }
+}

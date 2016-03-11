@@ -1,6 +1,7 @@
 import defineValidator, {
   createValidator,
-  SUBJECT_KEY
+  SUBJECT_KEY,
+  OWNER_KEY
 } from 'computed-validator/validator';
 import validate from 'computed-validator/validate';
 import required from 'computed-validator/validation-rules/required';
@@ -38,5 +39,6 @@ export {
   when,
   negate,
   createValidator,
-  SUBJECT_KEY
+  SUBJECT_KEY,
+  OWNER_KEY
 };

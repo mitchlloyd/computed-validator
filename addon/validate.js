@@ -1,5 +1,5 @@
 import Ember from 'ember'
-import { SUBJECT_KEY } from 'computed-validator/validator';
+import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator';
 const { get } = Ember;
 
 export default function validate(...args) {
@@ -10,7 +10,7 @@ export default function validate(...args) {
     return {
       dependentKeys: validatorKeys,
       fn: function() {
-        let result = fn(get(this, SUBJECT_KEY), ...subjectKeys);
+        let result = fn(get(this, SUBJECT_KEY), key, { translate: get(this, TRANSLATE_KEY) });
         return normalizeErrorsResult(result)
       }
     };
@@ -40,7 +40,7 @@ function normalizeArguments(args, defaultKey) {
 function normalizeErrorsResult(errorOrErrors) {
   if (!errorOrErrors) {
     return [];
-  } else if (typeof errorOrErrors === 'string') {
+  } else if (typeof errorOrErrors === 'string' || errorOrErrors.string) {
     return [errorOrErrors];
   } else if (Array.isArray(errorOrErrors)) {
     return [errorOrErrors];
