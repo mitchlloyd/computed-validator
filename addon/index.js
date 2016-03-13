@@ -3,7 +3,6 @@ import defineValidator, {
   SUBJECT_KEY,
   OWNER_KEY
 } from 'computed-validator/validator';
-import validate from 'computed-validator/validate';
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
@@ -12,6 +11,7 @@ import exclusion from 'computed-validator/validation-rules/exclusion';
 import lengthBetween from 'computed-validator/validation-rules/length-between';
 import match from 'computed-validator/validation-rules/match';
 import noMatch from 'computed-validator/validation-rules/no-match';
+import validate from 'computed-validator/validation-rules/validate';
 
 import computedValidator from 'computed-validator/computed-macros/computed-validator';
 
