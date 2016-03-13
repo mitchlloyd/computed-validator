@@ -3,7 +3,7 @@ import { validate } from 'computed-validator';
 const { get } = Ember;
 
 export default function between(min, max) {
-  return validate((attr) => [attr], function(subject, key) {
+  return validate((attr) => [attr], function({ subject, key }) {
     let value = get(subject, key);
 
     if (value >= max) {

@@ -10,7 +10,12 @@ export default function validate(...args) {
     return {
       dependentKeys: validatorKeys,
       fn: function() {
-        let result = fn(get(this, SUBJECT_KEY), key, { translate: get(this, TRANSLATE_KEY) });
+        let result = fn({
+          subject: get(this, SUBJECT_KEY),
+          key: key,
+          translate: get(this, TRANSLATE_KEY)
+        });
+
         return normalizeErrorsResult(result)
       }
     };

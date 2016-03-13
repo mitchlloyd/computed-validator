@@ -126,7 +126,7 @@ import { validate } from 'computed-validator';
 const { get } = Ember;
 
 export default function required() {
-  return validate(function(subject, key) {
+  return validate(function({ subject, key }) {
     if (!get(subject, key)) {
       return "is required";
     }
@@ -179,7 +179,7 @@ The first dependent key arguments of `validate` can be:
     const { get } = Ember;
 
     export default function confirmed(keyToMatch) {
-      return validate(key => [key, keyToMatch], function(subject, key) {
+      return validate(key => [key, keyToMatch], function({ subject, key }) {
         if (get(subject, key) !== get(subject, keyToMatch)) {
           return `must match ${keyToMatch}`;
         }

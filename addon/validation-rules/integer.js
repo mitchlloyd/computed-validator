@@ -4,7 +4,7 @@ const { get } = Ember;
 const DEFAULT_MESSAGE = "must be an integer";
 
 export default function required() {
-  return validate(function(subject, key) {
+  return validate(function({ subject, key }) {
     let value = get(subject, key);
 
     if (!value) {
