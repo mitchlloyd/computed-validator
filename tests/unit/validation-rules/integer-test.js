@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { createValidator, integer } from 'computed-validator';
 
-module("Unit | validation-rules | required");
+module("Unit | validation-rules | integer");
 
 test('given an integer', function(assert) {
   let validator = buildValidator({ age: "12" });

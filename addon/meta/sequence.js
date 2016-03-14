@@ -1,25 +1,23 @@
-import { SUBJECT_KEY } from 'computed-validator/validator';
 import { metaBlueprintFor } from './utils';
+import validationRule from 'computed-validator/validation-rule';
 
-export default function metaSequence(...validationRules) {
-  return function metaSequence_getBlueprint(key) {
-    let { dependentKeys, fns } = metaBlueprintFor(validationRules, key);
+export default validationRule(function({ args, key }) {
+  let { dependentKeys, fns } = metaBlueprintFor(args, key);
 
-    let fn = function() {
-      let allErrors = [];
+  let fn = function(fnParams) {
+    let allErrors = [];
 
-      for (fn of fns) {
-        let errors = fn.apply(this, this.get(SUBJECT_KEY));
+    for (fn of fns) {
+      let errors = fn.call(this, fnParams);
 
-        if (errors.length) {
-          allErrors.push(...errors);
-          return allErrors
-        }
+      if (errors.length) {
+        allErrors.push(...errors);
+        return allErrors
       }
+    }
 
-      return [];
-    };
-
-    return { dependentKeys, fn };
+    return [];
   };
-}
+
+  return { dependentKeys, fn };
+});

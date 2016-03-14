@@ -1,12 +1,18 @@
 import Ember from 'ember';
-import { validate } from 'computed-validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default function match(regex) {
-  return validate(function({ subject, key }) {
-    let value = get(subject, key);
-    if (!regex.test(value)) {
-      return `must match ${regex.toString()}`;
+export default validationRule(function({ args: [regex], key }) {
+  return {
+    dependentKeys: [key],
+
+    fn({ subject }) {
+      let value = get(subject, key);
+      if (!regex.test(value)) {
+        return [`must match ${regex.toString()}`];
+      } else {
+        return [];
+      }
     }
-  });
-}
+  };
+})

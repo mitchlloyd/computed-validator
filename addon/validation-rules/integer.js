@@ -1,18 +1,25 @@
 import Ember from 'ember';
 import { validate } from 'computed-validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 const DEFAULT_MESSAGE = "must be an integer";
 
-export default function required() {
-  return validate(function({ subject, key }) {
-    let value = get(subject, key);
+export default validationRule(function({ args, key }) {
+  return {
+    dependentKeys: [key],
 
-    if (!value) {
-      return DEFAULT_MESSAGE;
-    }
+    fn({ subject }) {
+      let value = get(subject, key);
 
-    if (!value.toString().trim().match(/^[+-]?\d+$/)) {
-      return DEFAULT_MESSAGE;
+      if (!value) {
+        return [DEFAULT_MESSAGE];
+      }
+
+      if (!value.toString().trim().match(/^[+-]?\d+$/)) {
+        return [DEFAULT_MESSAGE];
+      }
+
+      return [];
     }
-  });
-}
+  };
+})

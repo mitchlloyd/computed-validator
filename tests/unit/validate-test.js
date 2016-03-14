@@ -9,8 +9,8 @@ test('using validate with an explicit key', function(assert) {
   let user = { name: null };
 
   let validator = createValidator(user, {
-    name: validate('name', function({ subject, key }) {
-      if (!get(subject, key)) {
+    name: validate('name', function() {
+      if (!get(user, 'name')) {
         return "is required";
       }
     })
@@ -23,8 +23,8 @@ test('using validate with an implicit key', function(assert) {
   let user = { name: null };
 
   let validator = createValidator(user, {
-    name: validate(function({ subject, key }) {
-      if (!get(subject, key)) {
+    name: validate(function() {
+      if (!get(user, 'name')) {
         return "is required";
       }
     })

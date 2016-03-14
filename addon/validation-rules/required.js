@@ -1,82 +1,17 @@
 import Ember from 'ember';
-import { validate, validationRule } from 'computed-validator';
+import { validate } from 'computed-validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-function required() {
-  return validate(function({ subject, key, translate }) {
-    if (!get(subject, key)) {
-      return translate('validations.required', { property: key });
-    }
-  });
-}
-
-/*
-function required({ message }) {
-  return validate({
-    dependentKeys(key) { return key },
-
-    validation({ subject, key, message }) {
-      if (!get(subject, key)) {
-        return message;
-      }
-    },
-
-    compile(key, declarationArgs, translate) {
-      let { message } = declarationArgs;
-      if (!message) {
-        return {
-          dependentKeys: [key],
-          validation() {},
-      } else {
-        return translate({ message })
-      }
-    }
-  });
-}
-
-
-class ValidationRule {
-  constructor(...args) {
-    this.args = args;
-  },
-
-  build(key) {
-    this.key = key;
-  },
-
-  validate() {
-  }
-}
-
-validationRule(function({ args, key }) {
-  let message = messageOption(args) || {
-    key: 'validations.required',
-    properties: { property: key }
-  });
-
+export default validationRule(function({ args, key }) {
   return {
     dependentKeys: [key],
-    validation() {
+    fn({ subject, translate }) {
       if (!get(subject, key)) {
-        return message;
+        return [translate('validations.required', { property: key })];
+      } else {
+        return [];
       }
     }
-  }
-});
-
-validationRule(function({ args, subject, key, translate }) {
-  return {
-    dependentKeys: getDependentKeys(args),
-    validation: getValidationFuntion(args)
-  }
+  };
 })
-
-  // return validate(key, function() {
-  //   if (!get(subject, key)) {
-  //     return message;
-  //   }
-  // });
-// });
-
-export default validationRule(required);
-*/

@@ -1,23 +1,21 @@
 import Ember from 'ember';
-import { SUBJECT_KEY } from 'computed-validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default function metaWhen(whenKey, validationRule) {
-  return function metaWhen_getBlueprint(defaultKey) {
-    let whenSubjectKey = `${SUBJECT_KEY}.${whenKey}`;
-    let { dependentKeys, fn } = validationRule(defaultKey);
+export default validationRule(function({ args, key }) {
+  let [whenKey, rule] = args;
+  let { dependentKeys, fn } = rule(key);
 
-    let wrappedFn = function() {
-      if (this.get(whenSubjectKey)) {
-        return fn.apply(this, this.get(SUBJECT_KEY));
-      } else {
-        return [];
-      }
+  let wrappedFn = function({ subject, translate }) {
+    if (get(subject, whenKey)) {
+      return fn.call(this, { subject, translate });
+    } else {
+      return [];
     }
+  };
 
-    return {
-      dependentKeys: dependentKeys.concat(whenSubjectKey),
-      fn: wrappedFn
-    };
-  }
-}
+  return {
+    dependentKeys: dependentKeys.concat(whenKey),
+    fn: wrappedFn
+  };
+});

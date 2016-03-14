@@ -1,23 +1,22 @@
 import Ember from 'ember';
 import { SUBJECT_KEY } from 'computed-validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default function metaNegate(validationRule) {
-  return function metaNegate_getBlueprint(defaultKey) {
-    let { dependentKeys, fn } = validationRule(defaultKey);
+export default validationRule(function({ args: [rule], key }) {
+  let { dependentKeys, fn } = rule(key);
 
-    let negatedFn = function() {
-      let errors = fn.apply(this);
-      if (errors.length) {
-        return []
-      } else {
-        return ["should be opposite"];
-      }
+  let negatedFn = function(...args) {
+    let errors = fn.apply(this, args);
+    if (errors.length) {
+      return []
+    } else {
+      return ["should be opposite"];
     }
-
-    return {
-      dependentKeys,
-      fn: negatedFn
-    };
   }
-}
+
+  return {
+    dependentKeys,
+    fn: negatedFn
+  };
+})

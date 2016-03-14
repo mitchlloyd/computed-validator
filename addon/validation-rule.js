@@ -6,11 +6,12 @@ export default function validationRule(build) {
 
     // Validator builds the rule, passing the default key
     return function(key) {
-      build({
-        args: args,
-        key: key
-        // could we pass translate?
-      })
-    }
+
+      // Execute the build function to return a validation rule blueprint
+      return build({ args, key });
+
+    };
+
   };
+
 }

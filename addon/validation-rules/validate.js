@@ -1,32 +1,15 @@
 import Ember from 'ember'
 import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator';
+import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
 export default validationRule(function({ args, key }) {
   let [dependentKeys, validation] = normalizeArguments(args, key);
-
-  return { dependentKeys, validation };
+  let fn = function(...args) {
+    return normalizeErrorsResult(validation(...args));
+  }
+  return { dependentKeys, fn };
 });
-
-                              // validate(...args) {
-  // return function(key) {
-    // let [subjectKeys, fn] = normalizeArguments(args, key);
-    // let validatorKeys = subjectKeys.map((key) => `${SUBJECT_KEY}.${key}`);
-
-    // return {
-      // dependentKeys: validatorKeys,
-      // fn: function() {
-        // let result = fn({
-          // subject: get(this, SUBJECT_KEY),
-          // key: key,
-          // translate: get(this, TRANSLATE_KEY)
-        // });
-
-        // return normalizeErrorsResult(result)
-      // }
-    // };
-  // };
-// }
 
 function normalizeArguments(args, defaultKey) {
   let fn = args.pop();
@@ -48,14 +31,14 @@ function normalizeArguments(args, defaultKey) {
   return [keys, fn];
 }
 
-// function normalizeErrorsResult(errorOrErrors) {
-//   if (!errorOrErrors) {
-//     return [];
-//   } else if (typeof errorOrErrors === 'string' || errorOrErrors.string) {
-//     return [errorOrErrors];
-//   } else if (Array.isArray(errorOrErrors)) {
-//     return [errorOrErrors];
-//   } else {
-//     throw new Error(`invalid return value from validate: ${errorOrErrors}`);
-//   }
-// }
+function normalizeErrorsResult(errorOrErrors) {
+  if (!errorOrErrors) {
+    return [];
+  } else if (typeof errorOrErrors === 'string' || errorOrErrors.string) {
+    return [errorOrErrors];
+  } else if (Array.isArray(errorOrErrors)) {
+    return [errorOrErrors];
+  } else {
+    throw new Error(`invalid return value from validate: ${errorOrErrors}`);
+  }
+}

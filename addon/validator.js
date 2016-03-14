@@ -44,8 +44,14 @@ export function createValidator(subject, rules) {
 
 // Executed in the context of the validator.
 function computedValidation(dependentKeys, fn) {
-  return computed(...dependentKeys, function() {
-    return new ValidationState(fn.apply(this));
+  let subjectDependentKeys = dependentKeys.map((key) => `${SUBJECT_KEY}.${key}`);
+
+  return computed(...subjectDependentKeys, function() {
+    let errors = fn.call(this, {
+      subject: get(this, SUBJECT_KEY),
+      translate: get(this, TRANSLATE_KEY)
+    });
+    return new ValidationState(errors);
   });
 }
 
