@@ -7,7 +7,7 @@ export default validationRule(function({ args: forbiddenValues, key }) {
   return {
     dependentKeys: [key],
 
-    validate({ subject }) {
+    validate(subject) {
       let value = get(subject, key);
 
       if (forbiddenValues.indexOf(value) !== -1) {

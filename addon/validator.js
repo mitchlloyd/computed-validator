@@ -47,11 +47,18 @@ function computedValidation(dependentKeys, validate) {
   let subjectDependentKeys = dependentKeys.map((key) => `${SUBJECT_KEY}.${key}`);
 
   return computed(...subjectDependentKeys, function() {
-    let errors = validate.call(this, {
-      subject: get(this, SUBJECT_KEY),
-      translate: get(this, TRANSLATE_KEY)
+    let translate = get(this, TRANSLATE_KEY);
+    let errors = validate.call(this, get(this, SUBJECT_KEY));
+
+    let translatedErrors = errors.map(function(error) {
+      if (typeof error === 'string') {
+        return error;
+      } else {
+        return translate(error.id, error.properties);
+      }
     });
-    return new ValidationState(errors);
+
+    return new ValidationState(translatedErrors);
   });
 }
 

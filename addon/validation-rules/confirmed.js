@@ -9,7 +9,7 @@ export default validationRule(function({ args, key }) {
   return {
     dependentKeys: [key, `${SUBJECT_KEY}.${keyToMatch}`],
 
-    validate({ subject }) {
+    validate(subject) {
       if (get(subject, key) !== get(subject, keyToMatch)) {
         return [`must match ${keyToMatch}`];
       } else {

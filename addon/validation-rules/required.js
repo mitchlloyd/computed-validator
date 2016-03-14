@@ -1,15 +1,18 @@
 import Ember from 'ember';
 import { validate } from 'computed-validator';
 import validationRule from 'computed-validator/validation-rule';
+import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
 
-export default validationRule(function({ args, key }) {
+export default validationRule(function({ args: { message }, key }) {
+  let error = message || new ValidationError('validations.required', { property: key });
+
   return {
     dependentKeys: [key],
 
-    validate({ subject, translate }) {
+    validate(subject) {
       if (!get(subject, key)) {
-        return [translate('validations.required', { property: key })];
+        return [error];
       } else {
         return [];
       }

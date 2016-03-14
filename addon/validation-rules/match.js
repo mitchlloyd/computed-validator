@@ -6,7 +6,7 @@ export default validationRule(function({ args: [regex], key }) {
   return {
     dependentKeys: [key],
 
-    validate({ subject }) {
+    validate(subject) {
       let value = get(subject, key);
       if (!regex.test(value)) {
         return [`must match ${regex.toString()}`];

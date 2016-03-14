@@ -6,9 +6,9 @@ export default validationRule(function({ args, key }) {
   let [whenKey, rule] = args;
   let { dependentKeys, validate } = rule(key);
 
-  let wrappedValidate = function({ subject, translate }) {
+  let wrappedValidate = function(subject) {
     if (get(subject, whenKey)) {
-      return validate.call(this, { subject, translate });
+      return validate.call(this, subject);
     } else {
       return [];
     }
