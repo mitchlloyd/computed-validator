@@ -4,10 +4,10 @@ import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
 export default validationRule(function({ args: [rule], key }) {
-  let { dependentKeys, fn } = rule(key);
+  let { dependentKeys, validate } = rule(key);
 
-  let negatedFn = function(...args) {
-    let errors = fn.apply(this, args);
+  let negatedValidate = function(...args) {
+    let errors = validate.apply(this, args);
     if (errors.length) {
       return []
     } else {
@@ -17,6 +17,6 @@ export default validationRule(function({ args: [rule], key }) {
 
   return {
     dependentKeys,
-    fn: negatedFn
+    validate: negatedValidate
   };
 })

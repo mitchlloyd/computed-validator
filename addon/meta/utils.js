@@ -1,12 +1,12 @@
 export function metaBlueprintFor(validationRules, key) {
   let dependentKeys = [];
-  let fns = [];
+  let validateFunctions = [];
 
   validationRules.forEach((rule) => {
-    let { dependentKeys, fn } = rule(key);
+    let { dependentKeys, validate } = rule(key);
     dependentKeys.push(...dependentKeys);
-    fns.push(fn);
+    validateFunctions.push(validate);
   });
 
-  return { dependentKeys, fns };
+  return { dependentKeys, validateFunctions };
 }

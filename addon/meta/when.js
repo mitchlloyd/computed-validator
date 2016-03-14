@@ -4,11 +4,11 @@ const { get } = Ember;
 
 export default validationRule(function({ args, key }) {
   let [whenKey, rule] = args;
-  let { dependentKeys, fn } = rule(key);
+  let { dependentKeys, validate } = rule(key);
 
-  let wrappedFn = function({ subject, translate }) {
+  let wrappedValidate = function({ subject, translate }) {
     if (get(subject, whenKey)) {
-      return fn.call(this, { subject, translate });
+      return validate.call(this, { subject, translate });
     } else {
       return [];
     }
@@ -16,6 +16,6 @@ export default validationRule(function({ args, key }) {
 
   return {
     dependentKeys: dependentKeys.concat(whenKey),
-    fn: wrappedFn
+    validate: wrappedValidate
   };
 });

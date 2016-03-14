@@ -4,15 +4,15 @@ import { metaBlueprintFor } from './utils';
 
 export default function metaAll(...validationRules) {
   return function metaAll_getBlueprint(key) {
-    let { dependentKeys, fns } = metaBlueprintFor(validationRules, key);
+    let { dependentKeys, validateFunctions } = metaBlueprintFor(validationRules, key);
 
-    let fn = function() {
-      return flatMap(fns, (fn) => fn.call(this, {
+    let validate = function() {
+      return flatMap(validateFunctions, (fn) => fn.call(this, {
         subject: this.get(SUBJECT_KEY),
         translate: this.get(TRANSLATE_KEY)
       }));
     };
 
-    return { dependentKeys, fn };
+    return { dependentKeys, validate };
   };
 }

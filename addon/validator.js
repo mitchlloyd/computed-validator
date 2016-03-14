@@ -17,8 +17,8 @@ export default function defineValidator(rules) {
   let dependentKeysForIsValid = [];
 
   for (let ruleKey in rules) {
-    let { dependentKeys, fn } = rules[ruleKey](ruleKey);
-    properties[ruleKey] = computedValidation(dependentKeys, fn);
+    let { dependentKeys, validate } = rules[ruleKey](ruleKey);
+    properties[ruleKey] = computedValidation(dependentKeys, validate);
     dependentKeysForIsValid.push(ruleKey);
   }
 
@@ -43,11 +43,11 @@ export function createValidator(subject, rules) {
 }
 
 // Executed in the context of the validator.
-function computedValidation(dependentKeys, fn) {
+function computedValidation(dependentKeys, validate) {
   let subjectDependentKeys = dependentKeys.map((key) => `${SUBJECT_KEY}.${key}`);
 
   return computed(...subjectDependentKeys, function() {
-    let errors = fn.call(this, {
+    let errors = validate.call(this, {
       subject: get(this, SUBJECT_KEY),
       translate: get(this, TRANSLATE_KEY)
     });

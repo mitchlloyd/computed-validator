@@ -6,7 +6,8 @@ const { get } = Ember;
 export default validationRule(function({ args, key }) {
   return {
     dependentKeys: [key],
-    fn({ subject, translate }) {
+
+    validate({ subject, translate }) {
       if (!get(subject, key)) {
         return [translate('validations.required', { property: key })];
       } else {

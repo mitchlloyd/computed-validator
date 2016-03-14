@@ -8,7 +8,8 @@ export default validationRule(function({ args, key }) {
 
   return {
     dependentKeys: [key],
-    fn({ subject, translate }) {
+
+    validate({ subject, translate }) {
       let value = get(subject, key);
 
       if (value >= max) {

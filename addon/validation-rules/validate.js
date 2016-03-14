@@ -5,14 +5,14 @@ const { get } = Ember;
 
 export default validationRule(function({ args, key }) {
   let [dependentKeys, validation] = normalizeArguments(args, key);
-  let fn = function(...args) {
+  let validate = function(...args) {
     return normalizeErrorsResult(validation(...args));
   }
-  return { dependentKeys, fn };
+  return { dependentKeys, validate };
 });
 
 function normalizeArguments(args, defaultKey) {
-  let fn = args.pop();
+  let validate = args.pop();
 
   // There are 3 ways to pass dependent keys
   //
@@ -28,7 +28,7 @@ function normalizeArguments(args, defaultKey) {
     keys = [defaultKey];
   }
 
-  return [keys, fn];
+  return [keys, validate];
 }
 
 function normalizeErrorsResult(errorOrErrors) {
