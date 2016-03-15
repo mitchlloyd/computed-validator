@@ -2,7 +2,7 @@ import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default validationRule(function({ args: [regex], key }) {
+export default validationRule(function([regex], key) {
   return {
     dependentKeys: [key],
 

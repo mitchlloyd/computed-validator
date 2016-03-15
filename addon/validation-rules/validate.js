@@ -3,7 +3,7 @@ import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator';
 import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default validationRule(function({ args, key }) {
+export default validationRule(function(args, key) {
   let [dependentKeys, validation] = normalizeArguments(args, key);
   let validate = function(...args) {
     return normalizeErrorsResult(validation(...args));

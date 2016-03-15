@@ -3,7 +3,7 @@ import { validate } from 'computed-validator';
 import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default validationRule(function({ args: forbiddenValues, key }) {
+export default validationRule(function(forbiddenValues, key) {
   return {
     dependentKeys: [key],
 

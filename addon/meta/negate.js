@@ -3,7 +3,7 @@ import { SUBJECT_KEY } from 'computed-validator';
 import validationRule from 'computed-validator/validation-rule';
 const { get } = Ember;
 
-export default validationRule(function({ args: [rule], key }) {
+export default validationRule(function([rule], key) {
   let { dependentKeys, validate } = rule(key);
 
   let negatedValidate = function(...args) {

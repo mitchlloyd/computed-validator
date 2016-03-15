@@ -9,7 +9,7 @@ export default function validationRule(build) {
     return function(key) {
 
       // Execute the build function to return a validation rule blueprint
-      let { dependentKeys, validate } = build({ args, key, messageOption });
+      let { dependentKeys, validate } = build(args, key);
 
       return {
         dependentKeys,

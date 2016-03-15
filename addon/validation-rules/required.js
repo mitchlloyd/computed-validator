@@ -4,7 +4,7 @@ import ValidationError from 'computed-validator/validation-error';
 import validate from 'computed-validator/validate';
 const { get } = Ember;
 
-export default validationRule(function({ args: { message }, key }) {
+export default validationRule(function({ message }, key) {
   let error = message || new ValidationError('validations.required', { property: key });
 
   return validate(key, function(subject) {
