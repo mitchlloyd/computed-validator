@@ -13,7 +13,12 @@ const TRANSLATIONS = {
   'validations.between': 'must be between {{min}} and {{max}}',
   'validations.between.min-only': 'must be at least {{min}}',
   'validations.between.max-only': 'must be {{max}} or less',
-  'validations.length-between': 'length must be between {{min}} and {{max}}'
+  'validations.length-between': 'length must be between {{min}} and {{max}}',
+  'validations.confirmed': 'must match {{keyToMatch}}',
+  'validations.exclusion': 'is not an allowed value',
+  'validations.integer': 'must be a whole number',
+  'validations.match': 'must match {{regex}}',
+  'validations.no-match': 'must not match {{regex}}'
 }
 
 function getTranslationTemplate(key) {

@@ -6,20 +6,16 @@ import { messageOption } from 'computed-validator/utils';
 const { get } = Ember;
 
 export default validationRule(function([min, max], key) {
-  let error = messageOption(arguments);
-
-  if (!error) {
-    let errorId;
-    if (min === -Infinity) {
-      errorId = 'validations.between.max-only'
-    } else if (max === Infinity) {
-      errorId = 'validations.between.min-only';
-    } else {
-      errorId = 'validations.between';
-    }
-
-    error = new ValidationError(errorId, { min, max });
+  let errorId;
+  if (min === -Infinity) {
+    errorId = 'validations.between.max-only'
+  } else if (max === Infinity) {
+    errorId = 'validations.between.min-only';
+  } else {
+    errorId = 'validations.between';
   }
+
+  let error = new ValidationError(errorId, { min, max });
 
   return validate(key, function(subject) {
     let value = get(subject, key);

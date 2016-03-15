@@ -1,20 +1,16 @@
 import Ember from 'ember';
-import { validate, SUBJECT_KEY } from 'computed-validator';
+import { SUBJECT_KEY } from 'computed-validator';
 import validationRule from 'computed-validator/validation-rule';
+import validate from 'computed-validator/validate';
+import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
 
-export default validationRule(function(args, key) {
-  let keyToMatch = args[0];
+export default validationRule(function([keyToMatch], key) {
+  let error = new ValidationError('validations.confirmed', { key, keyToMatch });
 
-  return {
-    dependentKeys: [key, `${SUBJECT_KEY}.${keyToMatch}`],
-
-    validate(subject) {
-      if (get(subject, key) !== get(subject, keyToMatch)) {
-        return [`must match ${keyToMatch}`];
-      } else {
-        return [];
-      }
+  return validate(key, `${SUBJECT_KEY}.${keyToMatch}`, function(subject) {
+    if (get(subject, key) !== get(subject, keyToMatch)) {
+      return error;
     }
-  };
+  });
 })

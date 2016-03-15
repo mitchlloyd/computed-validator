@@ -10,5 +10,5 @@ test('using exclusion', function(assert) {
     name: exclusion('poop')
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["cannot be one of: poop"]);
+  assert.deepEqual(validator.get('name.errors'), ["is not an allowed value"]);
 });
