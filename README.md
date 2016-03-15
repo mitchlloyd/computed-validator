@@ -4,8 +4,7 @@ Validate objects.
 
 [![Circle CI](https://circleci.com/gh/mitchlloyd/computed-validator.svg?style=shield)](https://circleci.com/gh/mitchlloyd/computed-validator)
 
-**Notice: This Addon isn't ready for use until it handles configurable
-messages**
+**Be aware that this Addon is brand new! Feel free to run it through it's paces and help by reporting issues.**
 
 ## Installation
 
@@ -71,7 +70,6 @@ import {
   required,
   lengthBetween,
   noMatch,
-  when,
   confirmed,
   sequence,
   all,
@@ -81,9 +79,10 @@ import {
 export default Ember.Component.extend({
   validator: computedValidator('user', {
     name: all(required(), lengthBetween(3, Infinity), noMatch(/mitch/)),
-    dogName: when('hasDog', required({
-      message: "If you have a dog please tell us its name!"
-    })),
+    dogName: required({
+      message: "If you have a dog please tell us its name!",
+      when: 'hasDog'
+    }),
     password: confirmed('passwordConfirmation'),
     age: sequence(integer(), between(15, 150)),
     city: all(
@@ -96,13 +95,10 @@ export default Ember.Component.extend({
 });
 ```
 
-## The `validate` primitive
+## Using `validate`
 
-The core of Computed Validator is the `validate` function. You can use this to
-write one off validations for a single use case or write abstract, reusable
-validation rules.
-
-You can treat them as a basic computed property.
+You can use the `validate` validation rule to write one off validations that
+don't need to be reused across validators. They work like computed properties.
 
 ```javascript
 export default Ember.Component.extend({
@@ -114,24 +110,6 @@ export default Ember.Component.extend({
     })
   });
 });
-```
-
-Or you can use them to create abstract validation rules. In this case you can
-use the `subject` and validation `key` to handle general cases. Here is the
-implementation of the `required` validation.
-
-```javascript
-import Ember from 'ember';
-import { validate } from 'computed-validator';
-const { get } = Ember;
-
-export default function required() {
-  return validate(function({ subject, key }) {
-    if (!get(subject, key)) {
-      return "is required";
-    }
-  });
-}
 ```
 
 Anything you can do with a computed property, you can also do with `validate`.
@@ -149,45 +127,7 @@ export default Ember.Component.extend({
 });
 ```
 
-The first dependent key arguments of `validate` can be:
-
-1. Omitted. In this case, the key used to identify the validation will be used as
-   the dependent key.
-
-    ```javascript
-    export default Ember.Component.extend({
-      validator: computedValidator('user', {
-        // 'name' is the default key
-        name: validate(function() {
-          if (!this.get('name')) {
-            return 'You must provide a name';
-          }
-        })
-      });
-    });
-    ```
-
-2. A list of dependent keys — just like a computed property.
-
-3. A function that accepts the key used to identify the validation and returns
-   an array of dependent keys. For instance, the `confirmed` validation rule
-   uses a function to return the identifier key
-
-    ```javascript
-    import Ember from 'ember';
-    import { validate } from 'computed-validator';
-    const { get } = Ember;
-
-    export default function confirmed(keyToMatch) {
-      return validate(key => [key, keyToMatch], function({ subject, key }) {
-        if (get(subject, key) !== get(subject, keyToMatch)) {
-          return `must match ${keyToMatch}`;
-        }
-      });
-    }
-    ```
-
 ## Roadmap
 
-* Handling dynamic messages
+* Document existing rules
 * Handling async (e.g. ajax) validations
