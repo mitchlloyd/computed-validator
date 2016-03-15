@@ -28,3 +28,8 @@ export function firstResult(array, fn) {
     }
   }
 }
+
+export function messageOption(args) {
+  let lastArg = args[args.length - 1];
+  return lastArg && lastArg.message;
+}

@@ -1,24 +1,31 @@
 import Ember from 'ember';
-import { validate } from 'computed-validator';
+import validate from 'computed-validator/validate';
 import validationRule from 'computed-validator/validation-rule';
+import ValidationError from 'computed-validator/validation-error';
+import { messageOption } from 'computed-validator/utils';
 const { get } = Ember;
 
-export default validationRule(function(args, key) {
-  let [min, max] = args;
+export default validationRule(function([min, max], key) {
+  let error = messageOption(arguments);
 
-  return {
-    dependentKeys: [key],
-
-    validate(subject) {
-      let value = get(subject, key);
-
-      if (value >= max) {
-        return [`must be less than or equal to ${max}`];
-      } else if (value <= min) {
-        return [`must be greater than or equal to ${min}`];
-      } else {
-        return [];
-      }
+  if (!error) {
+    let errorId;
+    if (min === -Infinity) {
+      errorId = 'validations.between.max-only'
+    } else if (max === Infinity) {
+      errorId = 'validations.between.min-only';
+    } else {
+      errorId = 'validations.between';
     }
-  };
+
+    error = new ValidationError(errorId, { min, max });
+  }
+
+  return validate(key, function(subject) {
+    let value = get(subject, key);
+
+    if (value >= max || value <= min) {
+      return error
+    }
+  });
 })

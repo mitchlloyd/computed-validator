@@ -10,5 +10,5 @@ test('using lengthBetween', function(assert) {
     name: lengthBetween(4, 5)
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["must be greater than or equal to 4"]);
+  assert.deepEqual(validator.get('name.errors'), ["length must be between 4 and 5"]);
 });

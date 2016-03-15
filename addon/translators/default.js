@@ -9,7 +9,11 @@ export default function emberI18nTranslator() {
 }
 
 const TRANSLATIONS = {
-  'validations.required': 'is required'
+  'validations.required': 'is required',
+  'validations.between': 'must be between {{min}} and {{max}}',
+  'validations.between.min-only': 'must be at least {{min}}',
+  'validations.between.max-only': 'must be {{max}} or less',
+  'validations.length-between': 'length must be between {{min}} and {{max}}'
 }
 
 function getTranslationTemplate(key) {
