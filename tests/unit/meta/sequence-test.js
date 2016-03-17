@@ -1,5 +1,9 @@
 import { module, test } from 'qunit';
-import { createValidator, sequence, integer, required } from 'computed-validator';
+import { createValidator, sequence, required, integer } from 'computed-validator';
+import asyncNoErrorsRule from '../helpers/async-rule';
+import { nextValidationState } from 'computed-validator/validation-state';
+import Ember from 'ember';
+const { set } = Ember;
 
 module("Unit | meta | sequence");
 
@@ -11,4 +15,52 @@ test('using sequence', function(assert) {
   });
 
   assert.deepEqual(validator.get('age.errors'), ['is required']);
+
+  set(user, 'age', 'hello');
+
+  assert.deepEqual(validator.get('age.errors'), ['must be a whole number']);
+
+  set(user, 'age', 1);
+
+  assert.deepEqual(validator.get('age.errors'), []);
+});
+
+test('using sequence - passing async validation rule after sync validation rule', function(assert) {
+  assert.expect(5);
+
+  let user = { name: null };
+
+  let validator = createValidator(user, {
+    name: sequence(required(), asyncNoErrorsRule())
+  });
+
+  assert.deepEqual(validator.get('name.errors'), ['is required'], "gets first error");
+
+  set(user, 'name', "Ellie");
+
+  assert.deepEqual(validator.get('name.errors'), [], "no error messages");
+  assert.equal(validator.get('name.isValidating'), true, "validation rule isValidating");
+
+  return nextValidationState(validator.get('name')).then(function(validation) {
+    assert.deepEqual(validation.errors, [], "There are no errors");
+    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  });
+});
+
+test('using sequence - passing async validation rule before sync validation rule', function(assert) {
+  assert.expect(4);
+
+  let user = { age: null };
+
+  let validator = createValidator(user, {
+    age: sequence(asyncNoErrorsRule(), integer())
+  });
+
+  assert.deepEqual(validator.get('age.errors'), [], "no error messages");
+  assert.equal(validator.get('age.isValidating'), true, "validation rule isValidating");
+
+  return nextValidationState(validator.get('age')).then(function(validation) {
+    assert.deepEqual(validation.errors, ['must be a whole number'], "gets first error");
+    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  });
 });

@@ -7,10 +7,7 @@ export default validationRule(function(validationRules, key) {
   let { dependentKeys, validateFunctions } = metaBlueprintFor(validationRules, key);
 
   let validate = function() {
-    return flatMap(validateFunctions, (fn) => fn.call(this, {
-      subject: this.get(SUBJECT_KEY),
-      translate: this.get(TRANSLATE_KEY)
-    }));
+    return flatMap(validateFunctions, (fn) => fn.call(this, this.get(SUBJECT_KEY)));
   };
 
   return { dependentKeys, validate };

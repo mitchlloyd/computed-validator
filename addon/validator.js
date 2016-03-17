@@ -1,10 +1,10 @@
 import Ember from 'ember';
-import { every } from 'computed-validator/utils';
+import { every, some, unique } from 'computed-validator/utils';
 import ValidationState from 'computed-validator/validation-state';
 import defaultTranslator from 'computed-validator/translators/default';
 import emberI18nTranslator from 'computed-validator/translators/ember-i18n';
 import { firstResult } from 'computed-validator/utils';
-const { computed, get } = Ember;
+const { computed, get, RSVP } = Ember;
 const Validator = Ember.Object.extend();
 const translators = [emberI18nTranslator, defaultTranslator]
 
@@ -18,22 +18,27 @@ export default function defineValidator(rules) {
 
   for (let ruleKey in rules) {
     let { dependentKeys, validate } = rules[ruleKey](ruleKey);
-    properties[ruleKey] = computedValidation(dependentKeys, validate);
+    properties[ruleKey] = computedValidation(unique(dependentKeys), validate, ruleKey);
     dependentKeysForIsValid.push(ruleKey);
   }
 
   properties.isValid = computed(...dependentKeysForIsValid, function() {
-    let validator = this;
-
-    return every(dependentKeysForIsValid, function(dk) {
-      return validator.get(dk).isValid;
+    return every(dependentKeysForIsValid, (dk) => {
+      return this.get(dk).isValid;
     });
   });
+
+  properties.isValidating = computed(...dependentKeysForIsValid, function() {
+    return some(dependentKeysForIsValid, (dk) => {
+      return this.get(dk).isValidating;
+    });
+  })
 
   return Validator.extend(properties, {
     init() {
       this._super(...arguments);
       this[TRANSLATE_KEY] = lookupTranslateFunction(this[OWNER_KEY]);
+      this.pendingPromiseCount = 0;
     }
   });
 }
@@ -42,25 +47,28 @@ export function createValidator(subject, rules) {
   return defineValidator(rules).create({ [SUBJECT_KEY]: subject });
 }
 
-// Executed in the context of the validator.
-function computedValidation(dependentKeys, validate) {
+function computedValidation(dependentKeys, validate, ruleKey) {
   let subjectDependentKeys = dependentKeys.map((key) => `${SUBJECT_KEY}.${key}`);
+  let pendingValidationCount = 0;
+  let syncErrors = [];
+  let translate;
 
-  return computed(...subjectDependentKeys, function() {
-    let translate = get(this, TRANSLATE_KEY);
-    let errors = validate.call(this, get(this, SUBJECT_KEY));
+  // Executed in the context of the validator.
+  return computed(...subjectDependentKeys, {
+    get() {
+      translate = get(this, TRANSLATE_KEY);
+      let errors = validate.call(this, get(this, SUBJECT_KEY));
+      return new ValidationState(errors, translate);
+    },
 
-    let translatedErrors = errors.map(function(error) {
-      if (typeof error === 'string') {
-        return error;
-      } else {
-        return translate(error.id, error.properties);
-      }
-    });
-
-    return new ValidationState(translatedErrors);
+    set(key, newErrors) {
+      syncErrors.push(...newErrors);
+      let translatedErrors = translateErrors(syncErrors, translate);
+      return new ValidationState(translatedErrors, pendingValidationCount);
+    }
   });
 }
+
 
 // There are three ways to get a translate function:
 //
