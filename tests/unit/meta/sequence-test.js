@@ -7,7 +7,7 @@ const { set } = Ember;
 
 module("Unit | meta | sequence");
 
-test('using sequence', function(assert) {
+test('synchronous sequence', function(assert) {
   let user = { age: null };
 
   let validator = createValidator(user, {
@@ -25,7 +25,7 @@ test('using sequence', function(assert) {
   assert.deepEqual(validator.get('age.errors'), []);
 });
 
-test('using sequence - async validation rule with no errors after sync validation rule', function(assert) {
+test('async sequence - async validation rule with no errors after sync validation rule', function(assert) {
   assert.expect(5);
 
   let user = { name: null };
@@ -47,7 +47,7 @@ test('using sequence - async validation rule with no errors after sync validatio
   });
 });
 
-test('using sequence - async validation rule with no errors before sync validation rule', function(assert) {
+test('async sequence - async validation rule with no errors before sync validation rule', function(assert) {
   assert.expect(4);
 
   let user = { age: null };
@@ -65,7 +65,7 @@ test('using sequence - async validation rule with no errors before sync validati
   });
 });
 
-test('using sequence - async validation rule with errors before sync validation rule', function(assert) {
+test('async sequence - async validation rule with errors before sync validation rule', function(assert) {
   assert.expect(4);
 
   let user = { age: null };
@@ -83,7 +83,7 @@ test('using sequence - async validation rule with errors before sync validation 
   });
 });
 
-test('using sequence - async validation rule with errors after sync validation rule', function(assert) {
+test('async sequence - async validation rule with errors after sync validation rule', function(assert) {
   assert.expect(5);
 
   let user = { name: null };
