@@ -62,7 +62,11 @@ function getNextErrorResult(subject, validateFunctions) {
     // rules onto the last promise.
     if (Errors.allPending(errors)) {
       let lastPromise = errors.pop().then((errors) => {
-        return getNextErrorResult(subject, validateFunctions.slice(i + 1));
+        if (errors.length) {
+          return errors;
+        } else {
+          return getNextErrorResult(subject, validateFunctions.slice(i + 1));
+        }
       });
       errors.push(lastPromise);
       return errors;
