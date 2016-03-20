@@ -10,8 +10,7 @@ export default validationRule(function(args, key) {
   let { dependentKeys, validateFunctions } = metaBlueprintFor(args, key);
 
   let validate = function(subject) {
-    // TODO: Do we really need the context here?
-    return getNextErrorResult.call(this, subject, validateFunctions);
+    return getNextErrorResult(subject, validateFunctions);
   };
 
   return { dependentKeys, validate };
@@ -46,7 +45,7 @@ export default validationRule(function(args, key) {
 */
 function getNextErrorResult(subject, validateFunctions) {
   return firstResult(validateFunctions, function(fn, i) {
-    let errors = fn.call(this, subject);
+    let errors = fn(subject);
 
     // No errors, so check the next result
     if (!errors.length) {
@@ -63,7 +62,7 @@ function getNextErrorResult(subject, validateFunctions) {
     // rules onto the last promise.
     if (Errors.allPending(errors)) {
       let lastPromise = errors.pop().then((errors) => {
-        return getNextErrorResult.call(this, subject, validateFunctions.slice(i + 1));
+        return getNextErrorResult(subject, validateFunctions.slice(i + 1));
       });
       errors.push(lastPromise);
       return errors;
