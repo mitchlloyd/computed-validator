@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { createValidator, sequence, required, integer } from 'computed-validator';
-import asyncNoErrorsRule from '../helpers/async-rule';
+import asyncRule from '../helpers/async-rule';
 import { nextValidationState } from 'computed-validator/validation-state';
 import Ember from 'ember';
 const { set } = Ember;
@@ -31,7 +31,7 @@ test('using sequence - passing async validation rule after sync validation rule'
   let user = { name: null };
 
   let validator = createValidator(user, {
-    name: sequence(required(), asyncNoErrorsRule())
+    name: sequence(required(), asyncRule([]))
   });
 
   assert.deepEqual(validator.get('name.errors'), ['is required'], "gets first error");
@@ -53,7 +53,7 @@ test('using sequence - passing async validation rule before sync validation rule
   let user = { age: null };
 
   let validator = createValidator(user, {
-    age: sequence(asyncNoErrorsRule(), integer())
+    age: sequence(asyncRule([]), integer())
   });
 
   assert.deepEqual(validator.get('age.errors'), [], "no error messages");

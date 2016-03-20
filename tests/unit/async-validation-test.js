@@ -1,9 +1,7 @@
-import Ember from 'ember';
 import { module, test } from 'qunit';
-import { createValidator, validate } from 'computed-validator';
+import { createValidator } from 'computed-validator';
 import asyncRule from './helpers/async-rule';
 import { nextValidationState } from 'computed-validator/validation-state';
-const { RSVP } = Ember;
 
 module("Unit | async-validation");
 

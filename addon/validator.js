@@ -4,7 +4,8 @@ import ValidationState from 'computed-validator/validation-state';
 import defaultTranslator from 'computed-validator/translators/default';
 import emberI18nTranslator from 'computed-validator/translators/ember-i18n';
 import { firstResult } from 'computed-validator/utils';
-const { computed, get, RSVP } = Ember;
+import { nextValidationState } from 'computed-validator/validation-state';
+const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
 const translators = [emberI18nTranslator, defaultTranslator]
 
@@ -49,22 +50,25 @@ export function createValidator(subject, rules) {
 
 function computedValidation(dependentKeys, validate, ruleKey) {
   let subjectDependentKeys = dependentKeys.map((key) => `${SUBJECT_KEY}.${key}`);
-  let pendingValidationCount = 0;
-  let syncErrors = [];
-  let translate;
 
   // Executed in the context of the validator.
   return computed(...subjectDependentKeys, {
     get() {
-      translate = get(this, TRANSLATE_KEY);
+      let translate = get(this, TRANSLATE_KEY);
       let errors = validate.call(this, get(this, SUBJECT_KEY));
-      return new ValidationState(errors, translate);
+      let state = new ValidationState(errors, translate);
+
+      if (state.isValidating) {
+        nextValidationState(state).then((nextState) => {
+          this.set(ruleKey, nextState);
+        });
+      }
+
+      return state;
     },
 
-    set(key, newErrors) {
-      syncErrors.push(...newErrors);
-      let translatedErrors = translateErrors(syncErrors, translate);
-      return new ValidationState(translatedErrors, pendingValidationCount);
+    set(key, newState) {
+      return newState;
     }
   });
 }
