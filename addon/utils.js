@@ -1,3 +1,5 @@
+import Ember from 'ember';
+
 export function every(array, predicate) {
   let index = -1;
   let length = array.length;
@@ -8,6 +10,18 @@ export function every(array, predicate) {
     }
   }
   return true;
+}
+
+export function some(array, predicate) {
+  let index = -1;
+  let length = array.length;
+
+  while (++index < length) {
+    if (predicate(array[index])) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function flatMap(array, callback) {
@@ -21,7 +35,7 @@ export function firstResult(array, fn) {
   let length = array.length;
 
   while (++index < length) {
-    let result = fn(array[index]);
+    let result = fn(array[index], index);
 
     if (result) {
       return result;
@@ -32,4 +46,47 @@ export function firstResult(array, fn) {
 export function messageOption(args) {
   let lastArg = args[args.length - 1];
   return lastArg && lastArg.message;
+}
+
+export function unique(array) {
+  let ret = [];
+
+  array.forEach((k) => {
+    if (ret.indexOf(k) < 0) {
+      ret.push(k);
+    }
+  });
+
+  return ret;
+}
+
+export function assign(obj, properties) {
+  let keys = Object.keys(properties);
+  keys.forEach(function(key) {
+    obj[key] = properties[key];
+  });
+  return obj;
+}
+
+export function flatten(array) {
+  let result = [];
+  let index = -1;
+
+  while (++index < array.length) {
+    var value = array[index];
+    if (Array.isArray(value)) {
+      result.push(...value);
+    } else {
+      result.push(value);
+    }
+  }
+  return result;
+}
+
+export function last(array) {
+  return array[array.length - 1];
+}
+
+export function some(array, predicate) {
+  return firstResult(array, predicate) || false;
 }

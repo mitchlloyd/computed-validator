@@ -13,11 +13,17 @@ export default function(...args) {
 function normalizeErrorsResult(errorOrErrors) {
   if (!errorOrErrors) {
     return [];
-  } else if (typeof errorOrErrors === 'string' || errorOrErrors instanceof ValidationError) {
+  } else if (isValidSingleErrorType(errorOrErrors)) {
     return [errorOrErrors];
   } else if (Array.isArray(errorOrErrors)) {
-    return [errorOrErrors];
+    return errorOrErrors;
   } else {
     throw new Error(`invalid return value from validate: ${errorOrErrors}`);
   }
+}
+
+function isValidSingleErrorType(error) {
+  return typeof error === 'string' ||
+         error instanceof ValidationError ||
+         typeof error.then === 'function'
 }
