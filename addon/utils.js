@@ -60,14 +60,6 @@ export function unique(array) {
   return ret;
 }
 
-export function assign(obj, properties) {
-  let keys = Object.keys(properties);
-  keys.forEach(function(key) {
-    obj[key] = properties[key];
-  });
-  return obj;
-}
-
 export function flatten(array) {
   let result = [];
   let index = -1;

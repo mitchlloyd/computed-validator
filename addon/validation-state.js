@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { assign, flatten } from 'computed-validator/utils';
+import { flatten } from 'computed-validator/utils';
 const { RSVP } = Ember;
 
 export default class ValidationState {

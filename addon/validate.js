@@ -1,4 +1,5 @@
 import ValidationError from 'computed-validator/validation-error';
+import Errors from 'computed-validator/errors';
 
 export default function(...args) {
   let fn = args.pop();
@@ -13,7 +14,7 @@ export default function(...args) {
 function normalizeErrorsResult(errorOrErrors) {
   if (!errorOrErrors) {
     return [];
-  } else if (isValidSingleErrorType(errorOrErrors)) {
+  } else if (Errors.isSingleType(errorOrErrors)) {
     return [errorOrErrors];
   } else if (Array.isArray(errorOrErrors)) {
     return errorOrErrors;
@@ -22,8 +23,3 @@ function normalizeErrorsResult(errorOrErrors) {
   }
 }
 
-function isValidSingleErrorType(error) {
-  return typeof error === 'string' ||
-         error instanceof ValidationError ||
-         typeof error.then === 'function'
-}

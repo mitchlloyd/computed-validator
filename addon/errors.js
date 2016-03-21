@@ -12,5 +12,11 @@ export default {
     return every(errors, function(error) {
       return typeof error.then === 'function';
     });
+  },
+
+  isSingleType(error) {
+    return typeof error === 'string' ||
+           error instanceof ValidationError ||
+           typeof error.then === 'function'
   }
 }
