@@ -1,8 +1,11 @@
-import defineValidator, {
+import {
+  defineValidator,
   createValidator,
-  SUBJECT_KEY,
-  OWNER_KEY
 } from 'computed-validator/validator';
+import {
+  SUBJECT_KEY,
+  TRANSLATE_KEY
+} from 'computed-validator/validator/private-keys';
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
@@ -13,7 +16,7 @@ import match from 'computed-validator/validation-rules/match';
 import noMatch from 'computed-validator/validation-rules/no-match';
 import validate from 'computed-validator/validation-rules/validate';
 
-import computedValidator from 'computed-validator/computed-macros/computed-validator';
+import computedValidator from 'computed-validator/integrations/ember/computed-validator-macro';
 
 import onProperty from 'computed-validator/meta/on-property';
 import all from 'computed-validator/meta/all';
@@ -21,8 +24,9 @@ import sequence from 'computed-validator/meta/sequence';
 import when from 'computed-validator/meta/when';
 import negate from 'computed-validator/meta/negate';
 
-export default defineValidator;
+export default computedValidator;
 export {
+  defineValidator,
   required,
   integer,
   between,
@@ -40,5 +44,5 @@ export {
   negate,
   createValidator,
   SUBJECT_KEY,
-  OWNER_KEY
+  TRANSLATE_KEY
 };
