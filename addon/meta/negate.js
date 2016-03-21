@@ -1,13 +1,26 @@
-import Ember from 'ember';
-import { SUBJECT_KEY } from 'computed-validator';
 import validationRule from 'computed-validator/validation-rule';
-const { get } = Ember;
 
+/**
+ * A validation rule that inverts the validity of another rule.
+ *
+ * This rule uses another's validate function to create a new, negated rule.
+ * When the original rule would have returned errors the new rule returns none.
+ * When the original rule returns no errors the new rule returns an error.
+ *
+ * This rule does not currently support negating asynchronous validation rules,
+ * but it should be pretty simple to add if someone finds it useful.
+ *
+ * For practical use, you'll want to provide a message option to this rule
+ * so that it can display a reasonable error message.
+ *
+ * @param {function} validationRule - A validation rule to be negated
+ * @return {object} validationBlueprint
+ */
 export default validationRule(function([rule], key) {
   let { dependentKeys, validate } = rule(key);
 
-  let negatedValidate = function(...args) {
-    let errors = validate.apply(this, args);
+  let negatedValidate = function(subject) {
+    let errors = validate(subject);
     if (errors.length) {
       return []
     } else {

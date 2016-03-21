@@ -6,8 +6,33 @@ import ValidationError from 'computed-validator/validation-error';
 import Errors from 'computed-validator/errors';
 const { RSVP } = Ember;
 
-export default validationRule(function(args, key) {
-  let { dependentKeys, validateFunctions } = metaBlueprintFor(args, key);
+/**
+ * This rule takes a list of validation rule and returns a new rule that executes
+ * each validation rule in order. One might use this rule for two reasons:
+ *
+ * 1. To specify the exact order to present validation rules.
+ *
+ * For instance if someone's password is required and must be complex we could
+ * use sequence like this:
+ *
+ *     sequence(required(), complexity())
+ *
+ * This would allow us to show the "required" message first and then show a list of
+ * complexity messages next by just using the `validator.name.errors` path.
+ *
+ * 2. To wait on long-running, asynchronous validations.
+ *
+ * A case for this might be picking a username where we want to check the
+ * length first and then, only after that requirement has been met, check with
+ * the server to see if that username has been taken.
+ *
+ *     sequence(required(), length(), uniqueness())
+ *
+ * @param {array} validationRules - A list of validation rules to exectue in sequence
+ * @return {object} validationBlueprint
+ */
+export default validationRule(function(rules, key) {
+  let { dependentKeys, validateFunctions } = metaBlueprintFor(rules, key);
 
   let validate = function(subject) {
     return getNextErrorResult(subject, validateFunctions);
@@ -17,31 +42,26 @@ export default validationRule(function(args, key) {
 });
 
 /*
-  If there are any errors returned from a validation in sequence we don't have
-  to worry about any validations after that. However, if all the validation
-  errors from a validation are promises, then it might later resolve to no
-  errors. In that case we chain the remaining validation calls onto that
-  promise so they can be evaluated when that promise resolves.
+  If there are any synchronous errors returned from a validation in sequence we
+  don't have to worry about any validations after that. However, if all the
+  validation errors from a validation are promises, then it might later resolve
+  to an empty set of errors. In that case we chain the remaining validation
+  calls onto the last promise so they can be evaluated if that promise
+  resolves with no errors.
 
+  Examples:
 
-  [ValidationError, Promise]
+  [validationError, promise] - In this case there is already a known error, so
+  we can return the errors, knowing that we won't have to evaluate the next
+  result.
 
-  In this case there is already a known error, so we can return the errors, knowing
-  that we won't have to evaluate the next result.
+  [promise, validationError] - In this case we can just return the errors. The
+  first error in the sequence may change to the Promise result, but we know
+  that there is nothing that needs to be evaluated after the known
+  ValidationError.
 
-
-  [Promise, ValidationError]
-
-  In this case we can just return the errors. The first error in the sequence may
-  change to the Promise result, but we know that there is nothing that needs to be
-  evaluated after the known ValidationError.
-
-
-  [Promise, Promise]
-
-  This is the case we need to handle the cast where each Promise returns no
-  errors. Here we'll chain the next validations onto the last Promise for evaluation
-  after that promise has resolved.
+  [promise, promise] - Here we need to handle the case where each Promise
+  returns no errors.
 */
 function getNextErrorResult(subject, validateFunctions) {
   return firstResult(validateFunctions, function(fn, i) {
