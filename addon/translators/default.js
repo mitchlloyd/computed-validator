@@ -1,4 +1,4 @@
-export default function emberI18nTranslator() {
+export default function defaultTranslator() {
   return function(key, properties) {
     let template = getTranslationTemplate(key);
 
