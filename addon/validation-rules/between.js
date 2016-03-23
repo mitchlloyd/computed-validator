@@ -19,8 +19,12 @@ export default validationRule(function([min, max], key) {
 
   return validate(key, function(subject) {
     let value = get(subject, key);
+    let numericValue = +value;
 
-    if (value >= max || value <= min) {
+    if (numericValue != value || // jshint ignore:line
+        numericValue > max ||
+        numericValue < min) {
+
       return error
     }
   });

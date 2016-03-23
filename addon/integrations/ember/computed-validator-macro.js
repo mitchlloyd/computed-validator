@@ -16,6 +16,12 @@ export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
 
   return computed(subjectKey, function() {
+    let subject = this.get(subjectKey);
+
+    if (!subject) {
+      return;
+    }
+
     return Validator.create({
       [SUBJECT_KEY]: this.get(subjectKey),
       [OWNER_KEY]: getOwner(this)

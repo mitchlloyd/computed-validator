@@ -4,13 +4,23 @@
   Inside of your project directory type:
 </p>
 
-<p>
-  <code>
-    ember install computed-validator
-  </code>
-</p>
+{{code-snippet name="install.sh"}}
+
+
+<h2>Create a Validator</h2>
 
 <p>
-  Then use the <code>ember-computed</code> module to access this library's
-  code.
+  Use the <code>ember-computed</code> module to access this library's code. For
+  instance, let's say that you have a name field with a minimum length
+  and an age field that should be an integer.
 </p>
+
+<div class="p-a-2">
+  {{simple-age-and-name}}
+</div>
+
+<p>
+  This is the component that supports this validation.
+</p>
+
+{{code-snippet name="simple-name-and-age.js"}}
