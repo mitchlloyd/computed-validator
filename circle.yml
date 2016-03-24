@@ -7,3 +7,8 @@ dependencies:
     - npm install
     - npm install bower
     - node_modules/.bin/bower install
+
+general:
+  branches:
+    ignore:
+      - gh-pages
