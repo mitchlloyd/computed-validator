@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { defineValidator, SUBJECT_KEY } from 'computed-validator';
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
+import { CONTEXT_KEY } from 'computed-validator/validator/private-keys';
 const { computed, getOwner } = Ember;
 
 /**
@@ -24,7 +25,8 @@ export default function(subjectKey, rules) {
 
     return Validator.create({
       [SUBJECT_KEY]: this.get(subjectKey),
-      [OWNER_KEY]: getOwner(this)
+      [OWNER_KEY]: getOwner(this),
+      [CONTEXT_KEY]: this
     });
   });
 }

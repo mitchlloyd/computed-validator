@@ -3,7 +3,7 @@ import { every, some, unique } from 'computed-validator/utils';
 import ValidationState from 'computed-validator/validation-state';
 import { nextValidationState } from 'computed-validator/validation-state';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
-import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator/private-keys';
+import { SUBJECT_KEY, TRANSLATE_KEY, CONTEXT_KEY } from 'computed-validator/validator/private-keys';
 const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
 
@@ -73,7 +73,8 @@ function computedValidation({ dependentKeys, validate }) {
   return computed(...subjectDependentKeys, {
     get(key) {
       let translate = get(this, TRANSLATE_KEY);
-      let errors = validate.call(this, get(this, SUBJECT_KEY));
+      let context = get(this, CONTEXT_KEY);
+      let errors = validate.call(context, get(this, SUBJECT_KEY));
       let state = new ValidationState(errors, translate);
 
       if (state.isValidating) {
