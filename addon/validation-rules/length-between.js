@@ -5,7 +5,7 @@ import validationRule from 'computed-validator/validation-rule';
 
 export default validationRule(function([min, max], defaultKey) {
   let errorId;
-  if (min === -Infinity) {
+  if (min === -Infinity || min === 0) {
     errorId = 'validations.length-between.max-only'
   } else if (max === Infinity) {
     errorId = 'validations.length-between.min-only';
@@ -14,5 +14,5 @@ export default validationRule(function([min, max], defaultKey) {
   }
 
   let message = new ValidationError(errorId, { min, max });
-  return onProperty(`${defaultKey}.length`, between(min, max), { message })();
+  return onProperty(`${defaultKey}.length`, between(min, max, { fallbackValue: 0, message }))();
 });
