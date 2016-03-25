@@ -1,3 +1,4 @@
+// BEGIN-SNIPPET required-validation-rule
 import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
 import ValidationError from 'computed-validator/validation-error';
@@ -13,3 +14,4 @@ export default validationRule(function(_, key) {
     }
   });
 })
+// END-SNIPPET

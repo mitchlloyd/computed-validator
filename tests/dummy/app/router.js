@@ -9,6 +9,7 @@ Router.map(function() {
   this.route('quick-start');
   this.route('included-validation-rules');
   this.route('meta-validation-rules');
+  this.route('creating-validation-rules');
 });
 
 export default Router;

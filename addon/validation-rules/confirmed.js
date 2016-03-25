@@ -1,3 +1,4 @@
+// BEGIN-SNIPPET confirmed-validation-rule
 import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
 import validate from 'computed-validator/validate';
@@ -13,3 +14,4 @@ export default validationRule(function([keyToMatch], key) {
     }
   });
 })
+// END-SNIPPET

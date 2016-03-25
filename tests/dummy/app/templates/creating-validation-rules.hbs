@@ -1,0 +1,57 @@
+<h2>Creating Validation Rules</h2>
+
+<p>
+  A major goal of Computed Validator is to make custom rules
+  easy to create and simple to compose. I'm still iterating on these
+  APIs and would love to hear your feedback!
+</p>
+
+<h3>Using <code>validationRule</code> and <code>validate</code></h3>
+
+<p>
+  To create your own validation rule, you'll want to import
+  <code>validationRule</code> and <code>validate</code>. As an example,
+  here is the included <code>confirmed</code> validation rule.
+</p>
+
+{{code-snippet name="confirmed-validation-rule.js"}}
+
+<p>
+  <code>validationRule</code> takes a callback whose first
+  argument is the <i>arguments passed when the rule was declared</i> and whose
+  second argument is the <i>key representing the validation rule</i>. For
+  instance, in the following example the first argument would be an array
+  containing the string "password" (<code>['password']</code>) and the
+  second argument would be the string "passwordConfirmation".
+</p>
+
+{{code-snippet name="confirmed-example-validator.js"}}
+
+<p>
+  Ultimately a <code>vadlidationRule</code> call must return an object
+  containing an array of <code>dependentKeys</code> and a <code>validate</code>
+  function. Something like this would work:
+</p>
+
+{{code-snippet name="validation-rule-response.js"}}
+
+<p>
+  But the <code>validate</code> function makes this a little more concise.
+</p>
+
+{{code-snippet name="validate-usage.js"}}
+
+<h3>Returning a <code>Validation Error</code></h3>
+
+<p>
+  Returning a <code>ValidationError</code> instead of a string gives
+  Computed Validator a change to translate your error message before
+  showing it in your template.
+</p>
+
+<p>
+  <code>ValidationError</code> is a JavaScript class. Initialize it with
+  a translation key and an object containing properties for the translation.
+</p>
+
+{{code-snippet name="validation-error-usage.js"}}
