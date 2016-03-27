@@ -9,6 +9,7 @@ export default function defaultTranslator() {
 }
 
 const TRANSLATIONS = {
+  // BEGIN-SNIPPET default-translations
   'validations.required': 'is required',
   'validations.between': 'must be between {{min}} and {{max}}',
   'validations.between.min-only': 'must be at least {{min}}',
@@ -21,6 +22,7 @@ const TRANSLATIONS = {
   'validations.integer': 'must be a whole number',
   'validations.match': 'must match {{regex}}',
   'validations.no-match': 'must not match {{regex}}'
+  // END-SNIPPET
 }
 
 function getTranslationTemplate(key) {

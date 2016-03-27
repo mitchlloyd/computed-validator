@@ -44,7 +44,7 @@ export default Ember.Component.extend({
     <p class="field-errors">{{validator.groupCount.errors}}</p>
   `,
 
-  // BEGIN-SNIPPET required-example-validator
+  // BEGIN-SNIPPET validate-example-validator
   validator: computedValidator('user', {
     groupCount: validate('groups.length', function(subject) {
       if (get(subject, 'groups.length') !== 2) {

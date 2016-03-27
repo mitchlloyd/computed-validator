@@ -35,13 +35,21 @@ function handleMessageOption({ dependentKeys, validate }, options) {
 
     validate(...args) {
       if (validate(...args).length) {
-        return [message];
+        return [getMessage(message, this)];
       } else {
         return [];
       }
     }
   };
 };
+
+function getMessage(message, context) {
+  if (typeof message === 'function') {
+    return message(context);
+  } else {
+    return message;
+  }
+}
 
 function handleWhenOption({ dependentKeys, validate }, options) {
   let whenKey = options.when;
