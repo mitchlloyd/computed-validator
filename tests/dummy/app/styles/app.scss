@@ -1,5 +1,7 @@
 @import 'bootstrap';
+
 @import 'prose';
+@import 'utilities';
 @import 'components/logo';
 @import 'components/hairline';
 @import 'components/field-errors';
@@ -8,4 +10,5 @@
 
 body {
   font-family: 'Merriweather', serif;
+  overflow-x: hidden;
 }

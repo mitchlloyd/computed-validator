@@ -1,0 +1,18 @@
+.float-left-xs {
+  @include media-breakpoint-up(xs) {
+    float: left !important;
+  }
+}
+
+.float-right-sm {
+  @include media-breakpoint-up(sm) {
+    float: right !important;
+  }
+}
+
+.full-width {
+  margin-left: -9999rem;
+  padding-left: 9999rem;
+  padding-right: 9999rem;
+  margin-right: -9999rem;
+}
