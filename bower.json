@@ -4,6 +4,7 @@
     "ember": "~2.3.1",
     "ember-cli-shims": "0.1.0",
     "ember-cli-test-loader": "0.2.2",
-    "ember-qunit-notifications": "0.1.0"
+    "ember-qunit-notifications": "0.1.0",
+    "bootstrap": "twbs/bootstrap#19d2a394903198c67872f236d75713329324dfcb"
   }
 }

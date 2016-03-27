@@ -5,7 +5,17 @@ import ValidationError from 'computed-validator/validation-error';
 import { messageOption } from 'computed-validator/utils';
 const { get } = Ember;
 
-export default validationRule(function([min, max], key) {
+/**
+ * A validation rule that returns errors when a numeric value is not
+ * between (inclusive) the given min and max values.
+ *
+ * @module
+ * @public
+ * @param {number} min
+ * @param {number} max
+ * @return {object} validationBlueprint
+ */
+export default validationRule(function([min, max, options = {}], key) {
   let errorId;
   if (min === -Infinity) {
     errorId = 'validations.between.max-only'
@@ -19,8 +29,14 @@ export default validationRule(function([min, max], key) {
 
   return validate(key, function(subject) {
     let value = get(subject, key);
+    let numericValue = +value;
+    let isNotNumber = (numericValue != value) // jshint ignore:line
 
-    if (value >= max || value <= min) {
+    if (isNotNumber) {
+      numericValue = options.fallbackValue;
+    }
+
+    if (numericValue === undefined || numericValue > max || numericValue < min) {
       return error
     }
   });

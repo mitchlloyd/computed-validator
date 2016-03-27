@@ -1,0 +1,122 @@
+<h2>Included Validaiton Rules</h2>
+
+<p>
+  Although it is simple to create your own validation rules,
+  Computed Validator comes with a set of included rules to get
+  you started.
+</p>
+
+<h3>Between</h3>
+
+<p>
+  This rule determines whether a numeric value is between two given
+  values (inclusive).
+</p>
+
+<div class="p-a-2">
+  {{between-example}}
+</div>
+
+{{code-snippet name="between-example-validator.js"}}
+
+<h3>Confirmed</h3>
+
+<p>
+  Fail validation if the value from one of the subject's properties does not
+  match another.
+</p>
+
+<div class="p-a-2">
+  {{confirmed-example}}
+</div>
+
+{{code-snippet name="confirmed-example-validator.js"}}
+
+<h3>Exclusion</h3>
+
+<p>
+  Make sure that a value is not in a list of prohibited values.
+</p>
+
+<div class="p-a-2">
+  {{exclusion-example}}
+</div>
+
+{{code-snippet name="exclusion-example-validator.js"}}
+
+<h3>Integer</h3>
+
+<p>
+  Is only valid when the value is an integer.
+</p>
+
+<div class="p-a-2">
+  {{integer-example}}
+</div>
+
+{{code-snippet name="integer-example-validator.js"}}
+
+<h3>Length Between</h3>
+
+<p>
+  Determine if the length of a value is between 2 numbers (inclusive). This
+  rule is a combination of <code>onProperty</code> and <code>between</code>.
+</p>
+
+<div class="p-a-2">
+  {{length-between-example}}
+</div>
+
+{{code-snippet name="length-between-example-validator.js"}}
+
+<h3>Match</h3>
+
+<p>
+  Validate that a value matches a regular expression.
+</p>
+
+<div class="p-a-2">
+  {{match-example}}
+</div>
+
+{{code-snippet name="match-example-validator.js"}}
+
+<h3>No Match</h3>
+
+<p>
+  Make sure the value does not match a given regular expression. This
+  rule is a combination of <code>negate</code> and <code>match</code>.
+</p>
+
+<div class="p-a-2">
+  {{no-match-example}}
+</div>
+
+{{code-snippet name="no-match-example-validator.js"}}
+
+<h3>Required</h3>
+
+<p>
+  A validation classic: make sure a value is not empty or
+  undefined.
+</p>
+
+<div class="p-a-2">
+  {{required-example}}
+</div>
+
+{{code-snippet name="required-example-validator.js"}}
+
+<h3>Validate</h3>
+
+<p>
+  The swiss army knife of validation rules. Use <code>validate</code>
+  as you would a computed property and return a string to represent
+  a validation error.
+</p>
+
+<div class="p-a-2">
+  {{validate-example}}
+</div>
+
+{{code-snippet name="validate-example-validator.js"}}

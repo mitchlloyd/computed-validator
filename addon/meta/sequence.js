@@ -10,7 +10,7 @@ const { RSVP } = Ember;
  * This rule takes a list of validation rule and returns a new rule that executes
  * each validation rule in order. One might use this rule for two reasons:
  *
- * 1. To specify the exact order to present validation rules.
+ * 1) To specify the exact order to present validation rules.
  *
  * For instance if someone's password is required and must be complex we could
  * use sequence like this:
@@ -20,7 +20,7 @@ const { RSVP } = Ember;
  * This would allow us to show the "required" message first and then show a list of
  * complexity messages next by just using the `validator.name.errors` path.
  *
- * 2. To wait on long-running, asynchronous validations.
+ * 2) To wait on long-running, asynchronous validations.
  *
  * A case for this might be picking a username where we want to check the
  * length first and then, only after that requirement has been met, check with
@@ -28,7 +28,9 @@ const { RSVP } = Ember;
  *
  *     sequence(required(), length(), uniqueness())
  *
- * @param {array} validationRules - A list of validation rules to exectue in sequence
+ * @module
+ * @public
+ * @param {ValidationBlueprint[]} rules - A list of validation rules to exectue in sequence
  * @return {object} validationBlueprint
  */
 export default validationRule(function(rules, key) {

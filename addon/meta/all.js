@@ -8,6 +8,8 @@ import validationRule from 'computed-validator/validation-rule';
  * This rule examines the dependent keys and validate functions for other rules
  * to build a rule that returns errors derived from running all of the functions.
  *
+ * @module
+ * @public
  * @param {array} validationRules - A list of validation rules declared by the user
  * @return {object} validationBlueprint
  */

@@ -1,0 +1,38 @@
+<h2>i18n Translation</h2>
+
+<h3>Per Validaiton Rule</h3>
+
+<p>
+  All validation rules (even the ones you created with <code>validationRule</code>)
+  accept an object of options as the last argument. This can include a message string
+  or a message function. The function will receive the context of the computed validator
+  so this gives you a change to do some custom translation.
+</p>
+
+{{message-example}}
+
+{{code-snippet name="message-function-example.js"}}
+
+<h3>Using Ember-i18n</h3>
+
+<p>
+  If you install the ember-18n library, all of the <code>ValidationError</code> objects
+  will be translated by the <code>i18n</code> service.
+</p>
+
+<p>
+  Below is the list of default translation keys for the included
+  validation rules.
+</p>
+
+{{code-snippet name="default-translations.js"}}
+
+<h3>Custom Translation Service</h3>
+
+<p>
+  Finally, if you want to use a translation service that Computed
+  Validator does not support, you can define a service named
+  <code>computed-validator-translation</code> and Computed Validator
+  will use the <code>translate</code> method on the service to do
+  translation work.
+</p>

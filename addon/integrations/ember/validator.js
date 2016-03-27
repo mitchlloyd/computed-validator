@@ -3,11 +3,16 @@ import { every, some, unique } from 'computed-validator/utils';
 import ValidationState from 'computed-validator/validation-state';
 import { nextValidationState } from 'computed-validator/validation-state';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
-import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator/private-keys';
+import { SUBJECT_KEY, TRANSLATE_KEY, CONTEXT_KEY } from 'computed-validator/validator/private-keys';
 const { computed, get } = Ember;
 const Validator = Ember.Object.extend();
 
 export const OWNER_KEY = '_computed-validator-owner';
+
+/**
+ * Module exporting functions that build validator objects.
+ * @module validator
+ */
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
@@ -44,14 +49,15 @@ export function defineValidator(rules) {
 }
 
 /**
- * Given a subject and set of validation rules, create an instance of a Validator.
- * This function is primarily used for testing or creating a Validator instance based
- * on a dynamic set of rules.
+ * Given a subject and set of validation rules, create an instance of a
+ * Validator.  This function is primarily used for testing or creating a
+ * Validator instance based on a dynamic set of rules.
  *
  * @public
  * @param {Object} subject - The object to validate
  * @param {Object} rules -  A set of key-value pairs where the key is the name
  * of a validation property and the value is a validation blueprint.
+ * @return {validator} An instance of Validator
  */
 export function createValidator(subject, rules) {
   return defineValidator(rules).create({ [SUBJECT_KEY]: subject });
@@ -73,7 +79,8 @@ function computedValidation({ dependentKeys, validate }) {
   return computed(...subjectDependentKeys, {
     get(key) {
       let translate = get(this, TRANSLATE_KEY);
-      let errors = validate.call(this, get(this, SUBJECT_KEY));
+      let context = get(this, CONTEXT_KEY);
+      let errors = validate.call(context, get(this, SUBJECT_KEY));
       let state = new ValidationState(errors, translate);
 
       if (state.isValidating) {

@@ -13,6 +13,8 @@ import validationRule from 'computed-validator/validation-rule';
  * For practical use, you'll want to provide a message option to this rule
  * so that it can display a reasonable error message.
  *
+ * @public
+ * @module
  * @param {function} validationRule - A validation rule to be negated
  * @return {object} validationBlueprint
  */

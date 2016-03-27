@@ -1,3 +1,30 @@
-<h2 id="title">Welcome to Ember</h2>
+<div class="hairline--bottom p-t-2 p-b-1 m-b-2">
+  <div class="container">
+    <div class="row">
+      <h1 class="logo col-xs-12 col-sm-7">Computed Validator</h1>
+      <div class="col-xs-12 col-sm-5">
+        {{#link-to 'index' class="float-right-sm m-r-1"}}Guide{{/link-to}}
+        <a class="float-right-sm m-r-1" href="/api/index.html">API</a>
+        <a class="float-right-sm m-r-1" href="https://github.com/mitchlloyd/computed-validator">Github</a>
+      </div>
+    </div>
+  </div>
+</div>
 
-{{outlet}}
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-3 block-list">
+      {{#link-to 'quick-start'}}Quick Start{{/link-to}}
+      {{#link-to 'included-validation-rules'}}Included Validation Rules{{/link-to}}
+      {{#link-to 'meta-validation-rules'}}Meta Validation Rules{{/link-to}}
+      {{#link-to 'creating-validation-rules'}}Creating Validation Rules{{/link-to}}
+      {{#link-to 'i18n'}}i18n Translations{{/link-to}}
+    </div>
+
+    <hr class="col-xs-12 p-b-1 full-width hidden-md-up">
+
+    <div class="col-xs-12 col-md-9 prose">
+      {{outlet}}
+    </div>
+  </div>
+</div>

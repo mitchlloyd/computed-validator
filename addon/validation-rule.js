@@ -1,7 +1,13 @@
 import Ember from 'ember';
 const { get } = Ember;
 
-// User builds a rule by passing a function
+/**
+ * A function used to create validation rules.
+ *
+ * @module
+ * @public
+ * @param {function} build - A function that returns a validation blueprint
+ */
 export default function validationRule(build) {
 
   // User validation declaration with relevant validation arguments
@@ -35,13 +41,21 @@ function handleMessageOption({ dependentKeys, validate }, options) {
 
     validate(...args) {
       if (validate(...args).length) {
-        return [message];
+        return [getMessage(message, this)];
       } else {
         return [];
       }
     }
   };
 };
+
+function getMessage(message, context) {
+  if (typeof message === 'function') {
+    return message(context);
+  } else {
+    return message;
+  }
+}
 
 function handleWhenOption({ dependentKeys, validate }, options) {
   let whenKey = options.when;
