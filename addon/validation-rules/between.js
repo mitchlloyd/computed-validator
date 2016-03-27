@@ -5,6 +5,16 @@ import ValidationError from 'computed-validator/validation-error';
 import { messageOption } from 'computed-validator/utils';
 const { get } = Ember;
 
+/**
+ * A validation rule that returns errors when a numeric value is not
+ * between (inclusive) the given min and max values.
+ *
+ * @module
+ * @public
+ * @param {number} min
+ * @param {number} max
+ * @return {object} validationBlueprint
+ */
 export default validationRule(function([min, max, options = {}], key) {
   let errorId;
   if (min === -Infinity) {

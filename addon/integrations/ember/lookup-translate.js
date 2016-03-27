@@ -13,6 +13,7 @@ const translators = [emberI18nTranslator, defaultTranslator]
  *    function from the owner.
  *
  * @private
+ * @module
  * @param {Object} [owner] - An Ember application instance
  * @return {function} translate - A function that accepts an object like `{ id:
  * translationKey, properties { some: prop } }` and returns a translated string.

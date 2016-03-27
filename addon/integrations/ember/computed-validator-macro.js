@@ -9,9 +9,11 @@ const { computed, getOwner } = Ember;
  * Ember "looked up" object, it given Computed Validator a chance to access the
  * container so that it can integrate with translation services.
  *
+ * @public
  * @param {string} subjectKey - A key used to find the subject on the context
  * @param {object} rules - A set of key-value pairs that are used to define a
  * validator class
+ * @module
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);

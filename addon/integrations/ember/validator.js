@@ -10,6 +10,11 @@ const Validator = Ember.Object.extend();
 export const OWNER_KEY = '_computed-validator-owner';
 
 /**
+ * Module exporting functions that build validator objects.
+ * @module validator
+ */
+
+/**
  * Given a set of validation rules, this function creates a Validator class.
  *
  * @public
@@ -44,14 +49,15 @@ export function defineValidator(rules) {
 }
 
 /**
- * Given a subject and set of validation rules, create an instance of a Validator.
- * This function is primarily used for testing or creating a Validator instance based
- * on a dynamic set of rules.
+ * Given a subject and set of validation rules, create an instance of a
+ * Validator.  This function is primarily used for testing or creating a
+ * Validator instance based on a dynamic set of rules.
  *
  * @public
  * @param {Object} subject - The object to validate
  * @param {Object} rules -  A set of key-value pairs where the key is the name
  * of a validation property and the value is a validation blueprint.
+ * @return {validator} An instance of Validator
  */
 export function createValidator(subject, rules) {
   return defineValidator(rules).create({ [SUBJECT_KEY]: subject });

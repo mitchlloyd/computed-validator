@@ -1,7 +1,13 @@
 import Ember from 'ember';
 const { get } = Ember;
 
-// User builds a rule by passing a function
+/**
+ * A function used to create validation rules.
+ *
+ * @module
+ * @public
+ * @param {function} build - A function that returns a validation blueprint
+ */
 export default function validationRule(build) {
 
   // User validation declaration with relevant validation arguments

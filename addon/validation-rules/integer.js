@@ -4,6 +4,13 @@ import validationRule from 'computed-validator/validation-rule';
 import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
 
+/**
+ * Validate that a value is an integer.
+ *
+ * @module
+ * @public
+ * @return {object} validationBlueprint
+ */
 export default validationRule(function(args, key) {
   let error = new ValidationError('validations.integer', { property: key });
 

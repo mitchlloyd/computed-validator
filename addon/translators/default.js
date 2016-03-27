@@ -1,5 +1,11 @@
+/**
+ * The default translator used to translate error messages.
+ * @module
+ * @return {function} translate - A function that accepts a translation key and
+ * an object containing properties to use for the translation.
+ */
 export default function defaultTranslator() {
-  return function(key, properties) {
+  return function translate(key, properties) {
     let template = getTranslationTemplate(key);
 
     return template.replace(/\{\{\s*(.*?)\s*\}\}/g, (i, match) => {
