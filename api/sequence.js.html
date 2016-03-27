@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sequence.js</title>
+
+    <script src="scripts/prettify/prettify-ace3c28e32526c485728e7f71d736533.js" integrity="sha256-OoBxImBzFaGSmBKexx57JWdpykQgxMmhMqQKDj3pq9c= sha512-WrvWm8hZrddhVZqDuVXTlyR4zSsrzLdTP9dAQUiipQ1V0c8BewOHXvCY4vrWS/wKrCfNwUFqH83MHxHCG67jdQ==" > </script>
+    <script src="scripts/prettify/lang-css-837b4b4cfe01f4c48b5e9a53aae93677.js" integrity="sha256-WV/862lO0EUBZTVS+CdIMEaFghp/DIhmH1CKoWooYJU= sha512-1vkvFC9wsglZoYvQEBJbmY2yig3JPZMYNtq6Z5aizA/mb9a3Ds/ps7iWo0twAqaP1NUZE8+v/sEA5hoRsopXLw==" > </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow-3559834dc32d2cad6adeb2d2fed40e18.css" integrity="sha256-zInEqaMwHPE1XRPTqnMP2uZOEEYFQ2zjcasAv2R1nXg= sha512-DNQDuSSkAzc46N+QWE3KS1L9bV0TmwsRxFLYlC6kX3SP8nJmMl/33DgpGRmNKkm+TppbqCWXPhhin5iHk2K+WQ==" >
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default-ae260dbf3da9b55f508cf5f0e0692c75.css" integrity="sha256-Lt+BUW2LloVa18IoHxlqx0pFWuFeX5uiMj/ZgL1XtZs= sha512-Ck58In4yxY9dQKwfz4hzsWRvZ5vJelyCE4fHt+Sdx4zSss8NZPCeYlfY4+vioLHuVLB3YAtTKApR6L1jV7+HJQ==" >
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sequence.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Ember from 'ember';
+import { metaBlueprintFor } from './utils';
+import validationRule from 'computed-validator/validation-rule';
+import { firstResult, last } from 'computed-validator/utils';
+import ValidationError from 'computed-validator/validation-error';
+import Errors from 'computed-validator/errors';
+const { RSVP } = Ember;
+
+/**
+ * This rule takes a list of validation rule and returns a new rule that executes
+ * each validation rule in order. One might use this rule for two reasons:
+ *
+ * 1. To specify the exact order to present validation rules.
+ *
+ * For instance if someone's password is required and must be complex we could
+ * use sequence like this:
+ *
+ *     sequence(required(), complexity())
+ *
+ * This would allow us to show the "required" message first and then show a list of
+ * complexity messages next by just using the `validator.name.errors` path.
+ *
+ * 2. To wait on long-running, asynchronous validations.
+ *
+ * A case for this might be picking a username where we want to check the
+ * length first and then, only after that requirement has been met, check with
+ * the server to see if that username has been taken.
+ *
+ *     sequence(required(), length(), uniqueness())
+ *
+ * @param {array} validationRules - A list of validation rules to exectue in sequence
+ * @return {object} validationBlueprint
+ */
+export default validationRule(function(rules, key) {
+  let { dependentKeys, validateFunctions } = metaBlueprintFor(rules, key);
+
+  let validate = function(subject) {
+    return getNextErrorResult(subject, validateFunctions);
+  };
+
+  return { dependentKeys, validate };
+});
+
+/*
+  If there are any synchronous errors returned from a validation in sequence we
+  don't have to worry about any validations after that. However, if all the
+  validation errors from a validation are promises, then it might later resolve
+  to an empty set of errors. In that case we chain the remaining validation
+  calls onto the last promise so they can be evaluated if that promise
+  resolves with no errors.
+
+  Examples:
+
+  [validationError, promise] - In this case there is already a known error, so
+  we can return the errors, knowing that we won't have to evaluate the next
+  result.
+
+  [promise, validationError] - In this case we can just return the errors. The
+  first error in the sequence may change to the Promise result, but we know
+  that there is nothing that needs to be evaluated after the known
+  ValidationError.
+
+  [promise, promise] - Here we need to handle the case where each Promise
+  returns no errors.
+*/
+function getNextErrorResult(subject, validateFunctions) {
+  return firstResult(validateFunctions, function(fn, i) {
+    let errors = fn(subject);
+
+    // No errors, so check the next result
+    if (!errors.length) {
+      return;
+    }
+
+    // Because there is at least one resolved error, we don't have to evaluate
+    // the next validaton rule.
+    if (Errors.hasSomeResolved(errors)) {
+      return errors;
+    }
+
+    // We might end up with no errors, so we chain the remaining valiation
+    // rules onto the last promise.
+    if (Errors.allPending(errors)) {
+      let lastPromise = errors.pop().then((errors) => {
+        if (errors.length) {
+          return errors;
+        } else {
+          return getNextErrorResult(subject, validateFunctions.slice(i + 1));
+        }
+      });
+      errors.push(lastPromise);
+      return errors;
+    }
+  }) || [];
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 27 2016 13:07:47 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber-9ec4215c940f27af7102f47e0a810aa9.js" integrity="sha256-T7g/tzto0TDktvJQDZBwwLFg2HWB20HJioSIBn7qr4k= sha512-au7Nhtosw9zCREI8LSTPQtz9PxVd0XcPbrwKfzdjNofNuCoGPD/xBIDg4v/brj5hTsxFVcBQkt85fuFtz/0b6w==" > </script>
+</body>
+</html>
