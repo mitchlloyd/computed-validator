@@ -2,10 +2,15 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import { computedValidator, required } from 'computed-validator';
+import I18nService from 'ember-i18n/services/i18n';
 const { inject } = Ember;
 
 moduleForComponent('x-component', 'Integration | Component | ember i18n', {
-  integration: true
+  integration: true,
+
+  beforeEach() {
+    this.register('service:i18n', I18nService);
+  }
 });
 
 test('using translations from ember-i18n', function(assert) {

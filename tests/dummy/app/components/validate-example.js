@@ -16,8 +16,8 @@ export default Ember.Component.extend({
 
   actions: {
     changeGroup(event) {
-      let groupId = event.currentTarget.value
-      let checked = event.currentTarget.checked
+      let groupId = event.currentTarget.value;
+      let checked = event.currentTarget.checked;
 
       if (checked) {
         this.user.groups.pushObject(groupId);
@@ -49,7 +49,7 @@ export default Ember.Component.extend({
     groupCount: validate('groups.length', function(subject) {
       if (get(subject, 'groups.length') !== 2) {
         return "select exactly 2 groups";
-      };
+      }
     })
   })
   // END-SNIPPET
