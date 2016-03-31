@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('meta-validation-rules');
   this.route('creating-validation-rules');
   this.route('i18n');
+  this.route('async');
 });
 
 export default Router;

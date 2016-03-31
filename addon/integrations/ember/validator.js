@@ -74,6 +74,7 @@ export function createValidator(subject, rules) {
  */
 function computedValidation({ dependentKeys, validate }) {
   let subjectDependentKeys = unique(dependentKeys).map((key) => `${SUBJECT_KEY}.${key}`);
+  let pendingPromise;
 
   // Executed in the context of the validator.
   return computed(...subjectDependentKeys, {
@@ -84,9 +85,16 @@ function computedValidation({ dependentKeys, validate }) {
       let state = new ValidationState(errors, translate);
 
       if (state.isValidating) {
-        nextValidationState(state).then((nextState) => {
-          this.set(key, nextState);
+        let promise = nextValidationState(state).then((nextState) => {
+          // Is there another pending promise?
+          if (promise === pendingPromise) {
+            this.set(key, nextState);
+          }
         });
+
+        pendingPromise = promise;
+      } else {
+        pendingPromise = null;
       }
 
       return state;
