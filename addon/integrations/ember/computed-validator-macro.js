@@ -18,17 +18,20 @@ const { computed, getOwner } = Ember;
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
 
-  return computed(subjectKey, function() {
+  dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
+
+  return computed(dependentKeys, function() {
     let subject = this.get(subjectKey);
 
     if (!subject) {
       return;
     }
 
-    return Validator.create({
-      [SUBJECT_KEY]: this.get(subjectKey),
-      [OWNER_KEY]: getOwner(this),
-      [CONTEXT_KEY]: this
+    return new Validator({
+      subject: this.get(subjectKey),
+      owner: getOwner(this),
+      // TODO: Probably will not need this.
+      context: this
     });
   });
 }

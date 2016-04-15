@@ -10,5 +10,5 @@ test('using match', function(assert) {
     name: match(/Mitch/)
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["must match /Mitch/"]);
+  assert.deepEqual(validator.name.errors, ["must match /Mitch/"]);
 });

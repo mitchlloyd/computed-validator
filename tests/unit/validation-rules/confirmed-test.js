@@ -14,5 +14,5 @@ test('using confirmed', function(assert) {
 
   set(user, 'name', "Millie");
 
-  assert.deepEqual(validator.get('nameConfirmation.errors'), ["must match name"]);
+  assert.deepEqual(validator.nameConfirmation.errors, ["must match name"]);
 });
