@@ -1,10 +1,7 @@
-// BEGIN-SNIPPET async-example
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
-  sequence,
-  lengthBetween,
   validate
 } from 'computed-validator';
 const { RSVP } = Ember;
@@ -20,13 +17,27 @@ export default Ember.Component.extend({
       label="Password"
       value=user.password}}
 
+    {{#if validator.password.isValidating}}
+      <p>Hang on talking to server...</p>
+    {{/if}}
+
     <ul>
-      {{#each validator.errors as |error|}}
+      {{#each validator.password.errors as |error|}}
         <li>{{error}}</li>
       {{/each}}
     </ul>
 
-    {{#if validator.isValidating}}
+    {{validated-field
+      label="Age"
+      value=user.age}}
+
+    <ul>
+      {{#each validator.age.errors as |error|}}
+        <li>{{error}}</li>
+      {{/each}}
+    </ul>
+
+    {{#if validator.age.isValidating}}
       <p>Hang on talking to server...</p>
     {{/if}}
 
@@ -34,13 +45,20 @@ export default Ember.Component.extend({
   `,
 
   validator: computedValidator('user', {
-    password: sequence(lengthBetween(4, Infinity), validate(function() {
+    password: validate(function() {
       return new RSVP.Promise(function(resolve) {
         setTimeout(function() {
-          resolve('must not have been used in the last three passwords');
+          resolve('some password error');
         }, 1000);
       });
-    }))
+    }),
+
+    age: validate(function() {
+      return new RSVP.Promise(function(resolve) {
+        setTimeout(function() {
+          resolve('some age error');
+        }, 1000);
+      });
+    })
   })
 });
-// END-SNIPPET

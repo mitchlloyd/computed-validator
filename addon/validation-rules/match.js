@@ -19,7 +19,7 @@ export default validationRule(function([regex], key) {
     let value = get(subject, key);
 
     if (!regex.test(value)) {
-      return error
+      return error;
     }
   });
-})
+});

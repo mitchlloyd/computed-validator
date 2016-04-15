@@ -2,10 +2,6 @@ import {
   defineValidator,
   createValidator,
 } from 'computed-validator/validator';
-import {
-  SUBJECT_KEY,
-  TRANSLATE_KEY
-} from 'computed-validator/validator/private-keys';
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
@@ -42,7 +38,5 @@ export {
   sequence,
   when,
   negate,
-  createValidator,
-  SUBJECT_KEY,
-  TRANSLATE_KEY
+  createValidator
 };

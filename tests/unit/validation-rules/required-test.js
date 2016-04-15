@@ -10,5 +10,5 @@ test('using required', function(assert) {
     name: required()
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["is required"]);
+  assert.deepEqual(validator.name.errors, ["is required"]);
 });

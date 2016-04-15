@@ -14,4 +14,4 @@ import ValidationError from 'computed-validator/validation-error';
 export default validationRule(function([regex], key) {
   let message = new ValidationError('validations.no-match', { property: key, regex });
   return negate(match(regex), { message })(key);
-})
+});

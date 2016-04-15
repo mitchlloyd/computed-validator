@@ -20,5 +20,5 @@ export default validationRule(function(_, key) {
       return error;
     }
   });
-})
+});
 // END-SNIPPET

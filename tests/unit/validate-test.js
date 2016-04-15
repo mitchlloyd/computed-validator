@@ -16,7 +16,7 @@ test('using validate with an explicit key', function(assert) {
     })
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["is required"]);
+  assert.deepEqual(validator.name.errors, ["is required"]);
 });
 
 test('using validate with an implicit key', function(assert) {
@@ -30,5 +30,5 @@ test('using validate with an implicit key', function(assert) {
     })
   });
 
-  assert.deepEqual(validator.get('name.errors'), ["is required"]);
+  assert.deepEqual(validator.name.errors, ["is required"]);
 });

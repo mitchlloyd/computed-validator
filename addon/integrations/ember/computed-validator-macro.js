@@ -1,12 +1,12 @@
 import Ember from 'ember';
-import { defineValidator, SUBJECT_KEY } from 'computed-validator';
-import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
-import { CONTEXT_KEY } from 'computed-validator/validator/private-keys';
+import { defineValidator } from 'computed-validator';
+import { nextValidator } from 'computed-validator/validator';
+import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 const { computed, getOwner } = Ember;
 
 /**
  * This is the primary interface for using Computed Validator. When used from an
- * Ember "looked up" object, it given Computed Validator a chance to access the
+ * Ember "looked up" object, it gives Computed Validator a chance to access the
  * container so that it can integrate with translation services.
  *
  * @public
@@ -17,18 +17,37 @@ const { computed, getOwner } = Ember;
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
+  let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
+  let validator;
+  let currentValidator = function() {
+    return validator;
+  };
 
-  return computed(subjectKey, function() {
-    let subject = this.get(subjectKey);
+  return computed(...dependentKeys, {
+    get(key) {
+      let subject = this.get(subjectKey);
 
-    if (!subject) {
-      return;
+      if (!subject) {
+        return;
+      }
+
+      validator = new Validator({
+        subject,
+        ancestor: validator,
+        translate: lookupTranslate(getOwner(this)),
+        context: this
+      });
+
+      nextValidator(validator, currentValidator, (nextValidator) => {
+        validator = nextValidator;
+        this.set(key, validator);
+      });
+
+      return validator;
+    },
+
+    set(key, validator) {
+      return validator;
     }
-
-    return Validator.create({
-      [SUBJECT_KEY]: this.get(subjectKey),
-      [OWNER_KEY]: getOwner(this),
-      [CONTEXT_KEY]: this
-    });
   });
 }

@@ -17,7 +17,7 @@ export function some(array, predicate) {
   let length = array.length;
 
   while (++index < length) {
-    if (predicate(array[index])) {
+    if (predicate(array[index], index)) {
       return true;
     }
   }
@@ -81,4 +81,15 @@ export function last(array) {
 
 export function some(array, predicate) {
   return firstResult(array, predicate) || false;
+}
+
+export function get(obj, path) {
+  let index = 0;
+  let length = path.length;
+
+  while (obj != null && index < length) {
+    obj = obj[path[index++]];
+  }
+
+  return (index && index === length) ? obj : undefined;
 }
