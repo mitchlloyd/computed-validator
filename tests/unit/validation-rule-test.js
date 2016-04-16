@@ -18,7 +18,7 @@ test('given a message option', function(assert) {
     prop: rule({ message: 'override' })
   });
 
-  assert.deepEqual(validator.get('prop.errors'), ['override'], "message overridden with option");
+  assert.deepEqual(validator.prop.errors, ['override'], "message overridden with option");
 });
 
 test('given a when option', function(assert) {
@@ -35,9 +35,9 @@ test('given a when option', function(assert) {
     prop: rule({ when: 'bool' })
   });
 
-  assert.deepEqual(validator.get('prop.errors'), [], "errors are empty when property is false");
+  assert.deepEqual(validator.prop.errors, [], "errors are empty when property is false");
 
   set(subject, 'bool', true);
 
-  assert.deepEqual(validator.get('prop.errors'), ['error'], "has errors when property becomes true");
+  assert.deepEqual(validator.prop.errors, ['error'], "has errors when property becomes true");
 });

@@ -15,7 +15,7 @@ module("Unit | validator", {
 });
 
 test('validator properties', function(assert) {
-  assert.equal(this.validator.get('isValid'), true, "isValid with valid properties");
+  assert.equal(this.validator.isValid, true, "isValid with valid properties");
   set(this.user, 'name', null);
-  assert.equal(this.validator.get('isValid'), false, "is not valid with an invalid property");
+  assert.equal(this.validator.isValid, false, "is not valid with an invalid property");
 });
