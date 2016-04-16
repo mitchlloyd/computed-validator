@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { sequence, required, integer } from 'computed-validator';
 import asyncRule from '../helpers/async-rule';
 import { nextValidationState } from 'computed-validator/validation-state';
@@ -102,30 +102,5 @@ test('async sequence - async validation rule with errors after sync validation r
   return nextValidationState(validator.name).then(function(validation) {
     assert.deepEqual(validation.errors, ['async-error'], "gets the async error");
     assert.equal(validation.isValidating, false, "validation rule is no longer validating");
-  });
-});
-
-// Needs to be tested against computed
-skip('async sequence - sync validation rule becomes invalid while waiting on async rule that returns no errors', function(assert) {
-  assert.expect(5);
-
-  let Validator = defineValidator({
-    name: sequence(required(), asyncRule([]))
-  });
-
-  let subject = { name: "Ellie" };
-  let validator = new Validator({ subject });
-  assert.equal(validator.name.isValidating, true, "waiting on pending rule");
-  assert.deepEqual(validator.name.errors, [], "no errors while waiting on pending rule");
-
-  let pendingValidationState = validator.name;
-
-  // Sync rule becomes invalid, with promise still pending
-  subject = { name: null };
-  assert.deepEqual(validator.name.errors, ['is required'], "validator now has the sync error");
-
-  return nextValidationState(pendingValidationState).then(function(validation) {
-    assert.deepEqual(validation.errors, [], "next validation state has no errors");
-    assert.deepEqual(validator.name.errors, ['is required'], "but the current state from validator does have errors");
   });
 });

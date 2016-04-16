@@ -77,6 +77,21 @@ export function defineValidator(rules) {
     }
   });
 
+  Object.defineProperty(Validator.prototype, 'errors', {
+    get: function() {
+      if (isCached(this, 'errors')) {
+        return peekCache(this, 'errors');
+      }
+
+      let errors = [];
+      this.constructor.ruleKeys.forEach((key) => {
+        errors.push(...this[key].errors);
+      });
+
+      return cacheValue(this, 'errors', errors);
+    }
+  });
+
   return Validator;
 }
 

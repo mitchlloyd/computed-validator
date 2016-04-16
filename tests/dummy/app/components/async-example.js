@@ -21,7 +21,7 @@ export default Ember.Component.extend({
       value=user.password}}
 
     <ul>
-      {{#each validator.password.errors as |error|}}
+      {{#each validator.errors as |error|}}
         <li>{{error}}</li>
       {{/each}}
     </ul>
