@@ -1,7 +1,6 @@
 import Ember from 'ember';
-import { defineValidator, SUBJECT_KEY } from 'computed-validator';
-import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
-import { CONTEXT_KEY } from 'computed-validator/validator/private-keys';
+import { defineValidator } from 'computed-validator';
+import { nextValidator } from 'computed-validator/validator';
 const { computed, getOwner } = Ember;
 
 /**
@@ -17,21 +16,42 @@ const { computed, getOwner } = Ember;
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
-
+  let pendingPromise;
   let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
 
-  return computed(...dependentKeys, function() {
-    let subject = this.get(subjectKey);
+  return computed(...dependentKeys, {
+    get(key) {
+      let subject = this.get(subjectKey);
 
-    if (!subject) {
-      return;
+      if (!subject) {
+        return;
+      }
+
+      let validator = new Validator({
+        subject: this.get(subjectKey),
+        owner: getOwner(this),
+        // TODO: Probably will not need this.
+        context: this
+      });
+
+      if (validator.isValidating) {
+        let promise = nextValidator(validator).then((validator) => {
+          // Is there another pending promise?
+          if (promise === pendingPromise) {
+            this.set(key, validator);
+          }
+        });
+
+        pendingPromise = promise;
+      } else {
+        pendingPromise = null;
+      }
+
+      return validator;
+    },
+
+    set(key, validator) {
+      return validator;
     }
-
-    return new Validator({
-      subject: this.get(subjectKey),
-      owner: getOwner(this),
-      // TODO: Probably will not need this.
-      context: this
-    });
   });
 }

@@ -8,6 +8,12 @@ import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
+import {
+  isCached,
+  cacheValue,
+  initCache,
+  peekCache
+} from 'computed-validator/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
@@ -25,7 +31,7 @@ export function defineValidator(rules) {
     this[OWNER_KEY] = owner;
     this[CONTEXT_KEY] = context;
     this[TRANSLATE_KEY] = lookupTranslate(owner);
-    this[CACHE_KEY] = {};
+    initCache(this);
   };
 
   Validator.ruleKeys = [];
@@ -45,17 +51,29 @@ export function defineValidator(rules) {
 
   Object.defineProperty(Validator.prototype, 'isValid', {
     get: function() {
-      return every(this.constructor.ruleKeys, (key) => {
+      if (isCached(this, 'isValid')) {
+        return peekCache(this, 'isValid');
+      }
+
+      let result = every(this.constructor.ruleKeys, (key) => {
         return this[key].isValid;
       });
+
+      return cacheValue(this, 'isValid', result);
     }
   });
 
   Object.defineProperty(Validator.prototype, 'isValidating', {
     get: function() {
-      return some(this.constructor.ruleKeys, (key) => {
+      if (isCached(this, 'isValidating')) {
+        return peekCache(this, 'isValidating');
+      }
+
+      let result = some(this.constructor.ruleKeys, (key) => {
         return this[key].isValidating;
       });
+
+      return cacheValue(this, 'isValidating', result);
     }
   });
 
@@ -102,11 +120,16 @@ function cacheValidationState(validator, state) {
 }
 
 export function nextValidator(validator) {
-  let nextValidationStates = validator.constructor.ruleKeys.map((ruleKey) => {
-    return nextValidationState(validator[ruleKey]);
+  let pendingValidationStates = [];
+
+  validator.constructor.ruleKeys.forEach((ruleKey) => {
+    let validationState = validator[ruleKey];
+    if (validationState.isValidating) {
+      pendingValidationStates.push(nextValidationState(validationState));
+    }
   });
 
-  return RSVP.race(nextValidationStates).then((validationState) => {
+  return RSVP.race(pendingValidationStates).then((validationState) => {
     let nextValidator = new validator.constructor({
       subject: validator[SUBJECT_KEY],
       owner: validator[OWNER_KEY],
