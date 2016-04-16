@@ -1,8 +1,15 @@
-import { SUBJECT_KEY, TRANSLATE_KEY, CONTEXT_KEY } from 'computed-validator/validator/private-keys';
+import {
+  SUBJECT_KEY,
+  TRANSLATE_KEY,
+  CONTEXT_KEY,
+  CACHE_KEY
+} from 'computed-validator/validator/private-keys';
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
-import ValidationState from 'computed-validator/validation-state';
-import { every } from 'computed-validator/utils';
+import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
+import { every, some } from 'computed-validator/utils';
+import Ember from 'ember';
+const { RSVP } = Ember;
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
@@ -18,6 +25,7 @@ export function defineValidator(rules) {
     this[OWNER_KEY] = owner;
     this[CONTEXT_KEY] = context;
     this[TRANSLATE_KEY] = lookupTranslate(owner);
+    this[CACHE_KEY] = {};
   };
 
   Validator.ruleKeys = [];
@@ -27,7 +35,9 @@ export function defineValidator(rules) {
     let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
     Object.defineProperty(Validator.prototype, ruleKey, {
-      get: validateToGetter(validate)
+      get: validateToGetter(validate, ruleKey),
+      configurable: true,
+      enumerable: true
     });
     Validator.ruleKeys.push(ruleKey);
     Validator.dependentKeys.push(...dependentKeys);
@@ -42,19 +52,32 @@ export function defineValidator(rules) {
   });
 
   Object.defineProperty(Validator.prototype, 'isValidating', {
-    isValidating: function() {
-      return false;
+    get: function() {
+      return some(this.constructor.ruleKeys, (key) => {
+        return this[key].isValidating;
+      });
     }
   });
 
   return Validator;
 }
 
-function validateToGetter(validate) {
+function validateToGetter(validate, ruleKey) {
   return function validationRuleGetterInterface() {
-    // TODO: wrap validate with custom memoization
-    let errors = validate(this[SUBJECT_KEY]);
-    return new ValidationState(errors, this[TRANSLATE_KEY]);
+    let cachedState = this[CACHE_KEY][ruleKey];
+    if (cachedState) {
+      return cachedState;
+    }
+
+    let state = new ValidationState({
+      errors: validate(this[SUBJECT_KEY]),
+      translate: this[TRANSLATE_KEY],
+      key: ruleKey
+    });
+
+    cacheValidationState(this, state);
+
+    return state;
   };
 }
 
@@ -72,4 +95,27 @@ function validateToGetter(validate) {
 export function createValidator(subject, rules) {
   let Validator = defineValidator(rules);
   return new Validator({ subject });
+}
+
+function cacheValidationState(validator, state) {
+  validator[CACHE_KEY][state.key] = state;
+}
+
+export function nextValidator(validator) {
+  let nextValidationStates = validator.constructor.ruleKeys.map((ruleKey) => {
+    return nextValidationState(validator[ruleKey]);
+  });
+
+  return RSVP.race(nextValidationStates).then((validationState) => {
+    let nextValidator = new validator.constructor({
+      subject: validator[SUBJECT_KEY],
+      owner: validator[OWNER_KEY],
+      context: validator[CONTEXT_KEY],
+      translate: validator[TRANSLATE_KEY]
+    });
+
+    cacheValidationState(nextValidator, validationState);
+
+    return nextValidator;
+  });
 }

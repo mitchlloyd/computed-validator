@@ -1,13 +1,9 @@
-import Ember from 'ember';
 import { module, test } from 'qunit';
-import { createValidator, required, integer } from 'computed-validator';
-const { set } = Ember;
+import { defineValidator, required, integer } from 'computed-validator';
 
 module("Unit | validator", {
   beforeEach() {
-    this.user = { name: "Nikki", age: 12 };
-
-    this.validator = createValidator(this.user, {
+    this.Validator = defineValidator({
       name: required(),
       age: integer(),
     });
@@ -15,7 +11,9 @@ module("Unit | validator", {
 });
 
 test('validator properties', function(assert) {
-  assert.equal(this.validator.isValid, true, "isValid with valid properties");
-  set(this.user, 'name', null);
-  assert.equal(this.validator.isValid, false, "is not valid with an invalid property");
+  let validator = new this.Validator({ subject: { name: "Nikki", age: 12 } });
+  assert.equal(validator.isValid, true, "isValid with valid properties");
+
+  validator = new this.Validator({ subject: { name: null, age: 12 } });
+  assert.equal(validator.isValid, false, "is not valid with an invalid property");
 });

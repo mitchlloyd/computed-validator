@@ -10,12 +10,12 @@ test('asynchronous validation - resolving with an error', function(assert) {
     name: asyncRule(['an error'])
   });
 
-  assert.equal(validator.get('isValidating'), true, "in isValidating state");
-  assert.equal(validator.get('isValid'), false, "not in isValid state");
+  assert.equal(validator.isValidating, true, "in isValidating state");
+  assert.equal(validator.isValid, false, "not in isValid state");
 
-  return nextValidationState(validator.get('name')).then(function() {
-    assert.equal(validator.get('isValidating'), false, "Validator leaves isValidating state");
-    assert.equal(validator.get('isValid'), false, "Validator still not isValid");
+  return nextValidationState(validator.name).then(function() {
+    assert.equal(validator.isValidating, false, "Validator leaves isValidating state");
+    assert.equal(validator.isValid, false, "Validator still not isValid");
   });
 });
 
@@ -24,11 +24,11 @@ test('asynchronous validation - resolving with no errors', function(assert) {
     name: asyncRule([])
   });
 
-  assert.equal(validator.get('isValidating'), true, "in isValidating state");
-  assert.equal(validator.get('isValid'), false, "not in isValid state");
+  assert.equal(validator.isValidating, true, "in isValidating state");
+  assert.equal(validator.isValid, false, "not in isValid state");
 
-  return nextValidationState(validator.get('name')).then(function() {
-    assert.equal(validator.get('isValidating'), false, "Validator leaves isValidating state");
-    assert.equal(validator.get('isValid'), true, "Validator isValid");
+  return nextValidationState(validator.name).then(function() {
+    assert.equal(validator.isValidating, false, "Validator leaves isValidating state");
+    assert.equal(validator.isValid, true, "Validator isValid");
   });
 });
