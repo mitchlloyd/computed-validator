@@ -1,20 +1,19 @@
-import Ember from 'ember';
 import { module, test } from 'qunit';
-import { createValidator, required, when } from 'computed-validator';
-const { set } = Ember;
+import { defineValidator, required, when } from 'computed-validator';
 
 module("Unit | meta | when");
 
 test('using when', function(assert) {
-  let user = { dogName: null, isDog: false  };
+  let subject = { dogName: null, isDog: false  };
 
-  let validator = createValidator(user, {
+  let Validator = defineValidator({
     dogName: when('isDog', required())
   });
 
+  let validator = new Validator({ subject });
   assert.deepEqual(validator.dogName.errors, []);
 
-  set(user, 'isDog', true);
-
+  subject = { dogName: null, isDog: true  };
+  validator = new Validator({ subject });
   assert.deepEqual(validator.dogName.errors, ['is required']);
 });
