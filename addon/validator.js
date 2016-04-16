@@ -2,6 +2,7 @@ import { SUBJECT_KEY, TRANSLATE_KEY, CONTEXT_KEY } from 'computed-validator/vali
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState from 'computed-validator/validation-state';
+import { every } from 'computed-validator/utils';
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
@@ -34,7 +35,9 @@ export function defineValidator(rules) {
 
   Object.defineProperty(Validator.prototype, 'isValid', {
     get: function() {
-      return false;
+      return every(this.constructor.ruleKeys, (key) => {
+        return this[key].isValid;
+      });
     }
   });
 
