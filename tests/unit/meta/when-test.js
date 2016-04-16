@@ -12,9 +12,9 @@ test('using when', function(assert) {
     dogName: when('isDog', required())
   });
 
-  assert.deepEqual(validator.get('dogName.errors'), []);
+  assert.deepEqual(validator.dogName.errors, []);
 
   set(user, 'isDog', true);
 
-  assert.deepEqual(validator.get('dogName.errors'), ['is required']);
+  assert.deepEqual(validator.dogName.errors, ['is required']);
 });
