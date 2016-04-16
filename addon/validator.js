@@ -20,14 +20,16 @@ export function defineValidator(rules) {
   };
 
   Validator.ruleKeys = [];
+  Validator.dependentKeys = [];
 
   for (let ruleKey in rules) {
-    let validationBlueprint = rules[ruleKey](ruleKey);
+    let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
     Object.defineProperty(Validator.prototype, ruleKey, {
-      get: validateToGetter(validationBlueprint.validate)
+      get: validateToGetter(validate)
     });
     Validator.ruleKeys.push(ruleKey);
+    Validator.dependentKeys.push(...dependentKeys);
   }
 
   Object.defineProperty(Validator.prototype, 'isValid', {
