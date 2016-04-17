@@ -1,23 +1,23 @@
 import {
   isCached,
   cacheValue,
-  peekCache
+  getCache
 } from 'computed-validator/utils/cache';
 
-export default function defineMemoizedGetter(klass, key, fn) {
+export default function defineMemoizedGetter(klass, key, dependentKeys, fn) {
   Object.defineProperty(klass.prototype, key, {
-    get: memoizedGetter(key, fn),
+    get: memoizedGetter(key, dependentKeys, fn),
     configurable: false,
     enumerable: true
   });
 }
 
-function memoizedGetter(key, fn) {
+function memoizedGetter(cacheKey, dependentKeys, fn) {
   return function memoizedGetterFunciton() {
-    if (isCached(this, key)) {
-      return peekCache(this, key);
+    if (isCached(this, cacheKey, dependentKeys)) {
+      return getCache(this, cacheKey);
     }
 
-    return cacheValue(this, key, fn.call(this));
+    return cacheValue(this, cacheKey, dependentKeys, fn.call(this));
   };
 }

@@ -1,6 +1,9 @@
+import { CACHE_KEY, SUBJECT_KEY } from 'computed-validator/validator/private-keys';
+import { every } from 'computed-validator/utils';
 import Ember from 'ember';
 import { defineValidator } from 'computed-validator';
 import { nextValidator } from 'computed-validator/validator';
+import { transferCache, cacheValue } from 'computed-validator/utils/cache';
 const { computed, getOwner } = Ember;
 
 /**
@@ -16,8 +19,8 @@ const { computed, getOwner } = Ember;
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
-  let pendingPromise;
   let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
+  let validator;
 
   return computed(...dependentKeys, {
     get(key) {
@@ -27,25 +30,21 @@ export default function(subjectKey, rules) {
         return;
       }
 
-      let validator = new Validator({
-        subject: this.get(subjectKey),
-        owner: getOwner(this),
-        // TODO: Probably will not need this.
-        context: this
+      let nextValidator = validatorForEmberObject(this, Validator, subjectKey);
+      transferCache(validator, nextValidator);
+      validator = nextValidator;
+
+      resolvePendingValidations(validator, ({ validationState, previousValidationState }) => {
+        if (validationUpdateIsStillRelevant(validator, validationState, previousValidationState)) {
+          let nextValidator = validatorForEmberObject(this, Validator, subjectKey);
+          transferCache(validator, nextValidator);
+          validator = nextValidator;
+
+          cacheValue(validator, validationState.key, validationState.dependentKeys, validationState);
+          this.set(key, validator);
+          return validator;
+        }
       });
-
-      if (validator.isValidating) {
-        let promise = nextValidator(validator).then((validator) => {
-          // Is there another pending promise?
-          if (promise === pendingPromise) {
-            this.set(key, validator);
-          }
-        });
-
-        pendingPromise = promise;
-      } else {
-        pendingPromise = null;
-      }
 
       return validator;
     },
@@ -54,4 +53,36 @@ export default function(subjectKey, rules) {
       return validator;
     }
   });
+}
+
+function validationUpdateIsStillRelevant(validator, validationState, previousValidationState) {
+  return validator[validationState.key] === previousValidationState;
+}
+
+function validatorForEmberObject(obj, Validator, subjectKey) {
+  return new Validator({
+    subject: obj.get(subjectKey),
+    owner: getOwner(obj),
+    context: obj
+  });
+}
+
+let breaker = 0;
+function resolvePendingValidations(validator, fn) {
+  breaker++;
+
+  if (breaker > 200) {
+    console.log('infiniteloop');
+    return;
+  }
+
+  if (!validator) {
+    return;
+  }
+
+  if (validator.isValidating) {
+    nextValidator(validator).then((args) => {
+      resolvePendingValidations(fn(args), fn);
+    });
+  }
 }

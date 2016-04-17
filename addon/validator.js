@@ -2,6 +2,7 @@ import {
   SUBJECT_KEY,
   TRANSLATE_KEY,
   CONTEXT_KEY,
+  ID_KEY
 } from 'computed-validator/validator/private-keys';
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
@@ -36,10 +37,11 @@ export function defineValidator(rules) {
     let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
     /*jshint loopfunc: true */
-    defineMemoizedGetter(Validator, ruleKey, function() {
+    defineMemoizedGetter(Validator, ruleKey, dependentKeys, function() {
       return new ValidationState({
         errors: validate(this[SUBJECT_KEY]),
         translate: this[TRANSLATE_KEY],
+        dependentKeys,
         key: ruleKey
       });
     });
@@ -49,19 +51,19 @@ export function defineValidator(rules) {
     Validator.dependentKeys.push(...dependentKeys);
   }
 
-  defineMemoizedGetter(Validator, 'isValid', function() {
+  defineMemoizedGetter(Validator, 'isValid', [], function() {
     return every(this.constructor.ruleKeys, (key) => {
       return this[key].isValid;
     });
   });
 
-  defineMemoizedGetter(Validator, 'isValidating', function() {
+  defineMemoizedGetter(Validator, 'isValidating', [], function() {
     return some(this.constructor.ruleKeys, (key) => {
       return this[key].isValidating;
     });
   });
 
-  defineMemoizedGetter(Validator, 'errors', function() {
+  defineMemoizedGetter(Validator, 'errors', [], function() {
     let errors = [];
     this.constructor.ruleKeys.forEach((key) => {
       errors.push(...this[key].errors);
@@ -99,16 +101,15 @@ export function nextValidator(validator) {
     }
   });
 
-  return RSVP.race(pendingValidationStates).then((validationState) => {
-    let nextValidator = new validator.constructor({
-      subject: validator[SUBJECT_KEY],
-      owner: validator[OWNER_KEY],
-      context: validator[CONTEXT_KEY],
-      translate: validator[TRANSLATE_KEY]
-    });
+  return RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState }) => {
+    return { validationState, previousValidationState };
+    // let nextValidator = new validator.constructor({
+    //   subject: validator[SUBJECT_KEY],
+    //   owner: validator[OWNER_KEY],
+    //   context: validator[CONTEXT_KEY],
+    //   translate: validator[TRANSLATE_KEY]
+    // });
 
-    cacheValue(nextValidator, validationState.key, validationState);
-
-    return nextValidator;
+    // return nextValidator;
   });
 }
