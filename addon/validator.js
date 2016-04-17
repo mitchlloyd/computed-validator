@@ -2,18 +2,13 @@ import {
   SUBJECT_KEY,
   TRANSLATE_KEY,
   CONTEXT_KEY,
-  CACHE_KEY
 } from 'computed-validator/validator/private-keys';
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
-import {
-  isCached,
-  cacheValue,
-  initCache,
-  peekCache
-} from 'computed-validator/cache';
+import defineMemoizedGetter from 'computed-validator/utils/define-memoized-getter';
+import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
@@ -40,78 +35,42 @@ export function defineValidator(rules) {
   for (let ruleKey in rules) {
     let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
-    Object.defineProperty(Validator.prototype, ruleKey, {
-      get: validateToGetter(validate, ruleKey),
-      configurable: true,
-      enumerable: true
+    /*jshint loopfunc: true */
+    defineMemoizedGetter(Validator, ruleKey, function() {
+      return new ValidationState({
+        errors: validate(this[SUBJECT_KEY]),
+        translate: this[TRANSLATE_KEY],
+        key: ruleKey
+      });
     });
+    /*jshint loopfunc: false */
+
     Validator.ruleKeys.push(ruleKey);
     Validator.dependentKeys.push(...dependentKeys);
   }
 
-  Object.defineProperty(Validator.prototype, 'isValid', {
-    get: function() {
-      if (isCached(this, 'isValid')) {
-        return peekCache(this, 'isValid');
-      }
-
-      let result = every(this.constructor.ruleKeys, (key) => {
-        return this[key].isValid;
-      });
-
-      return cacheValue(this, 'isValid', result);
-    }
+  defineMemoizedGetter(Validator, 'isValid', function() {
+    return every(this.constructor.ruleKeys, (key) => {
+      return this[key].isValid;
+    });
   });
 
-  Object.defineProperty(Validator.prototype, 'isValidating', {
-    get: function() {
-      if (isCached(this, 'isValidating')) {
-        return peekCache(this, 'isValidating');
-      }
-
-      let result = some(this.constructor.ruleKeys, (key) => {
-        return this[key].isValidating;
-      });
-
-      return cacheValue(this, 'isValidating', result);
-    }
+  defineMemoizedGetter(Validator, 'isValidating', function() {
+    return some(this.constructor.ruleKeys, (key) => {
+      return this[key].isValidating;
+    });
   });
 
-  Object.defineProperty(Validator.prototype, 'errors', {
-    get: function() {
-      if (isCached(this, 'errors')) {
-        return peekCache(this, 'errors');
-      }
+  defineMemoizedGetter(Validator, 'errors', function() {
+    let errors = [];
+    this.constructor.ruleKeys.forEach((key) => {
+      errors.push(...this[key].errors);
+    });
 
-      let errors = [];
-      this.constructor.ruleKeys.forEach((key) => {
-        errors.push(...this[key].errors);
-      });
-
-      return cacheValue(this, 'errors', errors);
-    }
+    return errors;
   });
 
   return Validator;
-}
-
-function validateToGetter(validate, ruleKey) {
-  return function validationRuleGetterInterface() {
-    let cachedState = this[CACHE_KEY][ruleKey];
-    if (cachedState) {
-      return cachedState;
-    }
-
-    let state = new ValidationState({
-      errors: validate(this[SUBJECT_KEY]),
-      translate: this[TRANSLATE_KEY],
-      key: ruleKey
-    });
-
-    cacheValidationState(this, state);
-
-    return state;
-  };
 }
 
 /**
@@ -128,10 +87,6 @@ function validateToGetter(validate, ruleKey) {
 export function createValidator(subject, rules) {
   let Validator = defineValidator(rules);
   return new Validator({ subject });
-}
-
-function cacheValidationState(validator, state) {
-  validator[CACHE_KEY][state.key] = state;
 }
 
 export function nextValidator(validator) {
@@ -152,7 +107,7 @@ export function nextValidator(validator) {
       translate: validator[TRANSLATE_KEY]
     });
 
-    cacheValidationState(nextValidator, validationState);
+    cacheValue(nextValidator, validationState.key, validationState);
 
     return nextValidator;
   });
