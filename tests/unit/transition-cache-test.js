@@ -42,24 +42,19 @@ test('caching values that need revalidation', function(assert) {
   let obj2 = new Klass();
   let obj3 = new Klass();
 
-  // Value shoudl be cached now
-  assert.equal(obj1.ruleKey, 'bill');
+  assert.equal(obj1.ruleKey, 'bill', "First call returns and caches value");
 
   transferCache(obj1, obj2);
 
-  // Still getting the cached value
-  assert.equal(obj2.ruleKey, 'bill');
-  assert.equal(callCount, 1);
+  assert.equal(obj2.ruleKey, 'bill', "After cache transfer, still get original value");
+  assert.equal(callCount, 1, "did not need another call because value did not change");
 
-  // Cached transfered with { needsRevalidation: true }
   transferCache(obj2, obj3);
   subject.name = 'sam';
 
-  // Get the cache with a revalidation check
-  assert.equal(obj2.ruleKey, 'sam');
-  assert.equal(callCount, 2);
+  assert.equal(obj2.ruleKey, 'sam', "Should get updated value");
+  assert.equal(callCount, 2, "Another call was needed");
 
-  // Value is not indefinitely cached
-  assert.equal(obj2.ruleKey, 'sam');
-  assert.equal(callCount, 2);
+  assert.equal(obj2.ruleKey, 'sam', "More calls returned cached value");
+  assert.equal(callCount, 2, "But call count does not increase");
 });

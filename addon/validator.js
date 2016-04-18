@@ -9,7 +9,7 @@ import lookupTranslate from 'computed-validator/integrations/ember/lookup-transl
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
 import defineMemoizedGetter from 'computed-validator/utils/define-memoized-getter';
-import { initCache, cacheValue } from 'computed-validator/utils/cache';
+import { initCache, cacheValue, transferCache } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
@@ -22,12 +22,13 @@ const { RSVP } = Ember;
  * @return {Class} Validator - A Validator class
  */
 export function defineValidator(rules) {
-  let Validator = function({ subject, owner, context }) {
+  let Validator = function({ subject, owner, context, ancestor }) {
     this[SUBJECT_KEY] = subject;
     this[OWNER_KEY] = owner;
     this[CONTEXT_KEY] = context;
     this[TRANSLATE_KEY] = lookupTranslate(owner);
     initCache(this);
+    transferCache(ancestor, this);
   };
 
   Validator.ruleKeys = [];
@@ -91,8 +92,11 @@ export function createValidator(subject, rules) {
   return new Validator({ subject });
 }
 
-export function nextValidator(validator) {
+let breaker = 0;
+
+export function nextValidator(validator, getCurrentValidator, callback) {
   let pendingValidationStates = [];
+  let Validator = validator.constructor;
 
   validator.constructor.ruleKeys.forEach((ruleKey) => {
     let validationState = validator[ruleKey];
@@ -101,15 +105,33 @@ export function nextValidator(validator) {
     }
   });
 
-  return RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState }) => {
-    return { validationState, previousValidationState };
-    // let nextValidator = new validator.constructor({
-    //   subject: validator[SUBJECT_KEY],
-    //   owner: validator[OWNER_KEY],
-    //   context: validator[CONTEXT_KEY],
-    //   translate: validator[TRANSLATE_KEY]
-    // });
+  RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState }) => {
+    let currentValidator = getCurrentValidator();
 
-    // return nextValidator;
+    // If the previous validation state does not match the current one, then this update
+    // is no longer relevant.
+    if (currentValidator[validationState.key] !== previousValidationState) {
+      return;
+    }
+
+    let validator = new Validator({
+      subject: currentValidator[SUBJECT_KEY],
+      ancestor: currentValidator,
+      owner: currentValidator[OWNER_KEY],
+      context: currentValidator[CONTEXT_KEY]
+    });
+
+    cacheValue(validator, validationState.key, validationState.dependentKeys, validationState);
+
+    callback(validator);
+
+    // Recursively call nextValidator until no longer validating.
+    if (validator.isValidating) {
+      breaker++;
+      if (breaker > 200) {
+        throw new Error("Infinite loop");
+      }
+      nextValidator(validator, getCurrentValidator, callback);
+    }
   });
 }

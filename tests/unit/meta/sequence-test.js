@@ -41,9 +41,9 @@ test('async sequence - async validation rule with no errors after sync validatio
   assert.deepEqual(validator.name.errors, [], "no error messages");
   assert.equal(validator.name.isValidating, true, "validation rule isValidating");
 
-  return nextValidationState(validator.name).then(function(validation) {
-    assert.deepEqual(validation.errors, [], "There are no errors");
-    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  return nextValidationState(validator.name).then(function({ validationState }) {
+    assert.deepEqual(validationState.errors, [], "There are no errors");
+    assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
 });
 
@@ -59,9 +59,9 @@ test('async sequence - async validation rule with no errors before sync validati
   assert.deepEqual(validator.age.errors, [], "no error messages");
   assert.equal(validator.age.isValidating, true, "validation rule isValidating");
 
-  return nextValidationState(validator.age).then(function(validation) {
-    assert.deepEqual(validation.errors, ['must be a whole number'], "gets first error");
-    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  return nextValidationState(validator.age).then(function({ validationState }) {
+    assert.deepEqual(validationState.errors, ['must be a whole number'], "gets first error");
+    assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
 });
 
@@ -77,9 +77,9 @@ test('async sequence - async validation rule with errors before sync validation 
   assert.deepEqual(validator.age.errors, [], "no error messages");
   assert.equal(validator.age.isValidating, true, "validation rule isValidating");
 
-  return nextValidationState(validator.age).then(function(validation) {
-    assert.deepEqual(validation.errors, ['async-error'], "gets first error");
-    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  return nextValidationState(validator.age).then(function({ validationState }) {
+    assert.deepEqual(validationState.errors, ['async-error'], "gets first error");
+    assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
 });
 
@@ -99,8 +99,8 @@ test('async sequence - async validation rule with errors after sync validation r
   assert.deepEqual(validator.name.errors, [], "no error messages");
   assert.equal(validator.name.isValidating, true, "validation rule isValidating");
 
-  return nextValidationState(validator.name).then(function(validation) {
-    assert.deepEqual(validation.errors, ['async-error'], "gets the async error");
-    assert.equal(validation.isValidating, false, "validation rule is no longer validating");
+  return nextValidationState(validator.name).then(function({ validationState }) {
+    assert.deepEqual(validationState.errors, ['async-error'], "gets the async error");
+    assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
 });

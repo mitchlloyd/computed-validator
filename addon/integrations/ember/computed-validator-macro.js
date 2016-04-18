@@ -21,6 +21,9 @@ export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
   let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
   let validator;
+  let currentValidator = function() {
+    return validator;
+  };
 
   return computed(...dependentKeys, {
     get(key) {
@@ -30,20 +33,16 @@ export default function(subjectKey, rules) {
         return;
       }
 
-      let nextValidator = validatorForEmberObject(this, Validator, subjectKey);
-      transferCache(validator, nextValidator);
-      validator = nextValidator;
+      validator = new Validator({
+        subject,
+        ancestor: validator,
+        owner: getOwner(this),
+        context: this
+      });
 
-      resolvePendingValidations(validator, ({ validationState, previousValidationState }) => {
-        if (validationUpdateIsStillRelevant(validator, validationState, previousValidationState)) {
-          let nextValidator = validatorForEmberObject(this, Validator, subjectKey);
-          transferCache(validator, nextValidator);
-          validator = nextValidator;
-
-          cacheValue(validator, validationState.key, validationState.dependentKeys, validationState);
-          this.set(key, validator);
-          return validator;
-        }
+      nextValidator(validator, currentValidator, (nextValidator) => {
+        validator = nextValidator;
+        this.set(key, validator);
       });
 
       return validator;
@@ -53,36 +52,4 @@ export default function(subjectKey, rules) {
       return validator;
     }
   });
-}
-
-function validationUpdateIsStillRelevant(validator, validationState, previousValidationState) {
-  return validator[validationState.key] === previousValidationState;
-}
-
-function validatorForEmberObject(obj, Validator, subjectKey) {
-  return new Validator({
-    subject: obj.get(subjectKey),
-    owner: getOwner(obj),
-    context: obj
-  });
-}
-
-let breaker = 0;
-function resolvePendingValidations(validator, fn) {
-  breaker++;
-
-  if (breaker > 200) {
-    console.log('infiniteloop');
-    return;
-  }
-
-  if (!validator) {
-    return;
-  }
-
-  if (validator.isValidating) {
-    nextValidator(validator).then((args) => {
-      resolvePendingValidations(fn(args), fn);
-    });
-  }
 }

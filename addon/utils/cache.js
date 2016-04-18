@@ -37,7 +37,8 @@ export function cacheValue(obj, key, dependentKeys, value) {
     obj[CACHE_KEY][key] = {
       value,
       revision: obj[ID_KEY],
-      previousValues
+      previousValues,
+      transferable: !!dependentKeys.length
     }
   ).value;
 }
@@ -56,8 +57,13 @@ export function transferCache(prevObj, obj) {
     return;
   }
 
-  for (let key in prevObj[CACHE_KEY]) {
-    obj[CACHE_KEY][key] = prevObj[CACHE_KEY][key];
+  let objCache = obj[CACHE_KEY];
+  let prevCache = prevObj[CACHE_KEY];
+
+  for (let key in prevCache) {
+    if (prevCache[key].transferable) {
+      objCache[key] = prevCache[key];
+    }
   }
 }
 

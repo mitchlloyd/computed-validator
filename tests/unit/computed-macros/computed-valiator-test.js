@@ -23,8 +23,8 @@ test('using computedValidator', function(assert) {
   assert.deepEqual(errors, ["is required"]);
 });
 
-test('descarding obsolete promises', function(assert) {
-  assert.expect(4);
+test('discarding obsolete promises', function(assert) {
+  assert.expect(3);
 
   let user = { name: 'Ellie' };
 
@@ -45,7 +45,7 @@ test('descarding obsolete promises', function(assert) {
   myObject.set('user.name', '');
   assert.deepEqual(myObject.get('validator.name.errors'), ['is required'], "validator now has the sync error");
 
-  return nextValidator(pendingValidator).then(function(validator) {
-    assert.deepEqual(validator.errors, [], "next validation state has no errors");
+  nextValidator(pendingValidator, () => myObject.get('validator'), function() {
+    assert.ok(false, "callback should never fire because next validator is obsolete");
   });
 });

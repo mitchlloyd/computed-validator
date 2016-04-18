@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { createValidator, all, integer, required } from 'computed-validator';
 import { nextValidationState } from 'computed-validator/validation-state';
-import { nextValidator } from 'computed-validator/validator';
 import asyncRule from '../helpers/async-rule';
 
 module("Unit | meta | all");
@@ -53,9 +52,9 @@ test('async all - with failing async validation', function(assert) {
     'must be a whole number'
   ], "only shows sync errors");
 
-  return nextValidationState(validator.age).then(function(validation) {
+  return nextValidationState(validator.age).then(function({ validationState }) {
     assert.deepEqual(
-      validation.errors,
+      validationState.errors,
       ['is required', 'async-error', 'must be a whole number'],
       "shows resolved error in the middle"
     );
@@ -72,8 +71,8 @@ test('async all - with only passing async validations', function(assert) {
   assert.deepEqual(validator.age.errors, [], "there are no errors while validating");
   assert.equal(validator.isValidating, true, "validator is validating");
 
-  return nextValidator(validator).then(function(validator) {
-    assert.deepEqual(validator.age.errors, [], "there are no errors after resolution");
-    assert.equal(validator.isValidating, false, "validator is no longer validating");
+  return nextValidationState(validator.age).then(function({ validationState }) {
+    assert.deepEqual(validationState.errors, [], "there are no errors after resolution");
+    assert.equal(validationState.isValidating, false, "validation is no longer validating");
   });
 });

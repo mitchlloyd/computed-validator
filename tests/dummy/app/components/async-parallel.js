@@ -2,8 +2,6 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
-  sequence,
-  lengthBetween,
   validate
 } from 'computed-validator';
 const { RSVP } = Ember;
