@@ -36,7 +36,7 @@ export function defineValidator(rules) {
     /*jshint loopfunc: true */
     defineMemoizedGetter(Validator.prototype, ruleKey, dependentKeys, function() {
       return new ValidationState({
-        errors: validate(getPrivate(this, 'subject')),
+        errors: validate.call(getPrivate(this, 'context'), getPrivate(this, 'subject')),
         translate: getPrivate(this, 'translate'),
         dependentKeys,
         key: ruleKey
