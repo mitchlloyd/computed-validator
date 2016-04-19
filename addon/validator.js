@@ -36,8 +36,8 @@ export function defineValidator(rules) {
     /*jshint loopfunc: true */
     defineMemoizedGetter(Validator.prototype, ruleKey, dependentKeys, function() {
       return new ValidationState({
-        errors: validate.call(getPrivate(this, 'context'), getPrivate(this, 'subject')),
-        translate: getPrivate(this, 'translate'),
+        errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
+        translate: this[PRIVATE].translate,
         dependentKeys,
         key: ruleKey
       });
@@ -125,8 +125,4 @@ export function nextValidator(validator, getCurrentValidator, callback) {
       nextValidator(validator, getCurrentValidator, callback);
     }
   });
-}
-
-export function getPrivate(validator, key) {
-  return validator[PRIVATE][key];
 }
