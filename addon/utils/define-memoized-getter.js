@@ -4,8 +4,8 @@ import {
   getCache
 } from 'computed-validator/utils/cache';
 
-export default function defineMemoizedGetter(klass, key, dependentKeys, fn) {
-  Object.defineProperty(klass.prototype, key, {
+export default function defineMemoizedGetter(object, key, dependentKeys, fn) {
+  Object.defineProperty(object, key, {
     get: memoizedGetter(key, dependentKeys, fn),
     configurable: false,
     enumerable: true

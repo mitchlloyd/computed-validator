@@ -3,7 +3,6 @@ import { every } from 'computed-validator/utils';
 import Ember from 'ember';
 import { defineValidator } from 'computed-validator';
 import { nextValidator } from 'computed-validator/validator';
-import { transferCache, cacheValue } from 'computed-validator/utils/cache';
 const { computed, getOwner } = Ember;
 
 /**

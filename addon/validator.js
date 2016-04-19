@@ -2,14 +2,13 @@ import {
   SUBJECT_KEY,
   TRANSLATE_KEY,
   CONTEXT_KEY,
-  ID_KEY
 } from 'computed-validator/validator/private-keys';
 import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
 import defineMemoizedGetter from 'computed-validator/utils/define-memoized-getter';
-import { initCache, cacheValue, transferCache } from 'computed-validator/utils/cache';
+import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
@@ -27,8 +26,7 @@ export function defineValidator(rules) {
     this[OWNER_KEY] = owner;
     this[CONTEXT_KEY] = context;
     this[TRANSLATE_KEY] = lookupTranslate(owner);
-    initCache(this);
-    transferCache(ancestor, this);
+    initCache(this, SUBJECT_KEY, ancestor);
   };
 
   Validator.ruleKeys = [];
@@ -38,7 +36,7 @@ export function defineValidator(rules) {
     let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
     /*jshint loopfunc: true */
-    defineMemoizedGetter(Validator, ruleKey, dependentKeys, function() {
+    defineMemoizedGetter(Validator.prototype, ruleKey, dependentKeys, function() {
       return new ValidationState({
         errors: validate(this[SUBJECT_KEY]),
         translate: this[TRANSLATE_KEY],
@@ -52,19 +50,19 @@ export function defineValidator(rules) {
     Validator.dependentKeys.push(...dependentKeys);
   }
 
-  defineMemoizedGetter(Validator, 'isValid', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'isValid', [], function() {
     return every(this.constructor.ruleKeys, (key) => {
       return this[key].isValid;
     });
   });
 
-  defineMemoizedGetter(Validator, 'isValidating', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'isValidating', [], function() {
     return some(this.constructor.ruleKeys, (key) => {
       return this[key].isValidating;
     });
   });
 
-  defineMemoizedGetter(Validator, 'errors', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'errors', [], function() {
     let errors = [];
     this.constructor.ruleKeys.forEach((key) => {
       errors.push(...this[key].errors);
