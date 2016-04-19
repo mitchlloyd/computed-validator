@@ -18,7 +18,7 @@ export default function validationRule(build) {
 
       // Execute the build function to return a validation rule blueprint
       let blueprint = build(args, key);
-      let options = optionsFor(args)
+      let options = optionsFor(args);
 
       blueprint = handleMessageOption(blueprint, options);
       blueprint = handleWhenOption(blueprint, options);
@@ -47,7 +47,7 @@ function handleMessageOption({ dependentKeys, validate }, options) {
       }
     }
   };
-};
+}
 
 function getMessage(message, context) {
   if (typeof message === 'function') {
