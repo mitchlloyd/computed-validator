@@ -1,8 +1,8 @@
 import { every, get } from 'computed-validator/utils';
 
 const CACHE_KEY = '_computed-validator-cache';
-const DEPENDENT_KEY = '_computed-validator-dependent-key';
-const CACHE_ID_KEY = '_computed-validator-cache-id';
+const CACHE_REVISION_KEY = '_computed-validator-cache-revision';
+const SUBJECT_KEY = '_computed-validator-subject';
 
 // Need this value to keep track of revision in cache without
 // holding a reference to a validator.
@@ -20,20 +20,20 @@ export function isCached(obj, key, dependentKeys) {
   }
 
   return every(dependentKeys, (dk) => {
-    return cacheItem.previousValues[dk] === get(obj, [obj[DEPENDENT_KEY], dk]);
+    return cacheItem.previousValues[dk] === get(obj, [SUBJECT_KEY, dk]);
   });
 }
 
 export function cacheValue(obj, key, dependentKeys, value) {
   let cacheItem = {
     value,
-    revision: obj[CACHE_ID_KEY],
+    revision: obj[CACHE_REVISION_KEY],
     previousValues: {},
     transferable: !!dependentKeys.length
   };
 
   dependentKeys.forEach((k) => {
-    cacheItem.previousValues[k] = get(obj, [obj[DEPENDENT_KEY], k]);
+    cacheItem.previousValues[k] = get(obj, [SUBJECT_KEY, k]);
   });
 
   obj[CACHE_KEY][key] = cacheItem;
@@ -41,32 +41,28 @@ export function cacheValue(obj, key, dependentKeys, value) {
   return value;
 }
 
-export function initCache(obj, dependentKey, ancestor) {
+export function initCache(obj, subject, ancestor) {
   obj[CACHE_KEY] = {};
-  obj[DEPENDENT_KEY] = dependentKey;
-  obj[CACHE_ID_KEY] = guid++;
-  transferCache(ancestor, obj);
+  obj[SUBJECT_KEY] = subject;
+  obj[CACHE_REVISION_KEY] = guid++;
+
+  if (ancestor) {
+    transferCache(ancestor[CACHE_KEY], obj[CACHE_KEY]);
+  }
 }
 
 export function getCache(obj, key) {
   return obj[CACHE_KEY][key].value;
 }
 
-function transferCache(prevObj, obj) {
-  if (!prevObj) {
-    return;
-  }
-
-  let objCache = obj[CACHE_KEY];
-  let prevCache = prevObj[CACHE_KEY];
-
+function transferCache(prevCache, cache) {
   for (let key in prevCache) {
     if (prevCache[key].transferable) {
-      objCache[key] = prevCache[key];
+      cache[key] = prevCache[key];
     }
   }
 }
 
 function needsRevalidation(cache, obj) {
-  return cache.revision !== obj[CACHE_ID_KEY];
+  return cache.revision !== obj[CACHE_REVISION_KEY];
 }

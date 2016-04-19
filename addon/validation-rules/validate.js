@@ -1,8 +1,5 @@
-import Ember from 'ember'
-import { SUBJECT_KEY, TRANSLATE_KEY } from 'computed-validator/validator';
 import validationRule from 'computed-validator/validation-rule';
 import validate from 'computed-validator/validate';
-const { get } = Ember;
 
 /**
  * A flexible validation rule that uses a function to validate

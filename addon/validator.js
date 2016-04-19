@@ -1,8 +1,3 @@
-import {
-  SUBJECT_KEY,
-  TRANSLATE_KEY,
-  CONTEXT_KEY,
-} from 'computed-validator/validator/private-keys';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
@@ -11,7 +6,7 @@ import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
-const OWNER_KEY = '_computed-validator-owner-key';
+const PRIVATE = '_computed-validator-private-properties';
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
@@ -23,11 +18,13 @@ const OWNER_KEY = '_computed-validator-owner-key';
  */
 export function defineValidator(rules) {
   let Validator = function({ subject, owner, context, ancestor }) {
-    this[SUBJECT_KEY] = subject;
-    this[OWNER_KEY] = owner;
-    this[CONTEXT_KEY] = context;
-    this[TRANSLATE_KEY] = lookupTranslate(owner);
-    initCache(this, SUBJECT_KEY, ancestor);
+    this[PRIVATE] = {
+      subject,
+      owner,
+      context,
+      translate: lookupTranslate(owner)
+    };
+    initCache(this, subject, ancestor);
   };
 
   Validator.ruleKeys = [];
@@ -39,8 +36,8 @@ export function defineValidator(rules) {
     /*jshint loopfunc: true */
     defineMemoizedGetter(Validator.prototype, ruleKey, dependentKeys, function() {
       return new ValidationState({
-        errors: validate(this[SUBJECT_KEY]),
-        translate: this[TRANSLATE_KEY],
+        errors: validate(getPrivate(this, 'subject')),
+        translate: getPrivate(this, 'translate'),
         dependentKeys,
         key: ruleKey
       });
@@ -113,11 +110,12 @@ export function nextValidator(validator, getCurrentValidator, callback) {
       return;
     }
 
+    let privateProps = currentValidator[PRIVATE];
     let validator = new Validator({
-      subject: currentValidator[SUBJECT_KEY],
+      subject: privateProps.subject,
       ancestor: currentValidator,
-      owner: currentValidator[OWNER_KEY],
-      context: currentValidator[CONTEXT_KEY]
+      owner: privateProps.owner,
+      context: privateProps.context
     });
 
     cacheValue(validator, validationState.key, validationState.dependentKeys, validationState);
@@ -133,4 +131,8 @@ export function nextValidator(validator, getCurrentValidator, callback) {
       nextValidator(validator, getCurrentValidator, callback);
     }
   });
+}
+
+export function getPrivate(validator, key) {
+  return validator[PRIVATE][key];
 }
