@@ -88,8 +88,6 @@ export function createValidator(subject, rules) {
   return new Validator({ subject });
 }
 
-let breaker = 0;
-
 export function nextValidator(validator, getCurrentValidator, callback) {
   let pendingValidationStates = [];
   let Validator = validator.constructor;
@@ -124,10 +122,6 @@ export function nextValidator(validator, getCurrentValidator, callback) {
 
     // Recursively call nextValidator until no longer validating.
     if (validator.isValidating) {
-      breaker++;
-      if (breaker > 200) {
-        throw new Error("Infinite loop");
-      }
       nextValidator(validator, getCurrentValidator, callback);
     }
   });
