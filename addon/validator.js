@@ -3,7 +3,6 @@ import {
   TRANSLATE_KEY,
   CONTEXT_KEY,
 } from 'computed-validator/validator/private-keys';
-import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
 import { every, some } from 'computed-validator/utils';
@@ -11,6 +10,8 @@ import defineMemoizedGetter from 'computed-validator/utils/define-memoized-gette
 import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
+
+const OWNER_KEY = '_computed-validator-owner-key';
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
