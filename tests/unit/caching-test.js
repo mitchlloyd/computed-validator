@@ -8,9 +8,9 @@ test('indefinite caching', function(assert) {
   let callCount = 0;
 
   let obj = {};
-  initCache(obj, undefined, undefined);
+  initCache(obj);
 
-  defineMemoizedGetter(obj, 'ruleKey', [], function() {
+  defineMemoizedGetter(obj, 'ruleKey', function() {
     callCount++;
     return 'hi';
   });
@@ -23,25 +23,26 @@ test('indefinite caching', function(assert) {
 test('caching values that need revalidation', function(assert) {
   let callCount = 0;
   let subject = { name: 'bill' };
+  let dependentKeyMap = { ruleKey: ['name'] };
 
   let objects = [{}, {}, {}];
   objects.forEach((obj) => {
-    defineMemoizedGetter(obj, 'ruleKey', ['name'], function() {
+    defineMemoizedGetter(obj, 'ruleKey', function() {
       callCount++;
       return subject.name;
     });
   });
 
-  initCache(objects[0], subject, undefined);
+  initCache(objects[0], subject, undefined, dependentKeyMap);
   assert.equal(objects[0].ruleKey, 'bill', "First call returns and caches value");
 
-  initCache(objects[1], subject, objects[0]);
+  initCache(objects[1], subject, objects[0], dependentKeyMap);
   assert.equal(objects[1].ruleKey, 'bill', "After cache transfer, still get original value");
   assert.equal(callCount, 1, "did not need another call because subject name did not change");
 
   subject.name = 'sam';
 
-  initCache(objects[2], subject, objects[1]);
+  initCache(objects[2], subject, objects[1], dependentKeyMap);
   assert.equal(objects[2].ruleKey, 'sam', "Should get updated value");
   assert.equal(callCount, 2, "Another call was needed");
   assert.equal(objects[2].ruleKey, 'sam', "More calls returned cached value");

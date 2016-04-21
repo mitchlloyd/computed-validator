@@ -19,21 +19,23 @@ const PRIVATE = '_computed-validator-private';
 export function defineValidator(rules) {
   let Validator = function({ subject, context, ancestor, translate }) {
     this[PRIVATE] = { subject, context, translate: translate || defaultTranslator() };
-    initCache(this, subject, ancestor);
+    initCache(this, subject, ancestor, this.constructor.validationRuleDependentKeys);
   };
 
   Validator.ruleKeys = [];
   Validator.dependentKeys = [];
+  Validator.validationRuleDependentKeys = {};
 
   for (let ruleKey in rules) {
     let { validate, dependentKeys } = rules[ruleKey](ruleKey);
 
+    Validator.validationRuleDependentKeys[ruleKey] = dependentKeys;
+
     /*jshint loopfunc: true */
-    defineMemoizedGetter(Validator.prototype, ruleKey, dependentKeys, function() {
+    defineMemoizedGetter(Validator.prototype, ruleKey, function() {
       return new ValidationState({
         errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
         translate: this[PRIVATE].translate,
-        dependentKeys
       });
     });
     /*jshint loopfunc: false */
@@ -42,19 +44,19 @@ export function defineValidator(rules) {
     Validator.dependentKeys.push(...dependentKeys);
   }
 
-  defineMemoizedGetter(Validator.prototype, 'isValid', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'isValid', function() {
     return every(this.constructor.ruleKeys, (key) => {
       return this[key].isValid;
     });
   });
 
-  defineMemoizedGetter(Validator.prototype, 'isValidating', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'isValidating', function() {
     return some(this.constructor.ruleKeys, (key) => {
       return this[key].isValidating;
     });
   });
 
-  defineMemoizedGetter(Validator.prototype, 'errors', [], function() {
+  defineMemoizedGetter(Validator.prototype, 'errors', function() {
     let errors = [];
     this.constructor.ruleKeys.forEach((key) => {
       errors.push(...this[key].errors);
@@ -110,7 +112,7 @@ export function nextValidator(validator, getCurrentValidator, callback) {
       context: privateProps.context
     });
 
-    cacheValue(validator, ruleKey, validationState.dependentKeys, validationState);
+    cacheValue(validator, ruleKey, validationState);
 
     callback(validator);
 

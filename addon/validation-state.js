@@ -16,10 +16,9 @@ const { RSVP } = Ember;
  * @param {function} translate - A function that can translate a validation error
  */
 export default class ValidationState {
-  constructor({ errors, dependentKeys, translate }) {
+  constructor({ errors, translate }) {
     this.allErrors = errors;
     this.translate = translate;
-    this.dependentKeys = dependentKeys;
 
     let { pendingErrors, resolvedErrors } = partitionErrors(this.allErrors);
     this.pendingErrors = pendingErrors;
@@ -91,8 +90,7 @@ export function nextValidationState({ ruleKey, validationState }) {
   return RSVP.all(validationState.allErrors).then(flatten).then((errors) => {
     let nextValidationState = new ValidationState({
       errors,
-      translate: validationState.translate,
-      dependentKeys: validationState.dependentKeys
+      translate: validationState.translate
     });
 
     return {
