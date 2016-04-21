@@ -29,7 +29,7 @@ test('async all - with passing async validation', function(assert) {
     'must be a whole number'
   ], "only shows sync errors");
 
-  return nextValidationState(validator.age).then(function() {
+  return nextValidationState({ validationState: validator.age }).then(function() {
     assert.deepEqual(
       validator.age.errors,
       ['is required', 'must be a whole number'],
@@ -52,7 +52,7 @@ test('async all - with failing async validation', function(assert) {
     'must be a whole number'
   ], "only shows sync errors");
 
-  return nextValidationState(validator.age).then(function({ validationState }) {
+  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
     assert.deepEqual(
       validationState.errors,
       ['is required', 'async-error', 'must be a whole number'],
@@ -71,7 +71,7 @@ test('async all - with only passing async validations', function(assert) {
   assert.deepEqual(validator.age.errors, [], "there are no errors while validating");
   assert.equal(validator.isValidating, true, "validator is validating");
 
-  return nextValidationState(validator.age).then(function({ validationState }) {
+  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
     assert.deepEqual(validationState.errors, [], "there are no errors after resolution");
     assert.equal(validationState.isValidating, false, "validation is no longer validating");
   });

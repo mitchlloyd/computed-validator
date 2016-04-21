@@ -33,8 +33,7 @@ export function defineValidator(rules) {
       return new ValidationState({
         errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
         translate: this[PRIVATE].translate,
-        dependentKeys,
-        key: ruleKey
+        dependentKeys
       });
     });
     /*jshint loopfunc: false */
@@ -90,16 +89,16 @@ export function nextValidator(validator, getCurrentValidator, callback) {
   validator.constructor.ruleKeys.forEach((ruleKey) => {
     let validationState = validator[ruleKey];
     if (validationState.isValidating) {
-      pendingValidationStates.push(nextValidationState(validationState));
+      pendingValidationStates.push(nextValidationState({ ruleKey, validationState }));
     }
   });
 
-  RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState }) => {
+  RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState, ruleKey }) => {
     let currentValidator = getCurrentValidator();
 
     // If the previous validation state does not match the current one, then this update
     // is no longer relevant.
-    if (currentValidator[validationState.key] !== previousValidationState) {
+    if (currentValidator[ruleKey] !== previousValidationState) {
       return;
     }
 
@@ -111,7 +110,7 @@ export function nextValidator(validator, getCurrentValidator, callback) {
       context: privateProps.context
     });
 
-    cacheValue(validator, validationState.key, validationState.dependentKeys, validationState);
+    cacheValue(validator, ruleKey, validationState.dependentKeys, validationState);
 
     callback(validator);
 
