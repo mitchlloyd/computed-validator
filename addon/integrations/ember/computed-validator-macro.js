@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { defineValidator } from 'computed-validator';
 import { nextValidator } from 'computed-validator/validator';
+import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 const { computed, getOwner } = Ember;
 
 /**
@@ -33,7 +34,7 @@ export default function(subjectKey, rules) {
       validator = new Validator({
         subject,
         ancestor: validator,
-        owner: getOwner(this),
+        translate: lookupTranslate(getOwner(this)),
         context: this
       });
 

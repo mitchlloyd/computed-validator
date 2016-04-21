@@ -1,12 +1,12 @@
-import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
+import defaultTranslator from 'computed-validator/translators/default';
 import { every, some } from 'computed-validator/utils';
 import defineMemoizedGetter from 'computed-validator/utils/define-memoized-getter';
 import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
 const { RSVP } = Ember;
 
-const PRIVATE = '_computed-validator-private-properties';
+const PRIVATE = '_computed-validator-private';
 
 /**
  * Given a set of validation rules, this function creates a Validator class.
@@ -17,13 +17,8 @@ const PRIVATE = '_computed-validator-private-properties';
  * @return {Class} Validator - A Validator class
  */
 export function defineValidator(rules) {
-  let Validator = function({ subject, owner, context, ancestor }) {
-    this[PRIVATE] = {
-      subject,
-      owner,
-      context,
-      translate: lookupTranslate(owner)
-    };
+  let Validator = function({ subject, context, ancestor, translate }) {
+    this[PRIVATE] = { subject, context, translate: translate || defaultTranslator() };
     initCache(this, subject, ancestor);
   };
 
@@ -112,7 +107,7 @@ export function nextValidator(validator, getCurrentValidator, callback) {
     let validator = new Validator({
       subject: privateProps.subject,
       ancestor: currentValidator,
-      owner: privateProps.owner,
+      translate: privateProps.translate,
       context: privateProps.context
     });
 

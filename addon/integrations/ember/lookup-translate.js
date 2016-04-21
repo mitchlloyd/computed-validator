@@ -1,7 +1,7 @@
 import defaultTranslator from 'computed-validator/translators/default';
 import emberI18nTranslator from 'computed-validator/translators/ember-i18n';
 import { firstResult } from 'computed-validator/utils';
-const translators = [emberI18nTranslator, defaultTranslator]
+const translators = [emberI18nTranslator, defaultTranslator];
 
 /**
  * This function returns a function that translates error messages.
@@ -26,7 +26,7 @@ export default function lookupTranslate(owner) {
   let userDefinedService = owner.lookup('service:computed-validator-translation');
 
   if (userDefinedService) {
-    return userDefinedService.translate.bind(service);
+    return userDefinedService.translate.bind(userDefinedService);
   } else {
     return firstResult(translators, (translator) => translator(owner));
   }
