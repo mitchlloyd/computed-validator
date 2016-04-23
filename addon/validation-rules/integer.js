@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import validate from 'computed-validator/validate';
 import validationRule from 'computed-validator/validation-rule';
 import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
@@ -11,14 +10,17 @@ const { get } = Ember;
  * @public
  * @return {object} validationBlueprint
  */
-export default validationRule(function(args, key) {
-  let error = new ValidationError('validations.integer', { property: key });
+export default validationRule(function(args, { onProperty }) {
+  let error = new ValidationError('validations.integer', { property: onProperty });
 
-  return validate(key, function(subject) {
-    let value = get(subject, key);
+  return {
+    dependentKeys: [onProperty],
+    validate(subject) {
+      let value = get(subject, onProperty);
 
-    if (!value || !value.toString().trim().match(/^[+-]?\d+$/)) {
-      return error;
+      if (!value || !value.toString().trim().match(/^[+-]?\d+$/)) {
+        return error;
+      }
     }
-  });
+  };
 });

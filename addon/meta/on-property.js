@@ -9,4 +9,4 @@ import validationRule from 'computed-validator/validation-rule';
  * @param {ValidationBlueprint} key - The validation rule to modify
  * @return {object} validationBlueprint
  */
-export default validationRule(([key, rule]) => rule(key));
+export default validationRule(([key, rule], options) => rule.assign({ onProperty: key }, options).build());

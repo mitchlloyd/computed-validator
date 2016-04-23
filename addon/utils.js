@@ -93,3 +93,40 @@ export function get(obj, path) {
 
   return (index && index === length) ? obj : undefined;
 }
+
+export function last(array) {
+  return array[array.length - 1];
+}
+
+export function flow(...fns) {
+  return function(...initialArgs) {
+    let index = 1;
+    let result = fns[0](...initialArgs);
+
+    while (index < fns.length) {
+      result = fns[index](result);
+      index++;
+    }
+    return result;
+  };
+}
+
+// Polyfill from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+export function assign(target) {
+  if (target === undefined || target === null) {
+    throw new TypeError('Cannot convert undefined or null to object');
+  }
+
+  let output = Object(target);
+  for (let index = 1; index < arguments.length; index++) {
+    let source = arguments[index];
+    if (source !== undefined && source !== null) {
+      for (var nextKey in source) {
+        if (source.hasOwnProperty(nextKey)) {
+          output[nextKey] = source[nextKey];
+        }
+      }
+    }
+  }
+  return output;
+}

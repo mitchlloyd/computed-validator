@@ -1,26 +1,47 @@
 import Ember from 'ember';
+import { flow, assign } from 'computed-validator/utils';
 import Errors from 'computed-validator/errors';
-import ValidationBuilder from 'computed-validator/validation-builder';
-import { last, flow } from 'computed-validator/utils';
 const { get } = Ember;
 
-/**
- * A function used to create validation rules.
- *
- * @module
- * @public
- * @param {function} build - A function that returns a validation blueprint
- */
-export default function validationRule(build) {
+export default class ValidationBuilder {
+  constructor(buildFn, args) {
+    this.buildFn = buildFn;
+    this.args = args;
+    this.options = {};
+  }
 
-  // User validation declaration with relevant validation arguments
-  return function(...args) {
+  onProperty(key) {
+    if (!this.options.onProperty) {
+      this.options.onProperty = key;
+    }
+    return this;
+  }
 
-    // Return an object to update args
-    return new ValidationBuilder(build, args);
+  message(message) {
+    this.options.message = message;
+    return this;
+  }
 
-  };
+  when(key) {
+    this.options.when = key;
+    return this;
+  }
 
+  assign(options) {
+    assign(this.options, options);
+    return this;
+  }
+
+  build() {
+    let blueprint = this.buildFn(this.args, this.options);
+
+    // Wrap the validate function to get predicatable error results
+    blueprint.validate = flow(blueprint.validate, normalizeErrors);
+
+    blueprint = handleMessageOption(blueprint, this.options);
+    blueprint = handleWhenOption(blueprint, this.options);
+    return blueprint;
+  }
 }
 
 function handleMessageOption({ dependentKeys, validate }, options) {
@@ -85,17 +106,3 @@ function normalizeErrors(errorOrErrors) {
   }
 }
 
-
-// required()
-// returns a validationRule
-//
-// required().dependentKeys
-// required().validate()
-// function(min, max, options) {
-//   return new ValidationRule({
-//     dependentKeys(ruleKey);
-//     validate(),
-
-
-//   })
-// }

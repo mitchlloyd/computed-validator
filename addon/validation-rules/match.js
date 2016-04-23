@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
 import ValidationError from 'computed-validator/validation-error';
-import validate from 'computed-validator/validate';
 const { get } = Ember;
 
 /**
@@ -12,14 +11,17 @@ const { get } = Ember;
  * @param {string} regex - Regular expression to match
  * @return {object} validationBlueprint
  */
-export default validationRule(function([regex], key) {
-  let error = new ValidationError('validations.match', { property: key, regex });
+export default validationRule(function([regex], { onProperty }) {
+  let error = new ValidationError('validations.match', { property: onProperty, regex });
 
-  return validate(key, function(subject) {
-    let value = get(subject, key);
+  return {
+    dependentKeys: [onProperty],
+    validate(subject) {
+      let value = get(subject, onProperty);
 
-    if (!regex.test(value)) {
-      return error;
+      if (!regex.test(value)) {
+        return error;
+      }
     }
-  });
+  };
 });

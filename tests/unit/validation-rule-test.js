@@ -13,7 +13,7 @@ test('given a message option', function(assert) {
   });
 
   let validator = createValidator({}, {
-    prop: rule({ message: 'override' })
+    prop: rule().message('override')
   });
 
   assert.deepEqual(validator.prop.errors, ['override'], "message overridden with option");
@@ -28,7 +28,7 @@ test('given a when option', function(assert) {
   });
 
   let Validator = defineValidator({
-    prop: rule({ when: 'bool' })
+    prop: rule().when('bool')
   });
 
   let subject = { bool: false };

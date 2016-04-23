@@ -18,20 +18,20 @@ import validationRule from 'computed-validator/validation-rule';
  * @param {function} validationRule - A validation rule to be negated
  * @return {object} validationBlueprint
  */
-export default validationRule(function([rule], key) {
-  let { dependentKeys, validate } = rule(key);
+export default validationRule(function([rule], options) {
+  let { dependentKeys, validate } = rule.assign(options).build();
 
   let negatedValidate = function(subject) {
     let errors = validate(subject);
     if (errors.length) {
-      return []
+      return [];
     } else {
       return ["should be opposite"];
     }
-  }
+  };
 
   return {
     dependentKeys,
     validate: negatedValidate
   };
-})
+});

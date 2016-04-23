@@ -2,7 +2,6 @@
 import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
 import ValidationError from 'computed-validator/validation-error';
-import validate from 'computed-validator/validate';
 const { get } = Ember;
 
 /**
@@ -12,13 +11,16 @@ const { get } = Ember;
  * @public
  * @return {object} validationBlueprint
  */
-export default validationRule(function(_, key) {
-  let error = new ValidationError('validations.required', { property: key });
+export default validationRule(function(args, { onProperty }) {
+  let error = new ValidationError('validations.required', { property: onProperty });
 
-  return validate(key, function(subject) {
-    if (!get(subject, key)) {
-      return error;
+  return {
+    dependentKeys: [onProperty],
+    validate(subject) {
+      if (!get(subject, onProperty)) {
+        return error;
+      }
     }
-  });
+  };
 });
 // END-SNIPPET

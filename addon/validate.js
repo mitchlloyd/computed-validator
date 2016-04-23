@@ -7,7 +7,7 @@ export default function(...args) {
 
   let validate = function(...args) {
     return normalizeErrorsResult(fn.apply(this, args));
-  }
+  };
   return { dependentKeys, validate };
 }
 

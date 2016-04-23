@@ -1,5 +1,4 @@
 import between from 'computed-validator/validation-rules/between';
-import onProperty from 'computed-validator/meta/on-property';
 import ValidationError from 'computed-validator/validation-error';
 import validationRule from 'computed-validator/validation-rule';
 
@@ -13,10 +12,10 @@ import validationRule from 'computed-validator/validation-rule';
  * @param {number} max
  * @return {object} validationBlueprint
  */
-export default validationRule(function([min, max], defaultKey) {
+export default validationRule(function([min, max], { onProperty }) {
   let errorId;
   if (min === -Infinity || min === 0) {
-    errorId = 'validations.length-between.max-only'
+    errorId = 'validations.length-between.max-only';
   } else if (max === Infinity) {
     errorId = 'validations.length-between.min-only';
   } else {
@@ -24,5 +23,10 @@ export default validationRule(function([min, max], defaultKey) {
   }
 
   let message = new ValidationError(errorId, { min, max });
-  return onProperty(`${defaultKey}.length`, between(min, max, { fallbackValue: 0, message }))();
+
+  return between(min, max).assign({
+    onProperty: `${onProperty}.length`,
+    fallbackValue: 0,
+    message
+  }).build();
 });

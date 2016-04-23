@@ -1,10 +1,7 @@
-import Ember from 'ember';
 import { metaBlueprintFor } from './utils';
 import validationRule from 'computed-validator/validation-rule';
-import { firstResult, last } from 'computed-validator/utils';
-import ValidationError from 'computed-validator/validation-error';
+import { firstResult } from 'computed-validator/utils';
 import Errors from 'computed-validator/errors';
-const { RSVP } = Ember;
 
 /**
  * This rule takes a list of validation rule and returns a new rule that executes
@@ -33,8 +30,8 @@ const { RSVP } = Ember;
  * @param {ValidationBlueprint[]} rules - A list of validation rules to exectue in sequence
  * @return {object} validationBlueprint
  */
-export default validationRule(function(rules, key) {
-  let { dependentKeys, validateFunctions } = metaBlueprintFor(rules, key);
+export default validationRule(function(rules, { onProperty }) {
+  let { dependentKeys, validateFunctions } = metaBlueprintFor(rules, onProperty);
 
   let validate = function(subject) {
     return getNextErrorResult(subject, validateFunctions);
@@ -95,4 +92,3 @@ function getNextErrorResult(subject, validateFunctions) {
     }
   }) || [];
 }
-

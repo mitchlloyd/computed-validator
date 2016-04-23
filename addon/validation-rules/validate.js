@@ -1,5 +1,4 @@
 import validationRule from 'computed-validator/validation-rule';
-import validate from 'computed-validator/validate';
 
 /**
  * A flexible validation rule that uses a function to validate
@@ -13,21 +12,22 @@ import validate from 'computed-validator/validate';
  * the property is not valid.
  * @return {object} validationBlueprint
  */
-export default validationRule(function(args, key) {
-  let [dependentKeys, fn] = normalizeArguments(args, key);
-  return validate(...dependentKeys, fn);
-});
-
-function normalizeArguments(args, defaultKey) {
-  let validate = args.pop();
-
-  // Allow users to provide no key to use the default key.
-  let keys;
-  if (args.length > 0) {
-    keys = args;
-  } else {
-    keys = [defaultKey];
+export default validationRule(function([dependentKeys, validate], { onProperty }) {
+  // Normal arg case:
+  // [], fn, {}
+  //
+  // Also handle implicit dependent keys
+  // fn, {}
+  //
+  if (!validate) {
+    validate = dependentKeys;
+    dependentKeys = [onProperty];
   }
 
-  return [keys, validate];
-}
+  // Turn single dependent keys into an array
+  if (typeof dependentKeys === 'string') {
+    dependentKeys = [dependentKeys];
+  }
+
+  return { dependentKeys, validate };
+});

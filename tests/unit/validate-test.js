@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { createValidator, validate } from 'computed-validator';
 const { get } = Ember;
 
-module("Unit | validate");
+module("Unit | validation-rules | validate");
 
 test('using validate with an explicit key', function(assert) {
   let user = { name: null };

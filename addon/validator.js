@@ -27,7 +27,7 @@ export function defineValidator(rules) {
   Validator.validationRuleDependentKeys = {};
 
   for (let ruleKey in rules) {
-    let { validate, dependentKeys } = rules[ruleKey](ruleKey);
+    let { validate, dependentKeys } = rules[ruleKey].onProperty(ruleKey).build();
 
     Validator.validationRuleDependentKeys[ruleKey] = dependentKeys;
 

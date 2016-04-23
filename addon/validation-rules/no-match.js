@@ -11,7 +11,7 @@ import ValidationError from 'computed-validator/validation-error';
  * @param {string} regex - Regular expression to match
  * @return {object} validationBlueprint
  */
-export default validationRule(function([regex], key) {
-  let message = new ValidationError('validations.no-match', { property: key, regex });
-  return negate(match(regex), { message })(key);
+export default validationRule(function([regex], { onProperty }) {
+  let message = new ValidationError('validations.no-match', { property: onProperty, regex });
+  return negate(match(regex)).assign({ message, onProperty }).build();
 });

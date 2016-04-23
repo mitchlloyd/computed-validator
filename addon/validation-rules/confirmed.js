@@ -1,7 +1,6 @@
 // BEGIN-SNIPPET confirmed-validation-rule
 import Ember from 'ember';
 import validationRule from 'computed-validator/validation-rule';
-import validate from 'computed-validator/validate';
 import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
 
@@ -15,13 +14,16 @@ const { get } = Ember;
  * property identified by the validation key
  * @return {object} validationBlueprint
  */
-export default validationRule(function([keyToMatch], key) {
-  let error = new ValidationError('validations.confirmed', { key, keyToMatch });
+export default validationRule(function([keyToMatch], { onProperty }) {
+  let error = new ValidationError('validations.confirmed', { onProperty, keyToMatch });
 
-  return validate(key, keyToMatch, function(subject) {
-    if (get(subject, key) !== get(subject, keyToMatch)) {
-      return error;
+  return {
+    dependentKeys: [onProperty],
+    validate(subject) {
+      if (get(subject, onProperty) !== get(subject, keyToMatch)) {
+        return error;
+      }
     }
-  });
-})
+  };
+});
 // END-SNIPPET
