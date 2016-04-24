@@ -1,6 +1,6 @@
 {
   "name": "computed-validator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Create a validator that tracks validation state of an object",
   "directories": {
     "doc": "doc",
@@ -46,7 +46,6 @@
   "keywords": [
     "ember-addon",
     "validation"
-
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5"
