@@ -27,14 +27,14 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import Ember from 'ember';
-import { defineValidator, SUBJECT_KEY } from 'computed-validator';
-import { OWNER_KEY } from 'computed-validator/integrations/ember/validator';
-import { CONTEXT_KEY } from 'computed-validator/validator/private-keys';
+import { defineValidator } from 'computed-validator';
+import { nextValidator } from 'computed-validator/validator';
+import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
 const { computed, getOwner } = Ember;
 
 /**
  * This is the primary interface for using Computed Validator. When used from an
- * Ember "looked up" object, it given Computed Validator a chance to access the
+ * Ember "looked up" object, it gives Computed Validator a chance to access the
  * container so that it can integrate with translation services.
  *
  * @public
@@ -45,19 +45,38 @@ const { computed, getOwner } = Ember;
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
+  let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
+  let validator;
+  let currentValidator = function() {
+    return validator;
+  };
 
-  return computed(subjectKey, function() {
-    let subject = this.get(subjectKey);
+  return computed(...dependentKeys, {
+    get(key) {
+      let subject = this.get(subjectKey);
 
-    if (!subject) {
-      return;
+      if (!subject) {
+        return;
+      }
+
+      validator = new Validator({
+        subject,
+        ancestor: validator,
+        translate: lookupTranslate(getOwner(this)),
+        context: this
+      });
+
+      nextValidator(validator, currentValidator, (nextValidator) => {
+        validator = nextValidator;
+        this.set(key, validator);
+      });
+
+      return validator;
+    },
+
+    set(key, validator) {
+      return validator;
     }
-
-    return Validator.create({
-      [SUBJECT_KEY]: this.get(subjectKey),
-      [OWNER_KEY]: getOwner(this),
-      [CONTEXT_KEY]: this
-    });
   });
 }
 </code></pre>
@@ -70,13 +89,13 @@ export default function(subjectKey, rules) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_between.html">validation-rules/between</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-between.html">validation-rules/length-between</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li><li><a href="module-validator.html">validator</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_in-range.html">validation-rules/in-range</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-in-range.html">validation-rules/length-in-range</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createValidator">createValidator</a></li><li><a href="global.html#defineValidator">defineValidator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 27 2016 16:03:56 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Apr 23 2016 21:07:20 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -47,12 +47,12 @@
 
 
 <div class="description">
-    <p>Whenever a validation rule runs, it returns a new validationState
+    <p>Whenever a validation rule runs, it returns a new ValidationState
 instance.</p>
 <p>A ValidationState instance can have pending promises that may return errors
 in the future. However, a ValidationState will not change when these
-promises resolve. Rather it exports <code>nextValidationState</code>, a function that
-can will asynchronously retrieve a new validaiton state.</p>
+promises resolve. Rather this module exports <code>nextValidationState</code>, a function that
+will asynchronously retrieve a new validaiton state.</p>
 </div>
 
 
@@ -268,7 +268,7 @@ can will asynchronously retrieve a new validaiton state.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line81">line 81</a>
+        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -324,7 +324,7 @@ can will asynchronously retrieve a new validaiton state.</p>
 
 
 <div class="description">
-    <p>A convienience method to get the first available error message</p>
+    <p>A convienience method to get the first available error message.</p>
 </div>
 
 
@@ -368,7 +368,7 @@ can will asynchronously retrieve a new validaiton state.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line71">line 71</a>
+        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -424,10 +424,9 @@ can will asynchronously retrieve a new validaiton state.</p>
 
 
 <div class="description">
-    <p>Determine if there are any known errors. Keep in mind
-this is not the same as isValid. A validation may currently
-have no errors, but could have pending promises that may
-resolve with errors.</p>
+    <p>Determine if there are any known errors. Keep in mind this is not the same
+as isValid. A validation may currently have no errors, but could have
+pending promises that may resolve with errors.</p>
 </div>
 
 
@@ -471,7 +470,7 @@ resolve with errors.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line61">line 61</a>
+        <a href="validation-state.js.html">validation-state.js</a>, <a href="validation-state.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -527,9 +526,9 @@ resolve with errors.</p>
 
 
 <div class="description">
-    <p>Determine if the validation is valid. This is true
-if there are no resolved errors and there are no
-pending promises that may later return errors.</p>
+    <p>Determine if the validation is valid. This is true if there are no
+resolved errors and there are no pending promises that may later return
+errors.</p>
 </div>
 
 
@@ -629,8 +628,8 @@ pending promises that may later return errors.</p>
 
 
 <div class="description">
-    <p>A validaion is validating when there is a pending
-promise that may later return an error.</p>
+    <p>A validaion is validating when there is a pending promise that may later
+return an error.</p>
 </div>
 
 
@@ -734,13 +733,13 @@ promise that may later return an error.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_between.html">validation-rules/between</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-between.html">validation-rules/length-between</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li><li><a href="module-validator.html">validator</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_in-range.html">validation-rules/in-range</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-in-range.html">validation-rules/length-in-range</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createValidator">createValidator</a></li><li><a href="global.html#defineValidator">defineValidator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 27 2016 16:03:56 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Apr 23 2016 21:07:20 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

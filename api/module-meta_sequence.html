@@ -38,18 +38,18 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>This rule takes a list of validation rule and returns a new rule that executes
+            <div class="description"><p>This rule takes a list of validation rules and returns a new rule that executes
 each validation rule in order. One might use this rule for two reasons:</p>
 <p>1) To specify the exact order to present validation rules.</p>
 <p>For instance if someone's password is required and must be complex we could
 use sequence like this:</p>
 <pre class="prettyprint source"><code>sequence(required(), complexity())</code></pre><p>This would allow us to show the &quot;required&quot; message first and then show a list of
 complexity messages next by just using the <code>validator.name.errors</code> path.</p>
-<p>2) To wait on long-running, asynchronous validations.</p>
+<p>2) To postpone long-running, asynchronous validations.</p>
 <p>A case for this might be picking a username where we want to check the
 length first and then, only after that requirement has been met, check with
 the server to see if that username has been taken.</p>
-<pre class="prettyprint source"><code>sequence(required(), length(), uniqueness())</code></pre></div>
+<pre class="prettyprint source"><code>sequence(required(), lengthInRange(5, 25), uniqueness())</code></pre></div>
         
 
         
@@ -147,7 +147,7 @@ the server to see if that username has been taken.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="meta_sequence.js.html">meta/sequence.js</a>, <a href="meta_sequence.js.html#line9">line 9</a>
+        <a href="meta_sequence.js.html">meta/sequence.js</a>, <a href="meta_sequence.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -174,7 +174,7 @@ the server to see if that username has been taken.</p>
 
         
 <div class="param-desc">
-    <p>validationBlueprint</p>
+    <p>validationBuilder</p>
 </div>
 
 
@@ -226,13 +226,13 @@ the server to see if that username has been taken.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_between.html">validation-rules/between</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-between.html">validation-rules/length-between</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li><li><a href="module-validator.html">validator</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_in-range.html">validation-rules/in-range</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-in-range.html">validation-rules/length-in-range</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createValidator">createValidator</a></li><li><a href="global.html#defineValidator">defineValidator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 27 2016 16:03:56 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Apr 23 2016 21:07:20 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

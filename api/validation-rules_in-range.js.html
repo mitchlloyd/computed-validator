@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: validation-rules/integer.js</title>
+    <title>JSDoc: Source: validation-rules/in-range.js</title>
 
     <script src="scripts/prettify/prettify-ace3c28e32526c485728e7f71d736533.js" integrity="sha256-OoBxImBzFaGSmBKexx57JWdpykQgxMmhMqQKDj3pq9c= sha512-WrvWm8hZrddhVZqDuVXTlyR4zSsrzLdTP9dAQUiipQ1V0c8BewOHXvCY4vrWS/wKrCfNwUFqH83MHxHCG67jdQ==" > </script>
     <script src="scripts/prettify/lang-css-837b4b4cfe01f4c48b5e9a53aae93677.js" integrity="sha256-WV/862lO0EUBZTVS+CdIMEaFghp/DIhmH1CKoWooYJU= sha512-1vkvFC9wsglZoYvQEBJbmY2yig3JPZMYNtq6Z5aizA/mb9a3Ds/ps7iWo0twAqaP1NUZE8+v/sEA5hoRsopXLw==" > </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: validation-rules/integer.js</h1>
+    <h1 class="page-title">Source: validation-rules/in-range.js</h1>
 
     
 
@@ -32,21 +32,39 @@ import ValidationError from 'computed-validator/validation-error';
 const { get } = Ember;
 
 /**
- * Validate that a value is an integer.
+ * A validation rule that returns errors when a numeric value is not
+ * between (inclusive) the given min and max values.
  *
  * @module
  * @public
+ * @param {number} min
+ * @param {number} max
  * @return {object} validationBuilder
  */
-export default validationRule(function(args, { onProperty }) {
-  let error = new ValidationError('validations.integer', { property: onProperty });
+export default validationRule(function([min, max], { onProperty, fallbackValue }) {
+  let errorId;
+  if (min === -Infinity) {
+    errorId = 'validations.in-range.max-only';
+  } else if (max === Infinity) {
+    errorId = 'validations.in-range.min-only';
+  } else {
+    errorId = 'validations.in-range';
+  }
+
+  let error = new ValidationError(errorId, { min, max });
 
   return {
     dependentKeys: [onProperty],
     validate(subject) {
       let value = get(subject, onProperty);
+      let numericValue = +value;
+      let isNotNumber = (numericValue != value) // jshint ignore:line
 
-      if (!value || !value.toString().trim().match(/^[+-]?\d+$/)) {
+      if (isNotNumber) {
+        numericValue = fallbackValue;
+      }
+
+      if (numericValue === undefined || numericValue > max || numericValue &lt; min) {
         return error;
       }
     }

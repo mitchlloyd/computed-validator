@@ -31,33 +31,33 @@ import { flatten } from 'computed-validator/utils';
 const { RSVP } = Ember;
 
 /**
- * Whenever a validation rule runs, it returns a new validationState
+ * Whenever a validation rule runs, it returns a new ValidationState
  * instance.
  *
  * A ValidationState instance can have pending promises that may return errors
  * in the future. However, a ValidationState will not change when these
- * promises resolve. Rather it exports `nextValidationState`, a function that
- * can will asynchronously retrieve a new validaiton state.
+ * promises resolve. Rather this module exports `nextValidationState`, a function that
+ * will asynchronously retrieve a new validaiton state.
  *
  * @class ValidationState
  * @param {error[]} allErrors - A list of values representing a validation errors
  * @param {function} translate - A function that can translate a validation error
  */
 export default class ValidationState {
-  constructor(allErrors, translate) {
-    this.allErrors = allErrors;
+  constructor({ errors, translate }) {
+    this.allErrors = errors;
     this.translate = translate;
 
-    let { pendingErrors, resolvedErrors } = partitionErrors(allErrors);
+    let { pendingErrors, resolvedErrors } = partitionErrors(this.allErrors);
     this.pendingErrors = pendingErrors;
     this.resolvedErrors = resolvedErrors;
     this.translatedErrors = undefined;
   }
 
   /**
-   * Determine if the validation is valid. This is true
-   * if there are no resolved errors and there are no
-   * pending promises that may later return errors.
+   * Determine if the validation is valid. This is true if there are no
+   * resolved errors and there are no pending promises that may later return
+   * errors.
    *
    * @method
    * @return {boolean}
@@ -67,8 +67,8 @@ export default class ValidationState {
   }
 
   /**
-   * A validaion is validating when there is a pending
-   * promise that may later return an error.
+   * A validaion is validating when there is a pending promise that may later
+   * return an error.
    *
    * @method
    * @return {boolean}
@@ -78,10 +78,9 @@ export default class ValidationState {
   }
 
   /**
-   * Determine if there are any known errors. Keep in mind
-   * this is not the same as isValid. A validation may currently
-   * have no errors, but could have pending promises that may
-   * resolve with errors.
+   * Determine if there are any known errors. Keep in mind this is not the same
+   * as isValid. A validation may currently have no errors, but could have
+   * pending promises that may resolve with errors.
    *
    * @method
    * @return {boolean}
@@ -91,7 +90,7 @@ export default class ValidationState {
   }
 
   /**
-   * A convienience method to get the first available error message
+   * A convienience method to get the first available error message.
    *
    * @method
    * @return {string}
@@ -114,9 +113,18 @@ export default class ValidationState {
   }
 }
 
-export function nextValidationState(validationState) {
+export function nextValidationState({ ruleKey, validationState }) {
   return RSVP.all(validationState.allErrors).then(flatten).then((errors) => {
-    return new ValidationState(errors, validationState.translate);
+    let nextValidationState = new ValidationState({
+      errors,
+      translate: validationState.translate
+    });
+
+    return {
+      validationState: nextValidationState,
+      previousValidationState: validationState,
+      ruleKey
+    };
   });
 }
 
@@ -124,9 +132,9 @@ function partitionErrors(errors) {
   let result = {
     resolvedErrors: [],
     pendingErrors: []
-  }
+  };
 
-  errors.forEach((error, i) => {
+  errors.forEach((error) => {
     if (typeof error.then === 'function') {
       result.pendingErrors.push(error);
     } else {
@@ -156,13 +164,13 @@ function translateErrors(errors, translate) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_between.html">validation-rules/between</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-between.html">validation-rules/length-between</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li><li><a href="module-validator.html">validator</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-integrations_ember_computed-validator-macro.html">integrations/ember/computed-validator-macro</a></li><li><a href="module-meta_all.html">meta/all</a></li><li><a href="module-meta_negate.html">meta/negate</a></li><li><a href="module-meta_on-property.html">meta/on-property</a></li><li><a href="module-meta_sequence.html">meta/sequence</a></li><li><a href="module-translators_default.html">translators/default</a></li><li><a href="module-translators_ember-i18n.html">translators/ember-i18n</a></li><li><a href="module-validation-rule.html">validation-rule</a></li><li><a href="module-validation-rules_confirmed.html">validation-rules/confirmed</a></li><li><a href="module-validation-rules_exclusion.html">validation-rules/exclusion</a></li><li><a href="module-validation-rules_in-range.html">validation-rules/in-range</a></li><li><a href="module-validation-rules_integer.html">validation-rules/integer</a></li><li><a href="module-validation-rules_length-in-range.html">validation-rules/length-in-range</a></li><li><a href="module-validation-rules_match.html">validation-rules/match</a></li><li><a href="module-validation-rules_no-match.html">validation-rules/no-match</a></li><li><a href="module-validation-rules_required.html">validation-rules/required</a></li><li><a href="module-validation-rules_validate.html">validation-rules/validate</a></li></ul><h3>Classes</h3><ul><li><a href="ValidationError.html">ValidationError</a></li><li><a href="ValidationState.html">ValidationState</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createValidator">createValidator</a></li><li><a href="global.html#defineValidator">defineValidator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 27 2016 16:03:56 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Apr 23 2016 21:07:20 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>
