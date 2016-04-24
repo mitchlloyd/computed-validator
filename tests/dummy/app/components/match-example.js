@@ -20,9 +20,8 @@ export default Ember.Component.extend({
 
   // BEGIN-SNIPPET match-example-validator
   validator: computedValidator('user', {
-    password: match(/^(?=.*[a-z])(?=.*[A-Z]).+$/, {
-      message: "must have at least one uppercase and one lowercase letter"
-    })
+    password: match(/^(?=.*[a-z])(?=.*[A-Z]).+$/)
+      .message("must have at least one uppercase and one lowercase letter")
   })
   // END-SNIPPET
 });

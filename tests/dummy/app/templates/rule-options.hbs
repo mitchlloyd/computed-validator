@@ -1,0 +1,46 @@
+<h2>Rule Options</h2>
+
+<p>
+  Each validation rule (including the ones that you create with <code>validationRule</code>)
+  have three special options you can add to them to mofiy their behavior.
+</p>
+
+<h3>When</h3>
+
+<p>
+  If using the when property, the validation will only run when the property for the given
+  key is true.
+</p>
+
+<h3>On Property</h3>
+
+<p>
+  Most validation rules use the name of the validation rule on the validation object to determine
+  which property to pay attention to on the subject. Add this property to override this value.
+</p>
+
+<h3>Message</h3>
+
+<p>
+  Use this property to set the message users will see when this validation rule returns an error.
+</p>
+
+<h3>Builder Methods or Assign</h3>
+
+<p>
+  You can use builder style methods to modify these properties.
+</p>
+
+{{code-snippet name="options-builder-example-validator.js"}}
+
+<p>
+  Or you can use the <code>assign</code> method to assign properties.
+</p>
+
+{{code-snippet name="options-assign-example-validator.js"}}
+
+<p>
+  Either syntax will yield the same result.
+</p>
+
+{{options-builder-example}}

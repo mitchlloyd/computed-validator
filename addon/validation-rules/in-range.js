@@ -16,11 +16,11 @@ const { get } = Ember;
 export default validationRule(function([min, max], { onProperty, fallbackValue }) {
   let errorId;
   if (min === -Infinity) {
-    errorId = 'validations.between.max-only';
+    errorId = 'validations.in-range.max-only';
   } else if (max === Infinity) {
-    errorId = 'validations.between.min-only';
+    errorId = 'validations.in-range.min-only';
   } else {
-    errorId = 'validations.between';
+    errorId = 'validations.in-range';
   }
 
   let error = new ValidationError(errorId, { min, max });

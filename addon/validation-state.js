@@ -3,13 +3,13 @@ import { flatten } from 'computed-validator/utils';
 const { RSVP } = Ember;
 
 /**
- * Whenever a validation rule runs, it returns a new validationState
+ * Whenever a validation rule runs, it returns a new ValidationState
  * instance.
  *
  * A ValidationState instance can have pending promises that may return errors
  * in the future. However, a ValidationState will not change when these
- * promises resolve. Rather it exports `nextValidationState`, a function that
- * can will asynchronously retrieve a new validaiton state.
+ * promises resolve. Rather this module exports `nextValidationState`, a function that
+ * will asynchronously retrieve a new validaiton state.
  *
  * @class ValidationState
  * @param {error[]} allErrors - A list of values representing a validation errors

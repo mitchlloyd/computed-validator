@@ -18,7 +18,7 @@ export default validationRule(function([keyToMatch], { onProperty }) {
   let error = new ValidationError('validations.confirmed', { onProperty, keyToMatch });
 
   return {
-    dependentKeys: [onProperty],
+    dependentKeys: [onProperty, keyToMatch],
     validate(subject) {
       if (get(subject, onProperty) !== get(subject, keyToMatch)) {
         return error;

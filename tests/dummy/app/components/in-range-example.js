@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import {
   computedValidator,
-  between
+  inRange
 } from 'computed-validator';
 
 export default Ember.Component.extend({
@@ -10,9 +10,9 @@ export default Ember.Component.extend({
     this.user = {};
   },
 
-  // BEGIN-SNIPPET between-example-validator
+  // BEGIN-SNIPPET in-range-example-validator
   validator: computedValidator('user', {
-    age: between(21, 100)
+    age: inRange(21, 100)
   })
   // END-SNIPPET
 });

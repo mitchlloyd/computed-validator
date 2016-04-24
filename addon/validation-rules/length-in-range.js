@@ -1,4 +1,4 @@
-import between from 'computed-validator/validation-rules/between';
+import inRange from 'computed-validator/validation-rules/in-range';
 import ValidationError from 'computed-validator/validation-error';
 import validationRule from 'computed-validator/validation-rule';
 
@@ -15,16 +15,16 @@ import validationRule from 'computed-validator/validation-rule';
 export default validationRule(function([min, max], { onProperty }) {
   let errorId;
   if (min === -Infinity || min === 0) {
-    errorId = 'validations.length-between.max-only';
+    errorId = 'validations.length-in-range.max-only';
   } else if (max === Infinity) {
-    errorId = 'validations.length-between.min-only';
+    errorId = 'validations.length-in-range.min-only';
   } else {
-    errorId = 'validations.length-between';
+    errorId = 'validations.length-in-range';
   }
 
   let message = new ValidationError(errorId, { min, max });
 
-  return between(min, max).assign({
+  return inRange(min, max).assign({
     onProperty: `${onProperty}.length`,
     fallbackValue: 0,
     message

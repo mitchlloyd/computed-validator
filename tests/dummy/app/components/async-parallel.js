@@ -1,3 +1,4 @@
+//BEGIN-SNIPPET async-parallel
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
@@ -15,31 +16,13 @@ export default Ember.Component.extend({
   layout: hbs`
     {{validated-field
       label="Password"
-      value=user.password}}
-
-    {{#if validator.password.isValidating}}
-      <p>Hang on talking to server...</p>
-    {{/if}}
-
-    <ul>
-      {{#each validator.password.errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
+      value=user.password
+      errors=(if validator.password.isValidating 'Wait a sec...' validator.password.errors)}}
 
     {{validated-field
       label="Age"
-      value=user.age}}
-
-    <ul>
-      {{#each validator.age.errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
-
-    {{#if validator.age.isValidating}}
-      <p>Hang on talking to server...</p>
-    {{/if}}
+      value=user.age
+      errors=(if validator.age.isValidating 'Wait a sec...' validator.age.errors)}}
 
     <button class="btn m-b-2" disabled={{validator.isValid}}>Submit</button>
   `,
@@ -62,3 +45,4 @@ export default Ember.Component.extend({
     })
   })
 });
+//END-SNIPPET

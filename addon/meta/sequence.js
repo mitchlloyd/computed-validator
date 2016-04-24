@@ -4,7 +4,7 @@ import { firstResult } from 'computed-validator/utils';
 import Errors from 'computed-validator/errors';
 
 /**
- * This rule takes a list of validation rule and returns a new rule that executes
+ * This rule takes a list of validation rules and returns a new rule that executes
  * each validation rule in order. One might use this rule for two reasons:
  *
  * 1) To specify the exact order to present validation rules.
@@ -23,7 +23,7 @@ import Errors from 'computed-validator/errors';
  * length first and then, only after that requirement has been met, check with
  * the server to see if that username has been taken.
  *
- *     sequence(required(), length(), uniqueness())
+ *     sequence(required(), lengthInRange(5, 25), uniqueness())
  *
  * @module
  * @public

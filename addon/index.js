@@ -5,9 +5,9 @@ import {
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';
 import confirmed from 'computed-validator/validation-rules/confirmed';
-import between from 'computed-validator/validation-rules/between';
+import inRange from 'computed-validator/validation-rules/in-range';
 import exclusion from 'computed-validator/validation-rules/exclusion';
-import lengthBetween from 'computed-validator/validation-rules/length-between';
+import lengthInRange from 'computed-validator/validation-rules/length-in-range';
 import match from 'computed-validator/validation-rules/match';
 import noMatch from 'computed-validator/validation-rules/no-match';
 import validate from 'computed-validator/validation-rules/validate';
@@ -25,11 +25,12 @@ export {
   defineValidator,
   required,
   integer,
-  between,
+  inRange,
   validate,
   confirmed,
   exclusion,
-  lengthBetween,
+  inRange,
+  lengthInRange,
   match,
   noMatch,
   computedValidator,

@@ -1,18 +1,20 @@
-import Ember from 'ember';
 import { module, test } from 'qunit';
-import { createValidator, confirmed } from 'computed-validator';
-const { set } = Ember;
+import { defineValidator, confirmed } from 'computed-validator';
 
 module("Unit | validation-rules | confirmed");
 
 test('using confirmed', function(assert) {
-  let user = { name: null, nameConfirmation: null };
-
-  let validator = createValidator(user, {
+  let Validator = defineValidator({
     nameConfirmation: confirmed('name')
   });
 
-  set(user, 'name', "Millie");
+  let subject = { name: null, nameConfirmation: null };
+  let validator = new Validator({ subject });
+
+  assert.deepEqual(validator.nameConfirmation.errors, []);
+
+  subject = { name: 'Millie', nameConfirmation: null };
+  validator = new Validator({ subject, ancestor: validator });
 
   assert.deepEqual(validator.nameConfirmation.errors, ["must match name"]);
 });

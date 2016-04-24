@@ -2,7 +2,7 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
-  lengthBetween
+  lengthInRange
 } from 'computed-validator';
 
 export default Ember.Component.extend({
@@ -18,9 +18,9 @@ export default Ember.Component.extend({
       errors=validator.name.errors}}
   `,
 
-  // BEGIN-SNIPPET length-between-example-validator
+  // BEGIN-SNIPPET length-in-range-example-validator
   validator: computedValidator('user', {
-    name: lengthBetween(0, 5)
+    name: lengthInRange(0, 5)
   })
   // END-SNIPPET
 });

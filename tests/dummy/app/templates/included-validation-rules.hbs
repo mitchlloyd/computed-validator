@@ -6,7 +6,7 @@
   you started.
 </p>
 
-<h3>Between</h3>
+<h3>In Range</h3>
 
 <p>
   This rule determines whether a numeric value is between two given
@@ -14,10 +14,10 @@
 </p>
 
 <div class="p-a-2">
-  {{between-example}}
+  {{in-range-example}}
 </div>
 
-{{code-snippet name="between-example-validator.js"}}
+{{code-snippet name="in-range-example-validator.js"}}
 
 <h3>Confirmed</h3>
 
@@ -56,18 +56,19 @@
 
 {{code-snippet name="integer-example-validator.js"}}
 
-<h3>Length Between</h3>
+<h3>Length In Range</h3>
 
 <p>
   Determine if the length of a value is between 2 numbers (inclusive). This
-  rule is a combination of <code>onProperty</code> and <code>between</code>.
+  is shorthand for the <code>inRange</code> rule with the <code>onProperty</code>
+  option.
 </p>
 
 <div class="p-a-2">
-  {{length-between-example}}
+  {{length-in-range-example}}
 </div>
 
-{{code-snippet name="length-between-example-validator.js"}}
+{{code-snippet name="length-in-range-example-validator.js"}}
 
 <h3>Match</h3>
 

@@ -1,13 +1,13 @@
 import { module, test } from 'qunit';
-import { createValidator, lengthBetween } from 'computed-validator';
+import { createValidator, lengthInRange } from 'computed-validator';
 
-module("Unit | validation-rules | length-between");
+module("Unit | validation-rules | length-in-range");
 
-test('using lengthBetween', function(assert) {
+test('using lengthInRange', function(assert) {
   let user = { name: 'Joe' };
 
   let validator = createValidator(user, {
-    name: lengthBetween(4, 5)
+    name: lengthInRange(4, 5)
   });
 
   assert.deepEqual(validator.name.errors, ["length must be between 4 and 5 characters"]);

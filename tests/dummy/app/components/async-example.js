@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
   sequence,
-  lengthBetween,
+  lengthInRange,
   validate
 } from 'computed-validator';
 const { RSVP } = Ember;
@@ -18,26 +18,19 @@ export default Ember.Component.extend({
   layout: hbs`
     {{validated-field
       label="Password"
-      value=user.password}}
+      value=user.password
+      errors=(if validator.password.isValidating 'Wait a sec...' validator.password.errors)}}
 
-    <ul>
-      {{#each validator.errors as |error|}}
-        <li>{{error}}</li>
-      {{/each}}
-    </ul>
-
-    {{#if validator.isValidating}}
-      <p>Hang on talking to server...</p>
-    {{/if}}
-
-    <button class="btn m-b-2" disabled={{validator.isValid}}>Submit</button>
+    <button class="btn m-b-2" disabled={{validator.isValid}}>
+      {{if validator.isValidating 'Checking...' 'Submit'}}
+    </button>
   `,
 
   validator: computedValidator('user', {
-    password: sequence(lengthBetween(4, Infinity), validate(function() {
+    password: sequence(lengthInRange(4, Infinity), validate(function() {
       return new RSVP.Promise(function(resolve) {
         setTimeout(function() {
-          resolve('must not have been used in the last three passwords');
+          resolve('has been used in last three passwords');
         }, 1000);
       });
     }))

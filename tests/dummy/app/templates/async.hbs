@@ -1,4 +1,35 @@
+<h2>Asynchronous Validations</h2>
+
+<p>
+  Some validations, especially uniqueness, can only be performed with the help
+  of an asynchronous network request. Any validation rule that returns a promise
+  can update the validator state once the promise resolves.
+</p>
+
+<p>
+  In these examples I've used a promise that resolves after one second for
+  demonstration purposes. Normally these would be AJAX request that return a
+  promise.
+</p>
+
+{{code-snippet name="async-parallel.js"}}
+
 {{async-parallel}}
+
+<p>
+  Notice that the <code>validator</code> and individual validate rules have an
+  <code>isValidating</code> state that is usefull for showing loading messsages.
+</p>
+
+<h2>Sequence and All</h2>
+
+<p>
+  Both the <code>sequence</code> and <code>all</code> meta validation rules
+  have been designed so that they compose promises from async validations in a
+  way that makes sense. Mostly likely you'll want to use <code>sequence</code>
+  so that you can do quick client-side validations first and run the async
+  validation after the other rules have passed.
+</p>
 
 {{code-snippet name="async-example.js"}}
 

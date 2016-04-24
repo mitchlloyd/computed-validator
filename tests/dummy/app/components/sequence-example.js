@@ -5,7 +5,7 @@ import {
   sequence,
   required,
   integer,
-  between
+  inRange
 } from 'computed-validator';
 
 export default Ember.Component.extend({
@@ -23,7 +23,7 @@ export default Ember.Component.extend({
 
   // BEGIN-SNIPPET sequence-example-validator
   validator: computedValidator('user', {
-    age: sequence(required(), integer(), between(21, 100))
+    age: sequence(required(), integer(), inRange(21, 100))
   })
   // END-SNIPPET
 });

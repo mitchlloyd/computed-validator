@@ -2,8 +2,7 @@
 
 <p>
   A major goal of Computed Validator is to make custom rules
-  easy to create and simple to compose. I'm still iterating on these
-  APIs and would love to hear your feedback!
+  easy to create and simple to compose.
 </p>
 
 <h3>Using <code>validationRule</code> and <code>validate</code></h3>
@@ -19,10 +18,15 @@
 <p>
   <code>validationRule</code> takes a callback whose first
   argument is <i>an array containing the arguments passed when the rule was declared</i> and whose
-  second argument is <i>the key representing the validation rule</i>. For
-  instance, in the following example the first argument would be an array
-  containing the string "password" (<code>['password']</code>) and the
-  second argument would be the string "passwordConfirmation".
+  second argument is <i>an object containing mata data about the validation rule</i>. Most commonly
+  the <code>onProperty</code> option is used to derive a dependent key.
+</p>
+
+<p>
+  For instance, in the following example the first argument would be an array
+  containing the string "password" (<code>['password']</code>) and the second
+  argument would be an object with property <code>onProperty</code> of
+  "passwordConfirmation".
 </p>
 
 {{code-snippet name="confirmed-example-validator.js"}}
@@ -30,16 +34,10 @@
 <p>
   Ultimately a <code>validationRule</code> call must return an object
   containing an array of <code>dependentKeys</code> and a <code>validate</code>
-  function. Something like this would work:
+  function.
 </p>
 
 {{code-snippet name="validation-rule-response.js"}}
-
-<p>
-  But the <code>validate</code> function makes this a little more concise.
-</p>
-
-{{code-snippet name="validate-usage.js"}}
 
 <h3>Returning a <code>Validation Error</code></h3>
 

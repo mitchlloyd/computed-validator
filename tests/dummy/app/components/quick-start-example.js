@@ -3,7 +3,7 @@ import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
-  lengthBetween,
+  lengthInRange,
   integer
 } from 'computed-validator';
 
@@ -32,7 +32,7 @@ export default Ember.Component.extend({
   `,
 
   validator: computedValidator('user', {
-    name: lengthBetween(2, Infinity),
+    name: lengthInRange(2, Infinity),
     age: integer()
   })
 });

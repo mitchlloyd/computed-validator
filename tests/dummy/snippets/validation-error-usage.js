@@ -1,1 +1,1 @@
-new ValidationError('validation-key', { key: 'value' }):
+new ValidationError('translation-key', { key: 'value' }):

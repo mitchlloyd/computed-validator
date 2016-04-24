@@ -21,7 +21,7 @@ export default Ember.Component.extend({
 
   // BEGIN-SNIPPET negate-example-validator
   validator: computedValidator('user', {
-    name: negate(integer(), { message: "No integers please" })
+    name: negate(integer()).message("No integers please")
   })
   // END-SNIPPET
 });

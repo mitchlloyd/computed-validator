@@ -20,9 +20,8 @@ export default Ember.Component.extend({
 
   // BEGIN-SNIPPET no-match-example-validator
   validator: computedValidator('user', {
-    password: noMatch(/^password$/, {
-      message: "that's not a good password"
-    })
+    password: noMatch(/^password$/)
+      .message("that's not a good password")
   })
   // END-SNIPPET
 });

@@ -1,8 +1,8 @@
 return {
-  dependentKeys: [key, keyToMatch],
+  dependentKeys: [onProperty, keyToMatch],
   validate(subject) {
-    if (get(subject, key) !== get(subject, keyToMatch)) {
-      return [error];
+    if (get(subject, onProperty) !== get(subject, keyToMatch)) {
+      return error;
     }
   }
-}
+};
