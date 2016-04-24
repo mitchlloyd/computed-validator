@@ -8,7 +8,7 @@ const { get } = Ember;
  *
  * @module
  * @public
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function(args, { onProperty }) {
   let error = new ValidationError('validations.integer', { property: onProperty });

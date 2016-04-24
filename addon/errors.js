@@ -17,6 +17,6 @@ export default {
   isSingleType(error) {
     return typeof error === 'string' ||
            error instanceof ValidationError ||
-           typeof error.then === 'function'
+           typeof error.then === 'function';
   }
-}
+};

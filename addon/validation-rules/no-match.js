@@ -9,7 +9,7 @@ import ValidationError from 'computed-validator/validation-error';
  * @module
  * @public
  * @param {string} regex - Regular expression to match
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([regex], { onProperty }) {
   let message = new ValidationError('validations.no-match', { property: onProperty, regex });

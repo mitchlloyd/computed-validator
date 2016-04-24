@@ -10,7 +10,7 @@ import validationRule from 'computed-validator/validation-rule';
  * @public
  * @param {number} min
  * @param {number} max
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([min, max], { onProperty }) {
   let errorId;

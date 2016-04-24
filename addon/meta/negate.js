@@ -16,7 +16,7 @@ import validationRule from 'computed-validator/validation-rule';
  * @public
  * @module
  * @param {function} validationRule - A validation rule to be negated
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([rule], options) {
   let { dependentKeys, validate } = rule.assign(options).build();

@@ -12,7 +12,7 @@ const { get } = Ember;
  * @public
  * @param {string} keyToMatch - Key pointing to a property that must match the
  * property identified by the validation key
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([keyToMatch], { onProperty }) {
   let error = new ValidationError('validations.confirmed', { onProperty, keyToMatch });

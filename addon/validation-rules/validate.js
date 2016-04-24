@@ -10,15 +10,16 @@ import validationRule from 'computed-validator/validation-rule';
  * the validation.  property identified by the validation key
  * @param {function} validate - A function that returns a validation error when
  * the property is not valid.
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([dependentKeys, validate], { onProperty }) {
-  // Normal arg case:
-  // [], fn, {}
-  //
-  // Also handle implicit dependent keys
-  // fn, {}
-  //
+  /*
+   Normal arg case:
+   [], fn, {}
+
+   Also handle implicit dependent keys
+   fn, {}
+  */
   if (!validate) {
     validate = dependentKeys;
     dependentKeys = [onProperty];

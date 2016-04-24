@@ -11,7 +11,7 @@ import validationRule from 'computed-validator/validation-rule';
  * @module
  * @public
  * @param {array} validationRules - A list of validation rules declared by the user
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function(validationRules, { onProperty }) {
   let { dependentKeys, validateFunctions } = metaBlueprintFor(validationRules, onProperty);

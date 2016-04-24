@@ -17,7 +17,7 @@ import Errors from 'computed-validator/errors';
  * This would allow us to show the "required" message first and then show a list of
  * complexity messages next by just using the `validator.name.errors` path.
  *
- * 2) To wait on long-running, asynchronous validations.
+ * 2) To postpone long-running, asynchronous validations.
  *
  * A case for this might be picking a username where we want to check the
  * length first and then, only after that requirement has been met, check with
@@ -28,7 +28,7 @@ import Errors from 'computed-validator/errors';
  * @module
  * @public
  * @param {ValidationBlueprint[]} rules - A list of validation rules to exectue in sequence
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function(rules, { onProperty }) {
   let { dependentKeys, validateFunctions } = metaBlueprintFor(rules, onProperty);

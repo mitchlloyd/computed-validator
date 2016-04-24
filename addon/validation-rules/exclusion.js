@@ -9,7 +9,7 @@ const { get } = Ember;
  * @module
  * @public
  * @param {string[]} forbiddenValues - list of forbidden values
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function(forbiddenValues, { onProperty }) {
   let error = new ValidationError('validations.exclusion', { forbiddenValues });

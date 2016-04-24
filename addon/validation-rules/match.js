@@ -9,7 +9,7 @@ const { get } = Ember;
  * @module
  * @public
  * @param {string} regex - Regular expression to match
- * @return {object} validationBlueprint
+ * @return {object} validationBuilder
  */
 export default validationRule(function([regex], { onProperty }) {
   let error = new ValidationError('validations.match', { property: onProperty, regex });

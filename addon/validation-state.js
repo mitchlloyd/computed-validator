@@ -27,9 +27,9 @@ export default class ValidationState {
   }
 
   /**
-   * Determine if the validation is valid. This is true
-   * if there are no resolved errors and there are no
-   * pending promises that may later return errors.
+   * Determine if the validation is valid. This is true if there are no
+   * resolved errors and there are no pending promises that may later return
+   * errors.
    *
    * @method
    * @return {boolean}
@@ -39,8 +39,8 @@ export default class ValidationState {
   }
 
   /**
-   * A validaion is validating when there is a pending
-   * promise that may later return an error.
+   * A validaion is validating when there is a pending promise that may later
+   * return an error.
    *
    * @method
    * @return {boolean}
@@ -50,10 +50,9 @@ export default class ValidationState {
   }
 
   /**
-   * Determine if there are any known errors. Keep in mind
-   * this is not the same as isValid. A validation may currently
-   * have no errors, but could have pending promises that may
-   * resolve with errors.
+   * Determine if there are any known errors. Keep in mind this is not the same
+   * as isValid. A validation may currently have no errors, but could have
+   * pending promises that may resolve with errors.
    *
    * @method
    * @return {boolean}
@@ -63,7 +62,7 @@ export default class ValidationState {
   }
 
   /**
-   * A convienience method to get the first available error message
+   * A convienience method to get the first available error message.
    *
    * @method
    * @return {string}
