@@ -1,7 +1,8 @@
 <label>{{label}}</label>
 <input
   oninput={{action (mut value) value="currentTarget.value"}}
-  class="form-control" />
+  class="form-control"
+  value={{value}} />
 
 <p class="field-errors">
   {{errors}}

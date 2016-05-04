@@ -3,7 +3,7 @@ export function every(array, predicate) {
   let length = array.length;
 
   while (++index < length) {
-    if (!predicate(array[index])) {
+    if (!predicate(array[index], index)) {
       return false;
     }
   }
