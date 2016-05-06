@@ -24,13 +24,19 @@ test('using computedValidator', function(assert) {
 });
 
 test('discarding obsolete promises', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
+  let done = assert.async();
+
+  let finish = function() {
+    assert.deepEqual(myObject.get('validator.name.errors'), ['is required'], "after promise resolves, sync error remains");
+    done();
+  };
 
   let user = { name: 'Ellie' };
 
   let myObject = Ember.Object.extend({
     validator: computedValidator('user', {
-      name: sequence(required(), asyncRule([]))
+      name: sequence(required(), asyncRule([], finish))
     })
   }).create();
 
@@ -39,13 +45,7 @@ test('discarding obsolete promises', function(assert) {
   assert.equal(myObject.get('validator.name.isValidating'), true, "waiting on pending rule");
   assert.deepEqual(myObject.get('validator.name.errors'), [], "no errors while waiting on pending rule");
 
-  let pendingValidator = myObject.get('validator');
-
   // Sync rule becomes invalid, with promise still pending
   myObject.set('user.name', '');
   assert.deepEqual(myObject.get('validator.name.errors'), ['is required'], "validator now has the sync error");
-
-  nextValidator(pendingValidator, () => myObject.get('validator'), function() {
-    assert.ok(false, "callback should never fire because next validator is obsolete");
-  });
 });

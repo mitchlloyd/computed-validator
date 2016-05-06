@@ -24,15 +24,18 @@ export function defineValidator(rules) {
   Validator.ruleKeys = [];
 
   for (let ruleKey in rules) {
-    let { validate, dependentKeys } = rules[ruleKey].onProperty(ruleKey).build();
-
     /* jshint loopfunc: true */
-    Validator.prototype[ruleKey] = computed(...dependentKeys, function() {
+
+    let { validate, dependentKeys } = rules[ruleKey].onProperty(ruleKey).build();
+    let subjectDependentKeys = dependentKeys.map(key => `${PRIVATE}.subject.${key}`);
+
+    Validator.prototype[ruleKey] = computed(...subjectDependentKeys, function() {
       return new ValidationState({
         errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
         translate: this[PRIVATE].translate,
       });
     });
+
     /* jshint loopfunc: false */
 
     Validator.ruleKeys.push(ruleKey);
