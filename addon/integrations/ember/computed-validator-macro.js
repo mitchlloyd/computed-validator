@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import { defineValidator } from 'computed-validator';
-import { nextValidator } from 'computed-validator/validator';
 import lookupTranslate from 'computed-validator/integrations/ember/lookup-translate';
-const { computed, getOwner } = Ember;
+const { computed, getOwner, set } = Ember;
 
 /**
  * This is the primary interface for using Computed Validator. When used from an
@@ -17,37 +16,24 @@ const { computed, getOwner } = Ember;
  */
 export default function(subjectKey, rules) {
   let Validator = defineValidator(rules);
-  let dependentKeys = Validator.dependentKeys.map((k) => `${subjectKey}.${k}`);
   let validator;
-  let currentValidator = function() {
-    return validator;
-  };
 
-  return computed(...dependentKeys, {
-    get(key) {
-      let subject = this.get(subjectKey);
+  return computed(subjectKey, function() {
+    let subject = this.get(subjectKey);
 
-      if (!subject) {
-        return;
-      }
+    if (!subject) {
+      return;
+    }
 
-      validator = new Validator({
+    if (validator) {
+      set(validator, subject);
+      return validator;
+    } else {
+      return new Validator({
         subject,
-        ancestor: validator,
         translate: lookupTranslate(getOwner(this)),
         context: this
       });
-
-      nextValidator(validator, currentValidator, (nextValidator) => {
-        validator = nextValidator;
-        this.set(key, validator);
-      });
-
-      return validator;
-    },
-
-    set(key, validator) {
-      return validator;
     }
   });
 }

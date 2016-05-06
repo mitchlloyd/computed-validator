@@ -1,5 +1,7 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { noMatch, createValidator } from 'computed-validator';
+const { get } = Ember;
 
 module("Unit | validation-rules | no-match");
 
@@ -10,5 +12,5 @@ test('using match', function(assert) {
     name: noMatch(/Mitch/)
   });
 
-  assert.deepEqual(validator.name.errors, ["must not match /Mitch/"]);
+  assert.deepEqual(get(validator, 'name.errors'), ["must not match /Mitch/"]);
 });

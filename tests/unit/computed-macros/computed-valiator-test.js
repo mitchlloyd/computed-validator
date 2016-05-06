@@ -1,30 +1,43 @@
 import Ember from 'ember';
 import { module, test } from 'qunit';
+import wait from 'ember-test-helpers/wait';
 import asyncRule from '../helpers/async-rule';
-import { nextValidator } from 'computed-validator/validator';
 import {
   computedValidator,
   required,
   sequence
 } from 'computed-validator';
+const { set } = Ember;
 
 module("Unit | computed-validator");
 
 test('using computedValidator', function(assert) {
+  let user = {};
+
   let myObject = Ember.Object.extend({
-    validator: computedValidator('attrs.user', {
+    init() {
+      this._super(...arguments);
+      this.user = user;
+    },
+
+    validator: computedValidator('user', {
       name: required()
     })
   }).create();
 
-  myObject.set('attrs', { user: { name: '' } });
+  set(user, 'name', '');
 
   let errors = myObject.get('validator.name.errors');
   assert.deepEqual(errors, ["is required"]);
+
+  set(user, 'name', 'Ellie');
+
+  errors = myObject.get('validator.name.errors');
+  assert.deepEqual(errors, []);
 });
 
 test('discarding obsolete promises', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
 
   let user = { name: 'Ellie' };
 
@@ -39,13 +52,11 @@ test('discarding obsolete promises', function(assert) {
   assert.equal(myObject.get('validator.name.isValidating'), true, "waiting on pending rule");
   assert.deepEqual(myObject.get('validator.name.errors'), [], "no errors while waiting on pending rule");
 
-  let pendingValidator = myObject.get('validator');
-
   // Sync rule becomes invalid, with promise still pending
   myObject.set('user.name', '');
   assert.deepEqual(myObject.get('validator.name.errors'), ['is required'], "validator now has the sync error");
 
-  nextValidator(pendingValidator, () => myObject.get('validator'), function() {
-    assert.ok(false, "callback should never fire because next validator is obsolete");
+  return wait().then(function() {
+    assert.deepEqual(myObject.get('validator.name.errors'), ['is required'], "after promise resolves, sync error remains");
   });
 });

@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 
   // BEGIN-SNIPPET message-function-example
   validator: computedValidator('user', {
-    name: required({ message: (component) => component.translate("please translate") })
+    name: required().message(component => component.translate("please translate"))
   })
   // END-SNIPPET
 });

@@ -1,7 +1,9 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { createValidator, all, integer, required } from 'computed-validator';
 import { nextValidationState } from 'computed-validator/validation-state';
 import asyncRule from '../helpers/async-rule';
+const { get } = Ember;
 
 module("Unit | meta | all");
 
@@ -12,7 +14,7 @@ test('synchronous all', function(assert) {
     age: all(required(), integer())
   });
 
-  assert.equal(validator.age.errors.length, 2);
+  assert.equal(get(validator, 'age.errors.length'), 2);
 });
 
 test('async all - with passing async validation', function(assert) {
@@ -24,14 +26,14 @@ test('async all - with passing async validation', function(assert) {
     age: all(required(), asyncRule([]), integer())
   });
 
-  assert.deepEqual(validator.age.errors, [
+  assert.deepEqual(get(validator, 'age.errors'), [
     'is required',
     'must be a whole number'
   ], "only shows sync errors");
 
-  return nextValidationState({ validationState: validator.age }).then(function() {
+  return nextValidationState(get(validator, 'age')).then(function() {
     assert.deepEqual(
-      validator.age.errors,
+      get(validator, 'age.errors'),
       ['is required', 'must be a whole number'],
       "still only shows original sync errors"
     );
@@ -47,12 +49,12 @@ test('async all - with failing async validation', function(assert) {
     age: all(required(), asyncRule(['async-error']), integer())
   });
 
-  assert.deepEqual(validator.age.errors, [
+  assert.deepEqual(get(validator, 'age.errors'), [
     'is required',
     'must be a whole number'
   ], "only shows sync errors");
 
-  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'age')).then(function(validationState) {
     assert.deepEqual(
       validationState.errors,
       ['is required', 'async-error', 'must be a whole number'],
@@ -68,10 +70,10 @@ test('async all - with only passing async validations', function(assert) {
     age: all(asyncRule([]), asyncRule([]))
   });
 
-  assert.deepEqual(validator.age.errors, [], "there are no errors while validating");
-  assert.equal(validator.isValidating, true, "validator is validating");
+  assert.deepEqual(get(validator, 'age.errors'), [], "there are no errors while validating");
+  assert.equal(get(validator, 'isValidating'), true, "validator is validating");
 
-  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'age')).then(function(validationState) {
     assert.deepEqual(validationState.errors, [], "there are no errors after resolution");
     assert.equal(validationState.isValidating, false, "validation is no longer validating");
   });

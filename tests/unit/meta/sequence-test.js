@@ -1,8 +1,10 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { sequence, required, integer } from 'computed-validator';
 import asyncRule from '../helpers/async-rule';
 import { nextValidationState } from 'computed-validator/validation-state';
 import { defineValidator } from 'computed-validator/validator';
+const { get, set } = Ember;
 
 module("Unit | meta | sequence");
 
@@ -14,15 +16,13 @@ test('synchronous sequence', function(assert) {
   let subject = { age: null };
 
   let validator = new Validator({ subject });
-  assert.deepEqual(validator.age.errors, ['is required']);
+  assert.deepEqual(get(validator, 'age.errors'), ['is required']);
 
-  subject.age = 'hello';
-  validator = new Validator({ subject });
-  assert.deepEqual(validator.age.errors, ['must be a whole number']);
+  set(subject, 'age', 'hello');
+  assert.deepEqual(get(validator, 'age.errors'), ['must be a whole number']);
 
-  subject.age = 1;
-  validator = new Validator({ subject });
-  assert.deepEqual(validator.age.errors, []);
+  set(subject, 'age', 1);
+  assert.deepEqual(get(validator, 'age.errors'), []);
 });
 
 test('async sequence - async validation rule with no errors after sync validation rule', function(assert) {
@@ -34,14 +34,13 @@ test('async sequence - async validation rule with no errors after sync validatio
 
   let subject = { name: null };
   let validator = new Validator({ subject });
-  assert.deepEqual(validator.name.errors, ['is required'], "gets first error");
+  assert.deepEqual(get(validator, 'name.errors'), ['is required'], "gets first error");
 
-  subject = { name: "Ellie" };
-  validator = new Validator({ subject });
-  assert.deepEqual(validator.name.errors, [], "no error messages");
-  assert.equal(validator.name.isValidating, true, "validation rule isValidating");
+  set(subject, 'name', "Ellie");
+  assert.deepEqual(get(validator, 'name.errors'), [], "no error messages");
+  assert.equal(get(validator, 'name.isValidating'), true, "validation rule isValidating");
 
-  return nextValidationState({ validationState: validator.name }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'name')).then(function(validationState) {
     assert.deepEqual(validationState.errors, [], "There are no errors");
     assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
@@ -56,10 +55,10 @@ test('async sequence - async validation rule with no errors before sync validati
 
   let subject = { age: null };
   let validator = new Validator({ subject });
-  assert.deepEqual(validator.age.errors, [], "no error messages");
-  assert.equal(validator.age.isValidating, true, "validation rule isValidating");
+  assert.deepEqual(get(validator, 'age.errors'), [], "no error messages");
+  assert.equal(get(validator, 'age.isValidating'), true, "validation rule isValidating");
 
-  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'age')).then(function(validationState) {
     assert.deepEqual(validationState.errors, ['must be a whole number'], "gets first error");
     assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
@@ -74,10 +73,10 @@ test('async sequence - async validation rule with errors before sync validation 
 
   let subject = { age: null };
   let validator = new Validator({ subject });
-  assert.deepEqual(validator.age.errors, [], "no error messages");
-  assert.equal(validator.age.isValidating, true, "validation rule isValidating");
+  assert.deepEqual(get(validator, 'age.errors'), [], "no error messages");
+  assert.equal(get(validator, 'age.isValidating'), true, "validation rule isValidating");
 
-  return nextValidationState({ validationState: validator.age }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'age')).then(function(validationState) {
     assert.deepEqual(validationState.errors, ['async-error'], "gets first error");
     assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });
@@ -92,14 +91,14 @@ test('async sequence - async validation rule with errors after sync validation r
 
   let subject = { name: null };
   let validator = new Validator({ subject });
-  assert.deepEqual(validator.name.errors, ['is required'], "gets first error");
+  assert.deepEqual(get(validator, 'name.errors'), ['is required'], "gets first error");
 
   subject = { name: "Ellie" };
   validator = new Validator({ subject });
-  assert.deepEqual(validator.name.errors, [], "no error messages");
-  assert.equal(validator.name.isValidating, true, "validation rule isValidating");
+  assert.deepEqual(get(validator, 'name.errors'), [], "no error messages");
+  assert.equal(get(validator, 'name.isValidating'), true, "validation rule isValidating");
 
-  return nextValidationState({ validationState: validator.name }).then(function({ validationState }) {
+  return nextValidationState(get(validator, 'name')).then(function(validationState) {
     assert.deepEqual(validationState.errors, ['async-error'], "gets the async error");
     assert.equal(validationState.isValidating, false, "validation rule is no longer validating");
   });

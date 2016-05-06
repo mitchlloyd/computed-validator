@@ -7,7 +7,9 @@ export default validationRule(function([errors], { onProperty }) {
     dependentKeys: [onProperty],
     validate() {
       return new RSVP.Promise(function(resolve) {
-        run.later(resolve(errors), 10);
+        run.later(function() {
+          resolve(errors);
+        }, 10);
       });
     }
   };

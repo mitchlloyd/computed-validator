@@ -1,5 +1,7 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { createValidator, exclusion } from 'computed-validator';
+const { get } = Ember;
 
 module("Unit | validation-rules | exclusion");
 
@@ -10,5 +12,5 @@ test('using exclusion', function(assert) {
     name: exclusion('poop')
   });
 
-  assert.deepEqual(validator.name.errors, ["is not an allowed value"]);
+  assert.deepEqual(get(validator, 'name.errors'), ["is not an allowed value"]);
 });

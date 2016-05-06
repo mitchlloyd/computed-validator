@@ -1,5 +1,7 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import { createValidator, required } from 'computed-validator';
+const { get } = Ember;
 
 module("Unit | validation-rules | required");
 
@@ -10,5 +12,5 @@ test('using required', function(assert) {
     name: required()
   });
 
-  assert.deepEqual(validator.name.errors, ["is required"]);
+  assert.deepEqual(get(validator, 'name.errors'), ["is required"]);
 });

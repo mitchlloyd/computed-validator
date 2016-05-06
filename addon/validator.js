@@ -1,10 +1,8 @@
-import ValidationState, { nextValidationState } from 'computed-validator/validation-state';
+import ValidationState from 'computed-validator/validation-state';
 import defaultTranslator from 'computed-validator/translators/default';
 import { every, some } from 'computed-validator/utils';
-import defineMemoizedGetter from 'computed-validator/utils/define-memoized-getter';
-import { initCache, cacheValue } from 'computed-validator/utils/cache';
 import Ember from 'ember';
-const { RSVP } = Ember;
+const { computed, get, set, cacheFor } = Ember;
 
 const PRIVATE = '_computed-validator-private';
 
@@ -17,52 +15,62 @@ const PRIVATE = '_computed-validator-private';
  * @return {Class} Validator - A Validator class
  */
 export function defineValidator(rules) {
-  let Validator = function({ subject, context, ancestor, translate }) {
-    this[PRIVATE] = { subject, context, translate: translate || defaultTranslator() };
-    initCache(this, subject, ancestor, this.constructor.validationRuleDependentKeys);
-  };
+  let ruleKeys = Object.keys(rules);
+  let ruleMethods = {};
 
-  Validator.ruleKeys = [];
-  Validator.dependentKeys = [];
-  Validator.validationRuleDependentKeys = {};
-
-  for (let ruleKey in rules) {
+  ruleKeys.forEach(function(ruleKey) {
     let { validate, dependentKeys } = rules[ruleKey].onProperty(ruleKey).build();
+    let subjectDependentKeys = dependentKeys.map(key => `${PRIVATE}.subject.${key}`);
 
-    Validator.validationRuleDependentKeys[ruleKey] = dependentKeys;
+    ruleMethods[ruleKey] = computed(...subjectDependentKeys, {
+      get() {
+        return new ValidationState({
+          errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
+          translate: this[PRIVATE].translate,
+          onUpdate: nextState => {
+            if (nextState.isUpdateOf(cacheFor(this, ruleKey))) {
+              set(this, ruleKey, nextState);
+            }
+          }
+        });
+      },
 
-    /*jshint loopfunc: true */
-    defineMemoizedGetter(Validator.prototype, ruleKey, function() {
-      return new ValidationState({
-        errors: validate.call(this[PRIVATE].context, this[PRIVATE].subject),
-        translate: this[PRIVATE].translate,
+      set(key, value) {
+        return value;
+      }
+    });
+  });
+
+  const Validator = Ember.Object.extend(ruleMethods, {
+    init() {
+      this._super();
+      this[PRIVATE] = {
+        subject: this.subject,
+        context: this.context,
+        translate: this.translate || defaultTranslator()
+      };
+    },
+
+    isValid: computed(...ruleKeys, function() {
+      return every(ruleKeys, (key) => {
+        return get(this, `${key}.isValid`);
       });
-    });
-    /*jshint loopfunc: false */
+    }),
 
-    Validator.ruleKeys.push(ruleKey);
-    Validator.dependentKeys.push(...dependentKeys);
-  }
+    isValidating: computed(...ruleKeys, function() {
+      return some(ruleKeys, (key) => {
+        return get(this, `${key}.isValidating`);
+      });
+    }),
 
-  defineMemoizedGetter(Validator.prototype, 'isValid', function() {
-    return every(this.constructor.ruleKeys, (key) => {
-      return this[key].isValid;
-    });
-  });
+    errors: computed(...ruleKeys, function() {
+      let errors = [];
+      ruleKeys.forEach((key) => {
+        errors.push(...get(this, `${key}.errors`));
+      });
 
-  defineMemoizedGetter(Validator.prototype, 'isValidating', function() {
-    return some(this.constructor.ruleKeys, (key) => {
-      return this[key].isValidating;
-    });
-  });
-
-  defineMemoizedGetter(Validator.prototype, 'errors', function() {
-    let errors = [];
-    this.constructor.ruleKeys.forEach((key) => {
-      errors.push(...this[key].errors);
-    });
-
-    return errors;
+      return errors;
+    })
   });
 
   return Validator;
@@ -82,43 +90,4 @@ export function defineValidator(rules) {
 export function createValidator(subject, rules) {
   let Validator = defineValidator(rules);
   return new Validator({ subject });
-}
-
-export function nextValidator(validator, getCurrentValidator, callback) {
-  let pendingValidationStates = [];
-  let Validator = validator.constructor;
-
-  validator.constructor.ruleKeys.forEach((ruleKey) => {
-    let validationState = validator[ruleKey];
-    if (validationState.isValidating) {
-      pendingValidationStates.push(nextValidationState({ ruleKey, validationState }));
-    }
-  });
-
-  RSVP.race(pendingValidationStates).then(({ validationState, previousValidationState, ruleKey }) => {
-    let currentValidator = getCurrentValidator();
-
-    // If the previous validation state does not match the current one, then this update
-    // is no longer relevant.
-    if (currentValidator[ruleKey] !== previousValidationState) {
-      return;
-    }
-
-    let privateProps = currentValidator[PRIVATE];
-    let validator = new Validator({
-      subject: privateProps.subject,
-      ancestor: currentValidator,
-      translate: privateProps.translate,
-      context: privateProps.context
-    });
-
-    cacheValue(validator, ruleKey, validationState);
-
-    callback(validator);
-
-    // Recursively call nextValidator until no longer validating.
-    if (validator.isValidating) {
-      nextValidator(validator, getCurrentValidator, callback);
-    }
-  });
 }

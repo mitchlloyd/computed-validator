@@ -2,6 +2,8 @@ import Ember from 'ember';
 import { flatten } from 'computed-validator/utils';
 const { RSVP } = Ember;
 
+let id = 0;
+
 /**
  * Whenever a validation rule runs, it returns a new ValidationState
  * instance.
@@ -16,7 +18,8 @@ const { RSVP } = Ember;
  * @param {function} translate - A function that can translate a validation error
  */
 export default class ValidationState {
-  constructor({ errors, translate }) {
+  constructor({ errors, translate, onUpdate, ancestor }) {
+    this.id = ++id;
     this.allErrors = errors;
     this.translate = translate;
 
@@ -24,6 +27,18 @@ export default class ValidationState {
     this.pendingErrors = pendingErrors;
     this.resolvedErrors = resolvedErrors;
     this.translatedErrors = undefined;
+
+    if (onUpdate && this.isValidating) {
+      nextValidationState(this).then(onUpdate);
+    }
+
+    if (ancestor) {
+      this.ancestorId = ancestor.id;
+    }
+  }
+
+  isUpdateOf(state) {
+    return state && this.ancestorId === state.id;
   }
 
   /**
@@ -85,18 +100,13 @@ export default class ValidationState {
   }
 }
 
-export function nextValidationState({ ruleKey, validationState }) {
+export function nextValidationState(validationState) {
   return RSVP.all(validationState.allErrors).then(flatten).then((errors) => {
-    let nextValidationState = new ValidationState({
+    return new ValidationState({
       errors,
-      translate: validationState.translate
+      translate: validationState.translate,
+      ancestor: validationState
     });
-
-    return {
-      validationState: nextValidationState,
-      previousValidationState: validationState,
-      ruleKey
-    };
   });
 }
 
