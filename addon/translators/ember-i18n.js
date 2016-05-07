@@ -11,6 +11,6 @@ export default function emberI18nTranslator(app) {
   if (service) {
     return function(...args) {
       return service.t(...args);
-    }
+    };
   }
 }

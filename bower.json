@@ -1,10 +1,10 @@
 {
   "name": "computed-validator",
   "dependencies": {
+    "bootstrap": "twbs/bootstrap#19d2a394903198c67872f236d75713329324dfcb",
     "ember": "~2.5.0",
-    "ember-cli-shims": "0.1.0",
+    "ember-cli-shims": "0.1.1",
     "ember-cli-test-loader": "0.2.2",
-    "ember-qunit-notifications": "0.1.0",
-    "bootstrap": "twbs/bootstrap#19d2a394903198c67872f236d75713329324dfcb"
+    "ember-qunit-notifications": "0.1.0"
   }
 }
