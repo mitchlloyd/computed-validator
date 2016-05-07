@@ -7,7 +7,7 @@ module("Unit | validator", {
   beforeEach() {
     this.Validator = defineValidator({
       name: required(),
-      age: integer(),
+      age: integer()
     });
   }
 });

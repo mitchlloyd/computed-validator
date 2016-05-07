@@ -1,6 +1,6 @@
 import {
   defineValidator,
-  createValidator,
+  createValidator
 } from 'computed-validator/validator';
 import required from 'computed-validator/validation-rules/required';
 import integer from 'computed-validator/validation-rules/integer';

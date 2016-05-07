@@ -3,8 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import {
   computedValidator,
   required,
-  onProperty,
-
+  onProperty
 } from 'computed-validator';
 
 export default Ember.Component.extend({

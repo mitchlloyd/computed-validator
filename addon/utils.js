@@ -11,15 +11,7 @@ export function every(array, predicate) {
 }
 
 export function some(array, predicate) {
-  let index = -1;
-  let length = array.length;
-
-  while (++index < length) {
-    if (predicate(array[index], index)) {
-      return true;
-    }
-  }
-  return false;
+  return firstResult(array, predicate) || false;
 }
 
 export function flatMap(array, callback) {
@@ -73,14 +65,6 @@ export function flatten(array) {
   return result;
 }
 
-export function last(array) {
-  return array[array.length - 1];
-}
-
-export function some(array, predicate) {
-  return firstResult(array, predicate) || false;
-}
-
 export function get(obj, path) {
   let index = 0;
   let length = path.length;
@@ -90,10 +74,6 @@ export function get(obj, path) {
   }
 
   return (index && index === length) ? obj : undefined;
-}
-
-export function last(array) {
-  return array[array.length - 1];
 }
 
 export function flow(...fns) {

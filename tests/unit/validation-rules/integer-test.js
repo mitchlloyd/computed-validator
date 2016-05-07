@@ -22,6 +22,6 @@ test('given a non number', function(assert) {
 
 function buildValidator(user) {
   return createValidator(user, {
-    age: integer(),
+    age: integer()
   });
 }
