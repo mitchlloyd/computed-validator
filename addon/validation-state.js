@@ -61,7 +61,7 @@ export default class ValidationState {
    * @return {boolean}
    */
   get isValidating() {
-    return !!this.pendingErrors.length;
+    return Boolean(this.pendingErrors.length);
   }
 
   /**
@@ -96,12 +96,13 @@ export default class ValidationState {
     if (!this.translatedErrors) {
       this.translatedErrors = translateErrors(this.resolvedErrors, this.translate);
     }
+
     return this.translatedErrors;
   }
 }
 
 export function nextValidationState(validationState) {
-  return RSVP.all(validationState.allErrors).then(flatten).then((errors) => {
+  return RSVP.all(validationState.allErrors).then(flatten).then(errors => {
     return new ValidationState({
       errors,
       translate: validationState.translate,
@@ -116,7 +117,7 @@ function partitionErrors(errors) {
     pendingErrors: []
   };
 
-  errors.forEach((error) => {
+  errors.forEach(error => {
     if (typeof error.then === 'function') {
       result.pendingErrors.push(error);
     } else {

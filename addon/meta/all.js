@@ -17,7 +17,7 @@ export default validationRule(function(validationRules, { onProperty }) {
   let { dependentKeys, validateFunctions } = metaBlueprintFor(validationRules, onProperty);
 
   let validate = function(subject) {
-    return flatMap(validateFunctions, (fn) => fn(subject));
+    return flatMap(validateFunctions, fn => fn(subject));
   };
 
   return { dependentKeys, validate };

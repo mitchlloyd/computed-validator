@@ -13,13 +13,11 @@ import validationRule from 'computed-validator/validation-rule';
  * @return {object} validationBuilder
  */
 export default validationRule(function([dependentKeys, validate], { onProperty }) {
-  /*
-   Normal arg case:
-   [], fn, {}
-
-   Also handle implicit dependent keys
-   fn, {}
-  */
+  // Normal arg case:
+  // [], fn, {}
+  //
+  // Also handle implicit dependent keys
+  // fn, {}
   if (!validate) {
     validate = dependentKeys;
     dependentKeys = [onProperty];

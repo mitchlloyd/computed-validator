@@ -27,6 +27,7 @@ export default function(subjectKey, rules) {
 
     if (validator) {
       set(validator, subject);
+
       return validator;
     } else {
       return new Validator({

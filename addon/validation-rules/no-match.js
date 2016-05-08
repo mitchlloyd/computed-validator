@@ -13,5 +13,6 @@ import ValidationError from 'computed-validator/validation-error';
  */
 export default validationRule(function([regex], { onProperty }) {
   let message = new ValidationError('validations.no-match', { property: onProperty, regex });
+
   return negate(match(regex)).assign({ message, onProperty }).build();
 });

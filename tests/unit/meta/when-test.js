@@ -6,7 +6,7 @@ const { get } = Ember;
 module("Unit | meta | when");
 
 test('using when', function(assert) {
-  let subject = { dogName: null, isDog: false  };
+  let subject = { dogName: null, isDog: false };
 
   let Validator = defineValidator({
     dogName: when('isDog', required())
@@ -15,7 +15,7 @@ test('using when', function(assert) {
   let validator = new Validator({ subject });
   assert.deepEqual(get(validator, 'dogName.errors'), []);
 
-  subject = { dogName: null, isDog: true  };
+  subject = { dogName: null, isDog: true };
   validator = new Validator({ subject });
   assert.deepEqual(get(validator, 'dogName.errors'), ['is required']);
 });

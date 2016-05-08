@@ -14,21 +14,25 @@ export default class ValidationBuilder {
     if (!this.options.onProperty) {
       this.options.onProperty = key;
     }
+
     return this;
   }
 
   message(message) {
     this.options.message = message;
+
     return this;
   }
 
   when(key) {
     this.options.when = key;
+
     return this;
   }
 
   assign(options) {
     assign(this.options, options);
+
     return this;
   }
 
@@ -40,6 +44,7 @@ export default class ValidationBuilder {
 
     blueprint = handleMessageOption(blueprint, this.options);
     blueprint = handleWhenOption(blueprint, this.options);
+
     return blueprint;
   }
 }

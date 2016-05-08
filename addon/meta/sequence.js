@@ -80,14 +80,15 @@ function getNextErrorResult(subject, validateFunctions) {
     // We might end up with no errors, so we chain the remaining valiation
     // rules onto the last promise.
     if (Errors.allPending(errors)) {
-      let lastPromise = errors.pop().then((errors) => {
-        if (errors.length) {
-          return errors;
+      let lastPromise = errors.pop().then(resolvedErrors => {
+        if (resolvedErrors.length) {
+          return resolvedErrors;
         } else {
           return getNextErrorResult(subject, validateFunctions.slice(i + 1));
         }
       });
       errors.push(lastPromise);
+
       return errors;
     }
   }) || [];

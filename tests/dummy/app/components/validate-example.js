@@ -10,7 +10,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
     this.user = {
-      groups: Ember.A()
+      groups: new Ember.A()
     };
   },
 

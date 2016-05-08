@@ -28,6 +28,6 @@ export default function lookupTranslate(owner) {
   if (userDefinedService) {
     return userDefinedService.translate.bind(userDefinedService);
   } else {
-    return firstResult(translators, (translator) => translator(owner));
+    return firstResult(translators, t => t(owner));
   }
 }

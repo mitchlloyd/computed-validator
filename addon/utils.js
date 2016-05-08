@@ -7,6 +7,7 @@ export function every(array, predicate) {
       return false;
     }
   }
+
   return true;
 }
 
@@ -35,13 +36,14 @@ export function firstResult(array, fn) {
 
 export function messageOption(args) {
   let lastArg = args[args.length - 1];
+
   return lastArg && lastArg.message;
 }
 
 export function unique(array) {
   let ret = [];
 
-  array.forEach((k) => {
+  array.forEach(k => {
     if (ret.indexOf(k) < 0) {
       ret.push(k);
     }
@@ -55,25 +57,15 @@ export function flatten(array) {
   let index = -1;
 
   while (++index < array.length) {
-    var value = array[index];
+    let value = array[index];
     if (Array.isArray(value)) {
       result.push(...value);
     } else {
       result.push(value);
     }
   }
+
   return result;
-}
-
-export function get(obj, path) {
-  let index = 0;
-  let length = path.length;
-
-  while (obj != null && index < length) {
-    obj = obj[path[index++]];
-  }
-
-  return (index && index === length) ? obj : undefined;
 }
 
 export function flow(...fns) {
@@ -85,6 +77,7 @@ export function flow(...fns) {
       result = fns[index](result);
       index++;
     }
+
     return result;
   };
 }
@@ -99,12 +92,13 @@ export function assign(target) {
   for (let index = 1; index < arguments.length; index++) {
     let source = arguments[index];
     if (source !== undefined && source !== null) {
-      for (var nextKey in source) {
+      for (let nextKey in source) {
         if (source.hasOwnProperty(nextKey)) {
           output[nextKey] = source[nextKey];
         }
       }
     }
   }
+
   return output;
 }

@@ -10,7 +10,9 @@ test('given a message option', function(assert) {
   let rule = validationRule(function() {
     return {
       dependentKeys: [],
-      validate() { return ['error']; }
+      validate() {
+        return ['error'];
+      }
     };
   });
 
@@ -25,7 +27,9 @@ test('given a when option', function(assert) {
   let rule = validationRule(function() {
     return {
       dependentKeys: [],
-      validate() { return ['error']; }
+      validate() {
+        return ['error'];
+      }
     };
   });
 

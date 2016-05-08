@@ -52,20 +52,20 @@ export function defineValidator(rules) {
     },
 
     isValid: computed(...ruleKeys, function() {
-      return every(ruleKeys, (key) => {
+      return every(ruleKeys, key => {
         return get(this, `${key}.isValid`);
       });
     }),
 
     isValidating: computed(...ruleKeys, function() {
-      return some(ruleKeys, (key) => {
+      return some(ruleKeys, key => {
         return get(this, `${key}.isValidating`);
       });
     }),
 
     errors: computed(...ruleKeys, function() {
       let errors = [];
-      ruleKeys.forEach((key) => {
+      ruleKeys.forEach(key => {
         errors.push(...get(this, `${key}.errors`));
       });
 
@@ -89,5 +89,6 @@ export function defineValidator(rules) {
  */
 export function createValidator(subject, rules) {
   let Validator = defineValidator(rules);
+
   return new Validator({ subject });
 }

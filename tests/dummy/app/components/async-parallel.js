@@ -1,4 +1,4 @@
-//BEGIN-SNIPPET async-parallel
+// BEGIN-SNIPPET async-parallel
 import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
 import {
@@ -45,4 +45,4 @@ export default Ember.Component.extend({
     })
   })
 });
-//END-SNIPPET
+// END-SNIPPET

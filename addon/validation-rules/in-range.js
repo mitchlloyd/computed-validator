@@ -29,8 +29,8 @@ export default validationRule(function([min, max], { onProperty, fallbackValue }
     dependentKeys: [onProperty],
     validate(subject) {
       let value = get(subject, onProperty);
-      let numericValue = +value;
-      let isNotNumber = (numericValue != value) // jshint ignore:line
+      let numericValue = Number(value);
+      let isNotNumber = (numericValue != value); // eslint-disable-line eqeqeq
 
       if (isNotNumber) {
         numericValue = fallbackValue;

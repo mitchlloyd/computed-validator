@@ -5,6 +5,7 @@ const Router = Ember.Router.extend({
   location: config.locationType
 });
 
+/* eslint array-callback-return: 0 */
 Router.map(function() {
   this.route('quick-start');
   this.route('included-validation-rules');
