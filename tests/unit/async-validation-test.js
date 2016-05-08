@@ -8,6 +8,8 @@ const { get } = Ember;
 module("Unit | async-validation");
 
 test('asynchronous validation - resolving with an error', function(assert) {
+  assert.expect(4);
+
   let validator = createValidator({}, {
     name: asyncRule(['an error'])
   });
@@ -22,6 +24,8 @@ test('asynchronous validation - resolving with an error', function(assert) {
 });
 
 test('asynchronous validation - resolving with no errors', function(assert) {
+  assert.expect(4);
+
   let validator = createValidator({}, {
     name: asyncRule([])
   });
